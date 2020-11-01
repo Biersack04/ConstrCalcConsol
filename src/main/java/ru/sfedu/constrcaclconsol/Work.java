@@ -1,42 +1,63 @@
 package ru.sfedu.constrcaclconsol;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.util.List;
+
 public class Work {
+    private static Logger log = LogManager.getLogger(ConstrCalcClient.class);
 
-        private String name;
+    private long id;
 
-        private long price;
+    private String name;
 
-        public Work()
-        {}
+    private long price;
 
-        public Work(String name, long price) {
 
-            this.name = name;
+    public Work() {
 
-            this.price = price;
+    }
 
-        }
+    public Work(String name, long price) {
 
-        public String getName() {
+        this.name = name;
 
-            return this.name;
+        this.price = price;
 
-        }
+    }
+    public long getId() {
 
-        public void setName(String name) {
+        return this.id;
 
-            this.name = name;
+    }
 
-        }
+    public void setId(long id){
 
-        public long getPrice() {
+        this.id = id;
+    }
 
-            return this.price;
+    public String getName() {
 
-        }
+        return this.name;
 
-        public void setPrice(long price){
+    }
 
-            this.price = price;
-        }
+    public void setName(String name) {
+
+        this.name = name;
+
+    }
+
+    public long getPrice() {
+
+        return this.price;
+
+    }
+
+    public void setPrice(long price){
+
+        this.price = price;
+    }
+
 }
