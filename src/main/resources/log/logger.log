@@ -833,3 +833,114 @@
 2020-11-01 18:16:07 INFO  ConstrCalcClient:64 - 5
 2020-11-01 18:16:07 INFO  ConstrCalcClient:65 - Assemble the electrical panel
 2020-11-01 18:16:07 INFO  ConstrCalcClient:66 - 600
+2020-11-01 18:23:48 INFO  ConstrCalcClient:42 - To paste wallpaper|300
+2020-11-01 18:23:48 INFO  ConstrCalcClient:42 - To paint walls|200
+2020-11-01 18:23:48 INFO  ConstrCalcClient:42 - To lay cable|500
+2020-11-01 18:23:48 INFO  ConstrCalcClient:42 - To lay pipeline|400
+2020-11-01 18:23:48 INFO  ConstrCalcClient:42 - Assemble the electrical panel|600
+2020-11-01 18:23:48 INFO  ConstrCalcClient:52 - To paint walls
+2020-11-01 18:23:48 INFO  ConstrCalcClient:52 - 200
+2020-11-01 18:23:48 INFO  ConstrCalcClient:52 - To paste wallpaper
+2020-11-01 18:23:48 INFO  ConstrCalcClient:52 - 300
+2020-11-01 18:23:48 INFO  ConstrCalcClient:52 - To lay pipeline
+2020-11-01 18:23:48 INFO  ConstrCalcClient:52 - 400
+2020-11-01 18:23:48 INFO  ConstrCalcClient:52 - To lay cable
+2020-11-01 18:23:48 INFO  ConstrCalcClient:52 - 500
+2020-11-01 18:23:48 INFO  ConstrCalcClient:52 - Assemble the electrical panel
+2020-11-01 18:23:48 INFO  ConstrCalcClient:52 - 600
+2020-11-01 18:24:30 INFO  ConstrCalcClient:42 - To paste wallpaper|300
+2020-11-01 18:24:30 INFO  ConstrCalcClient:42 - To paint walls|200
+2020-11-01 18:24:30 INFO  ConstrCalcClient:42 - To lay cable|500
+2020-11-01 18:24:30 INFO  ConstrCalcClient:42 - To lay pipeline|400
+2020-11-01 18:24:30 INFO  ConstrCalcClient:42 - Assemble the electrical panel|600
+2020-11-01 18:24:30 INFO  ConstrCalcClient:58 - 1
+2020-11-01 18:24:30 INFO  ConstrCalcClient:59 - To paint walls
+2020-11-01 18:24:30 INFO  ConstrCalcClient:60 - 200
+2020-11-01 18:24:30 INFO  ConstrCalcClient:58 - 2
+2020-11-01 18:24:30 INFO  ConstrCalcClient:59 - To paste wallpaper
+2020-11-01 18:24:30 INFO  ConstrCalcClient:60 - 300
+2020-11-01 18:24:30 INFO  ConstrCalcClient:58 - 3
+2020-11-01 18:24:30 INFO  ConstrCalcClient:59 - To lay pipeline
+2020-11-01 18:24:30 INFO  ConstrCalcClient:60 - 400
+2020-11-01 18:24:30 INFO  ConstrCalcClient:58 - 4
+2020-11-01 18:24:30 INFO  ConstrCalcClient:59 - To lay cable
+2020-11-01 18:24:30 INFO  ConstrCalcClient:60 - 500
+2020-11-01 18:24:30 INFO  ConstrCalcClient:58 - 5
+2020-11-01 18:24:30 INFO  ConstrCalcClient:59 - Assemble the electrical panel
+2020-11-01 18:24:30 INFO  ConstrCalcClient:60 - 600
+2020-11-01 18:24:30 INFO  ConstrCalcClient:65 - 1
+2020-11-01 18:24:30 INFO  ConstrCalcClient:66 - To paint walls
+2020-11-01 18:24:30 INFO  ConstrCalcClient:67 - 200
+2020-11-01 18:24:30 INFO  ConstrCalcClient:65 - 2
+2020-11-01 18:24:30 INFO  ConstrCalcClient:66 - To paste wallpaper
+2020-11-01 18:24:30 INFO  ConstrCalcClient:67 - 300
+2020-11-01 18:24:30 INFO  ConstrCalcClient:65 - 3
+2020-11-01 18:24:30 INFO  ConstrCalcClient:66 - To lay pipeline
+2020-11-01 18:24:30 INFO  ConstrCalcClient:67 - 400
+2020-11-01 18:24:30 INFO  ConstrCalcClient:65 - 4
+2020-11-01 18:24:30 INFO  ConstrCalcClient:66 - To lay cable
+2020-11-01 18:24:30 INFO  ConstrCalcClient:67 - 500
+2020-11-01 18:24:30 INFO  ConstrCalcClient:65 - 5
+2020-11-01 18:24:30 INFO  ConstrCalcClient:66 - Assemble the electrical panel
+2020-11-01 18:24:30 INFO  ConstrCalcClient:67 - 600
+2020-11-01 18:24:43 INFO  ConstrCalcClient:42 - To paste wallpaper|300
+2020-11-01 18:24:43 INFO  ConstrCalcClient:42 - To paint walls|200
+2020-11-01 18:24:43 INFO  ConstrCalcClient:42 - To lay cable|500
+2020-11-01 18:24:43 INFO  ConstrCalcClient:42 - To lay pipeline|400
+2020-11-01 18:24:43 INFO  ConstrCalcClient:42 - Assemble the electrical panel|600
+2020-11-01 18:24:43 INFO  ConstrCalcClient:58 - 1
+2020-11-01 18:24:43 INFO  ConstrCalcClient:59 - To paint walls
+2020-11-01 18:24:43 INFO  ConstrCalcClient:60 - 200
+2020-11-01 18:24:43 INFO  ConstrCalcClient:58 - 2
+2020-11-01 18:24:43 INFO  ConstrCalcClient:59 - To paste wallpaper
+2020-11-01 18:24:43 INFO  ConstrCalcClient:60 - 300
+2020-11-01 18:24:43 INFO  ConstrCalcClient:58 - 3
+2020-11-01 18:24:43 INFO  ConstrCalcClient:59 - To lay pipeline
+2020-11-01 18:24:43 INFO  ConstrCalcClient:60 - 400
+2020-11-01 18:24:43 INFO  ConstrCalcClient:58 - 4
+2020-11-01 18:24:43 INFO  ConstrCalcClient:59 - To lay cable
+2020-11-01 18:24:43 INFO  ConstrCalcClient:60 - 500
+2020-11-01 18:24:43 INFO  ConstrCalcClient:58 - 5
+2020-11-01 18:24:43 INFO  ConstrCalcClient:59 - Assemble the electrical panel
+2020-11-01 18:24:43 INFO  ConstrCalcClient:60 - 600
+2020-11-01 18:24:43 INFO  ConstrCalcClient:65 - 1
+2020-11-01 18:24:43 INFO  ConstrCalcClient:66 - To paint walls
+2020-11-01 18:24:43 INFO  ConstrCalcClient:67 - 200
+2020-11-01 18:24:43 INFO  ConstrCalcClient:65 - 2
+2020-11-01 18:24:43 INFO  ConstrCalcClient:66 - To paste wallpaper
+2020-11-01 18:24:43 INFO  ConstrCalcClient:67 - 300
+2020-11-01 18:24:43 INFO  ConstrCalcClient:65 - 3
+2020-11-01 18:24:43 INFO  ConstrCalcClient:66 - To lay pipeline
+2020-11-01 18:24:43 INFO  ConstrCalcClient:67 - 400
+2020-11-01 18:24:43 INFO  ConstrCalcClient:65 - 4
+2020-11-01 18:24:43 INFO  ConstrCalcClient:66 - To lay cable
+2020-11-01 18:24:43 INFO  ConstrCalcClient:67 - 500
+2020-11-01 18:24:43 INFO  ConstrCalcClient:65 - 5
+2020-11-01 18:24:43 INFO  ConstrCalcClient:66 - Assemble the electrical panel
+2020-11-01 18:24:43 INFO  ConstrCalcClient:67 - 600
+2020-11-08 18:00:33 ERROR DataProviderCSV:41 - java.lang.IndexOutOfBoundsException: Index 0 out of bounds for length 0
+2020-11-08 19:45:29 ERROR DataProviderCSV:66 - java.util.NoSuchElementException: No value present
+2020-11-26 23:54:28 ERROR DataProviderCSV:59 - java.util.NoSuchElementException: No value present
+2020-11-27 13:43:27 ERROR DataProviderCSV:56 - java.util.NoSuchElementException: No value present
+2020-11-27 16:50:55 ERROR DataProviderCSV:56 - java.util.NoSuchElementException: No value present
+2020-11-27 18:10:34 ERROR DataProviderCSV:56 - java.util.NoSuchElementException: No value present
+2020-11-27 20:01:56 ERROR DataProviderCSV:56 - java.util.NoSuchElementException: No value present
+2020-11-27 20:48:02 ERROR DataProviderCSV:56 - java.util.NoSuchElementException: No value present
+2020-11-27 21:19:05 ERROR DataProviderCSV:56 - java.util.NoSuchElementException: No value present
+2020-11-27 21:28:20 ERROR DataProviderCSV:43 - java.lang.IndexOutOfBoundsException: Index 0 out of bounds for length 0
+2020-11-27 21:30:35 ERROR DataProviderCSV:56 - java.util.NoSuchElementException: No value present
+2020-11-28 23:04:12 ERROR DataProviderCSV:57 - java.util.NoSuchElementException: No value present
+2020-11-28 23:04:44 ERROR DataProviderCSV:57 - java.util.NoSuchElementException: No value present
+2020-11-29 20:45:08 ERROR DataProviderCSV:222 - java.util.NoSuchElementException: No value present
+2020-11-29 21:08:24 ERROR DataProviderCSV:223 - java.util.NoSuchElementException: No value present
+2020-11-29 22:22:40 ERROR DataProviderCSV:220 - java.util.NoSuchElementException: No value present
+2020-11-29 22:23:40 ERROR DataProviderCSV:253 - java.util.NoSuchElementException: No value present
+2020-11-29 22:25:34 ERROR DataProviderCSV:286 - java.util.NoSuchElementException: No value present
+2020-11-29 22:27:04 ERROR DataProviderCSV:253 - java.util.NoSuchElementException: No value present
+2020-11-29 22:47:17 ERROR DataProviderCSV:74 - java.util.NoSuchElementException: No value present
+2020-11-29 22:49:37 ERROR DataProviderCSV:74 - java.util.NoSuchElementException: No value present
+2020-11-29 23:01:11 ERROR DataProviderCSV:322 - java.util.NoSuchElementException: No value present
+2020-11-29 23:04:58 ERROR DataProviderCSV:372 - java.util.NoSuchElementException: No value present
+2020-11-29 23:33:43 ERROR DataProviderCSV:101 - java.util.NoSuchElementException: No value present
+2020-11-30 00:05:41 ERROR DataProviderCSV:197 - java.lang.IndexOutOfBoundsException: Index 9 out of bounds for length 9
+2020-11-30 00:19:16 ERROR DataProviderCSV:529 - java.lang.IndexOutOfBoundsException: Index 3 out of bounds for length 2

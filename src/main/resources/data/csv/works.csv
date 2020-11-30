@@ -1,0 +1,10 @@
+id,listMaterials,name,price,priority,startDate,status,stopDate
+1,"[Materials{id=1, name='rewriteNameInWork', number=10, totalPrice=100}, Materials{id=2, name='rewriteNameInWork2', number=110, totalPrice=200}]",rewriteName,10,HIGH,00.00.0000,CREATE,11.11.1111
+2,"[Materials{id=3, name='wallpaper', number=50, totalPrice=70000}, Materials{id=4, name='rollglue', number=10, totalPrice=10000}]",To paste wallpaper,350,LOW,17.12.2020,CREATE,23.12.2020
+3,"[Materials{id=5, name='pipe', number=100, totalPrice=50000}, Materials{id=6, name='fasteners', number=70, totalPrice=5000}]",To lay pipeline,400,MEDIUM,5.12.2020,CREATE,14.12.2020
+4,"[Materials{id=7, name='cable', number=70, totalPrice=45000}, Materials{id=8, name='boxforcable', number=75, totalPrice=8000}]",To lay cable,500,MEDIUM,7.12.2020,CREATE,15.12.2020
+5,"[Materials{id=9, name='electricalpanel', number=1, totalPrice=17000}, Materials{id=10, name='electricalmachine', number=40, totalPrice=20000}]",Assemble the electrical panel,1000,MEDIUM,10.12.2020,CREATE,18.12.2020
+6,"[Materials{id=11, name='light', number=60, totalPrice=17000}, Materials{id=12, name='switch', number=30, totalPrice=3000}]",Hang up lights,300,LOW,24.12.2020,CREATE,30.12.2020
+7,"[Materials{id=13, name='tile', number=80, totalPrice=70000}, Materials{id=14, name='adhesivefortiles', number=10, totalPrice=10000}]",Laying tiles on the floor,500,LOW,13.12.2020,CREATE,20.12.2020
+8,"[Materials{id=15, name='window', number=10, totalPrice=30000}, Materials{id=16, name='windowsill', number=10, totalPrice=10000}]",Install windows,600,HIGH,27.11.2020,CREATE,28.11.2020
+9,"[Materials{id=17, name='waterproofing', number=100, totalPrice=50000}, Materials{id=18, name='insulation', number=100, totalPrice=45000}]",Floor insulation,700,HIGH,29.11.2020,CREATE,1.12.2020
