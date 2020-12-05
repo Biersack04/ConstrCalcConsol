@@ -1,26 +1,40 @@
 package ru.sfedu.constrcaclconsol.bean;
 
-import java.util.Date;
+import com.opencsv.bean.CsvBindByName;
+import com.opencsv.bean.CsvCustomBindByName;
+import ru.sfedu.constrcaclconsol.converter.CustomerConverter;
+import ru.sfedu.constrcaclconsol.converter.ExecutorConverter;
+import ru.sfedu.constrcaclconsol.converter.WorksConverter;
+
+import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 
 /**
  * Class Project
  */
-public class Project {
+public class Project implements Serializable {
 
   //
   // Fields
   //
-
+  @CsvBindByName
   private Long id;
+  @CsvBindByName
   private String name;
-  private Date createdDate;
-  private Date deadline;
+  @CsvBindByName
+  private String createdDate;
+  @CsvBindByName
+  private String deadline;
+  @CsvBindByName
   private Integer numberOfWorks;
+  @CsvCustomBindByName(converter = WorksConverter.class)
   private List<Works> worksList;
+  @CsvBindByName
   private String address;
+  @CsvCustomBindByName(converter = ExecutorConverter.class)
   private People executor;
+  @CsvCustomBindByName(converter = CustomerConverter.class)
   private People customer;
   
   //
@@ -73,7 +87,7 @@ public class Project {
    * Set the value of createdDate
    * @param newVar the new value of createdDate
    */
-  public void setCreatedDate (Date newVar) {
+  public void setCreatedDate (String newVar) {
     createdDate = newVar;
   }
 
@@ -81,7 +95,7 @@ public class Project {
    * Get the value of createdDate
    * @return the value of createdDate
    */
-  public Date getCreatedDate () {
+  public String getCreatedDate () {
     return createdDate;
   }
 
@@ -89,7 +103,7 @@ public class Project {
    * Set the value of deadline
    * @param newVar the new value of deadline
    */
-  public void setDeadline (Date newVar) {
+  public void setDeadline (String newVar) {
     deadline = newVar;
   }
 
@@ -97,7 +111,7 @@ public class Project {
    * Get the value of deadline
    * @return the value of deadline
    */
-  public Date getDeadline () {
+  public String getDeadline () {
     return deadline;
   }
 
@@ -200,6 +214,21 @@ public class Project {
   @Override
   public int hashCode() {
     return Objects.hash(id, name, createdDate, deadline, numberOfWorks, worksList, address, executor, customer);
+  }
+
+  @Override
+  public String toString() {
+    return "Project{" +
+            "id=" + id +
+            ", name='" + name + '\'' +
+            ", createdDate='" + createdDate + '\'' +
+            ", deadline='" + deadline + '\'' +
+            ", numberOfWorks=" + numberOfWorks +
+            ", worksList=" + worksList +
+            ", address='" + address + '\'' +
+            ", executor=" + executor +
+            ", customer=" + customer +
+            '}';
   }
 
   //

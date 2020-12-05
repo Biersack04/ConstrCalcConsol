@@ -1,6 +1,6 @@
-id,name,number,totalPrice
-1,rewriteName,10,100
-1,rewriteName,10,100
+ID,NAME,NUMBER,TOTALPRICE
+1,paint,10,30000
+2,brush,5,500
 3,wallpaper,50,70000
 4,roll glue,10,10000
 5,pipe,100,50000
@@ -18,3 +18,4 @@ id,name,number,totalPrice
 17,waterproofing,100,50000
 18,insulation,100,45000
 19,drywall,150,52000
+20,sound-absorbing material,150,48000

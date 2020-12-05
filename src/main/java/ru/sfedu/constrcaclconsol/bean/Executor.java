@@ -11,8 +11,8 @@ public class Executor extends People {
   // Fields
   //
 
-  private Integer numberOfCompletedProjects;
-  private Integer numberOfWorkers;
+  private Long numberOfCompletedProjects;
+  private Long numberOfWorkers;
 
   public Executor(){};
 
@@ -40,7 +40,7 @@ public class Executor extends People {
    * Set the value of numberOfCompletedProject
    * @param newVar the new value of numberOfCompletedProject
    */
-  public void setNumberOfCompletedProjects(Integer newVar) {
+  public void setNumberOfCompletedProjects(Long newVar) {
     numberOfCompletedProjects = newVar;
   }
 
@@ -48,7 +48,7 @@ public class Executor extends People {
    * Get the value of numberOfCompletedProject
    * @return the value of numberOfCompletedProject
    */
-  public Integer getNumberOfCompletedProjects() {
+  public Long getNumberOfCompletedProjects() {
     return numberOfCompletedProjects;
   }
 
@@ -56,7 +56,7 @@ public class Executor extends People {
    * Set the value of NumberOfWorkers
    * @param newVar the new value of NumberOfWorkers
    */
-  public void setNumberOfWorkers (Integer newVar) {
+  public void setNumberOfWorkers (Long newVar) {
     numberOfWorkers = newVar;
   }
 
@@ -64,7 +64,7 @@ public class Executor extends People {
    * Get the value of NumberOfWorkers
    * @return the value of NumberOfWorkers
    */
-  public Integer getNumberOfWorkers () {
+  public Long getNumberOfWorkers () {
     return numberOfWorkers;
   }
 
@@ -85,7 +85,11 @@ public class Executor extends People {
   @Override
   public String toString() {
     return "Executor{" +
-            "numberOfCompletedProjects=" + numberOfCompletedProjects +
+            "id=" + super.getId()+
+            ", name=" + super.getName() +
+            ", surname=" + super.getSurname() +
+            ", mailbox=" + super.getMailbox() +
+            ", numberOfCompletedProjects=" + numberOfCompletedProjects +
             ", NumberOfWorkers=" + numberOfWorkers +
             '}';
   }

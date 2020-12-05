@@ -12,6 +12,7 @@ public class Customer extends People {
   //
 
   private String orderAddress;
+
   private String telephone;
   
   //
@@ -75,20 +76,28 @@ public class Customer extends People {
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
+    if (!super.equals(o)) return false;
     Customer customer = (Customer) o;
-    return orderAddress.equals(customer.orderAddress) &&
-            telephone.equals(customer.telephone);
+    return orderAddress.equals(customer.orderAddress) && telephone.equals(customer.telephone);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(orderAddress, telephone);
+    return Objects.hash(super.hashCode(), orderAddress, telephone);
   }
 
   @Override
   public String toString() {
-    return "Customer{}";
+    return "Customer{" +
+            "id=" + super.getId()+
+            ", name=" + super.getName() +
+            ", surname=" + super.getSurname() +
+            ", mailbox=" + super.getMailbox() +
+            ",orderAddress='" + orderAddress + '\'' +
+            ", telephone='" + telephone + '\'' +
+            '}';
   }
+
 
   //
   // Other methods

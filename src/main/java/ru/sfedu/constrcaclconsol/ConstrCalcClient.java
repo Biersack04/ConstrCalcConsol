@@ -5,20 +5,17 @@ import com.opencsv.exceptions.CsvDataTypeMismatchException;
 import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ru.sfedu.constrcaclconsol.api.DataProviderCSV;
+import ru.sfedu.constrcaclconsol.api.DataProviderCsv;
 
 import ru.sfedu.constrcaclconsol.bean.Materials;
 import ru.sfedu.constrcaclconsol.bean.Works;
 import ru.sfedu.constrcaclconsol.utils.ConfigurationUtil;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Properties;
 
 public class ConstrCalcClient {
 
@@ -35,11 +32,11 @@ public class ConstrCalcClient {
     }
 
     public static void main(String[] args) throws IOException, CsvDataTypeMismatchException, CsvRequiredFieldEmptyException {
-        final String PATH = "csv_path";
+     /*   final String PATH = "csv_path";
         final String FILE_EXTENSION = "csv";
 
 
-        Logger log = LogManager.getLogger(DataProviderCSV.class);
+        Logger log = LogManager.getLogger(DataProviderCsv.class);
         String line = "";
         String cvsSplitBy = ",";
         long idparse;
@@ -62,7 +59,7 @@ public class ConstrCalcClient {
                 .withIgnoreLeadingWhiteSpace(true)
                 .build();
         List<Works> listWorks = csvToBean.parse();*/
-        try (BufferedReader br = new BufferedReader(new FileReader("D:\\ConstrCalcConsol\\src\\main\\resources\\data\\csv\\works.csv"))) {
+     /*   try (BufferedReader br = new BufferedReader(new FileReader("D:\\ConstrCalcConsol\\src\\main\\resources\\data\\csv\\works.csv"))) {
 
             while ((line = br.readLine()) != null) {
                 countline++;
@@ -302,4 +299,4 @@ public class ConstrCalcClient {
         log.info("Test INFO logging.");
 
     }*/
-//}
+}}

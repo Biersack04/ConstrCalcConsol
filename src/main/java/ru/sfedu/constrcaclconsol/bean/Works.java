@@ -1,30 +1,45 @@
 package ru.sfedu.constrcaclconsol.bean;
+import com.opencsv.bean.CsvBindByName;
+import com.opencsv.bean.CsvCustomBindByName;
+import ru.sfedu.constrcaclconsol.converter.MaterialsConverter;
+
+import java.io.Serializable;
 import java.util.*;
 
 
 /**
  * Class Works
  */
-public class Works {
+public class Works implements Serializable {
 
   //
   // Fields
   //
-
+  @CsvBindByName
   private Long id;
+  @CsvBindByName
   private String name;
+  @CsvBindByName
   private Long price;
-  private PriorityType priority;
-  private String startDate;
-  private StatusOfCompletion status;
-  private String stopDate;
+  @CsvBindByName
+  private String priority;
+  @CsvBindByName
+  private Long daysNeedToCompleted;
+  @CsvBindByName
+  private String status;
+
+  @CsvCustomBindByName(converter = MaterialsConverter.class)
   private List<Materials> listMaterials;
 
 
   //
   // Constructors
   //
-
+/*private String priority;
+  @CsvBindByName
+  private String startDate;
+  @CsvBindByName
+  private String status;*/
   
   //
   // Methods
@@ -82,38 +97,14 @@ public class Works {
   public Long getPrice () {
     return price;
   }
-
-    public String getStartDate() {
-        return startDate;
+    public Long getDaysNeedToCompleted() {
+        return daysNeedToCompleted;
     }
 
-    public void setStartDate(String startDate) {
-        this.startDate = startDate;
+    public void setDaysNeedToCompleted(Long daysNeedToCompleted) {
+        this.daysNeedToCompleted = daysNeedToCompleted;
     }
 
-    public String getStopDate() {
-        return stopDate;
-    }
-
-    public void setStopDate(String stopDate) {
-        this.stopDate = stopDate;
-    }
-
-    public PriorityType getPriority() {
-        return priority;
-    }
-
-    public void setPriority(PriorityType priority) {
-        this.priority = priority;
-    }
-
-    public StatusOfCompletion getStatus() {
-        return status;
-    }
-
-    public void setStatus(StatusOfCompletion status) {
-        this.status = status;
-    }
 
   public List<Materials> getListMaterials() {
     return listMaterials;
@@ -123,24 +114,36 @@ public class Works {
     this.listMaterials = listMaterials;
   }
 
+
+
+    public String getPriority() {
+      return priority;
+    }
+
+    public void setPriority(String priority) {
+      this.priority = priority;
+    }
+
+    public String getStatus() {
+      return status;
+    }
+
+    public void setStatus(String status) {
+      this.status = status;
+    }
+
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     Works works = (Works) o;
-    return id.equals(works.id) &&
-            name.equals(works.name) &&
-            price.equals(works.price) &&
-            priority == works.priority &&
-            startDate.equals(works.startDate) &&
-            status == works.status &&
-            stopDate.equals(works.stopDate) &&
-            listMaterials.equals(works.listMaterials);
+    return id.equals(works.id) && name.equals(works.name) && price.equals(works.price) && priority.equals(works.priority) && daysNeedToCompleted.equals(works.daysNeedToCompleted) && status.equals(works.status) && listMaterials.equals(works.listMaterials);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, name, price, priority, startDate, status, stopDate, listMaterials);
+    return Objects.hash(id, name, price, priority, daysNeedToCompleted, status, listMaterials);
   }
 
   @Override
@@ -149,25 +152,10 @@ public class Works {
             "id=" + id +
             ", name='" + name + '\'' +
             ", price=" + price +
-            ", priority=" + priority +
-            ", startDate='" + startDate + '\'' +
-            ", status=" + status +
-            ", stopDate='" + stopDate + '\'' +
+            ", priority='" + priority + '\'' +
+            ", daysNeedToCompleted='" + daysNeedToCompleted + '\'' +
+            ", status='" + status + '\'' +
             ", listMaterials=" + listMaterials +
             '}';
   }
-
-
-  public enum PriorityType{
-  HIGH,
-  MEDIUM,
-  LOW
-}
-
-
-public enum StatusOfCompletion {
-  CREATE,
-  PROCESSING,
-  COMPLETED
-}
 }

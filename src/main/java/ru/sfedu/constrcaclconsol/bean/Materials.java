@@ -1,19 +1,28 @@
 package ru.sfedu.constrcaclconsol.bean;
 
+import com.opencsv.bean.CsvBindByName;
+
+import java.io.Serializable;
 import java.util.Objects;
 
 /**
  * Class Materials
  */
-public class Materials {
+public class Materials implements Serializable {
 
   //
   // Fields
   //
-
+  @CsvBindByName
   private Long id;
+
+  @CsvBindByName
   private String name;
+
+  @CsvBindByName
   private Long number;
+
+  @CsvBindByName
   private Long totalPrice;
   
   //
