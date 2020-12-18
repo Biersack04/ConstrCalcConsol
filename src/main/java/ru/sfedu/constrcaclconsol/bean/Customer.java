@@ -11,7 +11,8 @@ public class Customer extends People {
   // Fields
   //
 
-  private String orderAddress;
+
+
 
   private String telephone;
   
@@ -22,14 +23,7 @@ public class Customer extends People {
 
   }
 
- /*
 
-  public Customer(Long id, String name, String surname, String mailbox, String address,String telephone) {
-    super(id,name,surname,mailbox);
-    this.address=address;
-    this.telephone=telephone;
-  }
-*/
 
   //
   // Methods
@@ -40,28 +34,13 @@ public class Customer extends People {
   // Accessor methods
   //
 
-  /**
-   * Set the value of adress
-   * @param newVar the new value of adress
-   */
-  public void setOrderAddress(String newVar) {
-    orderAddress = newVar;
-  }
-
-  /**
-   * Get the value of adress
-   * @return the value of adress
-   */
-  public String getOrderAddress() {
-    return orderAddress;
-  }
 
   /**
    * Set the value of telephone
-   * @param newVar the new value of telephone
+   * @param newTelephone the new value of telephone
    */
-  public void setTelephone (String newVar) {
-    telephone = newVar;
+  public void setTelephone (String newTelephone) {
+    telephone = newTelephone;
   }
 
   /**
@@ -78,25 +57,21 @@ public class Customer extends People {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     Customer customer = (Customer) o;
-    return orderAddress.equals(customer.orderAddress) && telephone.equals(customer.telephone);
+    return Objects.equals(telephone, customer.telephone);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), orderAddress, telephone);
+    return Objects.hash(super.hashCode(), telephone);
   }
 
-  @Override
-  public String toString() {
-    return "Customer{" +
-            "id=" + super.getId()+
-            ", name=" + super.getName() +
-            ", surname=" + super.getSurname() +
-            ", mailbox=" + super.getMailbox() +
-            ",orderAddress='" + orderAddress + '\'' +
-            ", telephone='" + telephone + '\'' +
-            '}';
-  }
+  /** Get the Object value
+   * @param o
+   * And compare the equality of the current object
+   * with the object of same type
+   * @return the boolean value of comparisons
+   */
+
 
 
   //

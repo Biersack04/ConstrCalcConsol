@@ -1,7 +1,6 @@
 package ru.sfedu.constrcaclconsol.bean;
 
 import com.opencsv.bean.CsvBindByName;
-
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -23,7 +22,7 @@ public class Materials implements Serializable {
   private Long number;
 
   @CsvBindByName
-  private Long totalPrice;
+  private Long priceForOne;
   
   //
   // Constructors
@@ -41,10 +40,10 @@ public class Materials implements Serializable {
 
   /**
    * Set the value of id
-   * @param newVar the new value of id
+   * @param newId the new value of id
    */
-  public void setId (Long newVar) {
-    id = newVar;
+  public void setId (Long newId) {
+    id = newId;
   }
 
   /**
@@ -57,10 +56,10 @@ public class Materials implements Serializable {
 
   /**
    * Set the value of name
-   * @param newVar the new value of name
+   * @param newName the new value of name
    */
-  public void setName (String newVar) {
-    name = newVar;
+  public void setName (String newName) {
+    name = newName;
   }
 
   /**
@@ -73,10 +72,10 @@ public class Materials implements Serializable {
 
   /**
    * Set the value of Number
-   * @param newVar the new value of Number
+   * @param newNumber the new value of Number
    */
-  public void setNumber (Long newVar) {
-    number = newVar;
+  public void setNumber (Long newNumber) {
+    number = newNumber;
   }
 
   /**
@@ -89,20 +88,26 @@ public class Materials implements Serializable {
 
   /**
    * Set the value of totalPrice
-   * @param newVar the new value of totalPrice
+   * @param newTotalPrice the new value of totalPrice
    */
-  public void setTotalPrice (Long newVar) {
-    totalPrice = newVar;
+  public void setPriceForOne(Long newTotalPrice) {
+    priceForOne = newTotalPrice;
   }
 
   /**
    * Get the value of totalPrice
    * @return the value of totalPrice
    */
-  public Long getTotalPrice () {
-    return totalPrice;
+  public Long getPriceForOne() {
+    return priceForOne;
   }
 
+  /** Get the Object value
+   * @param o
+   * And compare the equality of the current object
+   * with the object of same type
+   * @return the boolean value of comparisons
+   */
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
@@ -111,12 +116,12 @@ public class Materials implements Serializable {
     return id.equals(materials.id) &&
             name.equals(materials.name) &&
             number.equals(materials.number) &&
-            totalPrice.equals(materials.totalPrice);
+            priceForOne.equals(materials.priceForOne);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, name, number, totalPrice);
+    return Objects.hash(id, name, number, priceForOne);
   }
 
   @Override
@@ -125,7 +130,7 @@ public class Materials implements Serializable {
             "id=" + id +
             ", name='" + name + '\'' +
             ", number=" + number +
-            ", totalPrice=" + totalPrice +
+            ", totalPrice=" + priceForOne +
             '}';
   }
 

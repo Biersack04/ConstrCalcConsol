@@ -1,0 +1,116 @@
+<main>
+   <object class="ru.sfedu.constrcaclconsol.bean.Materials">
+      <id>1</id>
+      <name>RewriteName</name>
+      <number>10</number>
+      <priceForOne>100</priceForOne>
+   </object>
+   <object class="ru.sfedu.constrcaclconsol.bean.Materials">
+      <id>3</id>
+      <name>wallpaper</name>
+      <number>50</number>
+      <priceForOne>70000</priceForOne>
+   </object>
+   <object class="ru.sfedu.constrcaclconsol.bean.Materials">
+      <id>4</id>
+      <name>roll glue</name>
+      <number>10</number>
+      <priceForOne>10000</priceForOne>
+   </object>
+   <object class="ru.sfedu.constrcaclconsol.bean.Materials">
+      <id>5</id>
+      <name>pipe</name>
+      <number>100</number>
+      <priceForOne>50000</priceForOne>
+   </object>
+   <object class="ru.sfedu.constrcaclconsol.bean.Materials">
+      <id>6</id>
+      <name>fasteners</name>
+      <number>70</number>
+      <priceForOne>5000</priceForOne>
+   </object>
+   <object class="ru.sfedu.constrcaclconsol.bean.Materials">
+      <id>7</id>
+      <name>cable</name>
+      <number>70</number>
+      <priceForOne>45000</priceForOne>
+   </object>
+   <object class="ru.sfedu.constrcaclconsol.bean.Materials">
+      <id>8</id>
+      <name>box for cable</name>
+      <number>75</number>
+      <priceForOne>8000</priceForOne>
+   </object>
+   <object class="ru.sfedu.constrcaclconsol.bean.Materials">
+      <id>9</id>
+      <name>electrical panel</name>
+      <number>1</number>
+      <priceForOne>17000</priceForOne>
+   </object>
+   <object class="ru.sfedu.constrcaclconsol.bean.Materials">
+      <id>10</id>
+      <name>electrical machine</name>
+      <number>40</number>
+      <priceForOne>20000</priceForOne>
+   </object>
+   <object class="ru.sfedu.constrcaclconsol.bean.Materials">
+      <id>11</id>
+      <name>light</name>
+      <number>60</number>
+      <priceForOne>17000</priceForOne>
+   </object>
+   <object class="ru.sfedu.constrcaclconsol.bean.Materials">
+      <id>12</id>
+      <name>switch</name>
+      <number>30</number>
+      <priceForOne>3000</priceForOne>
+   </object>
+   <object class="ru.sfedu.constrcaclconsol.bean.Materials">
+      <id>13</id>
+      <name>tile</name>
+      <number>80</number>
+      <priceForOne>70000</priceForOne>
+   </object>
+   <object class="ru.sfedu.constrcaclconsol.bean.Materials">
+      <id>14</id>
+      <name>adhesive for tiles</name>
+      <number>10</number>
+      <priceForOne>10000</priceForOne>
+   </object>
+   <object class="ru.sfedu.constrcaclconsol.bean.Materials">
+      <id>15</id>
+      <name>window</name>
+      <number>10</number>
+      <priceForOne>30000</priceForOne>
+   </object>
+   <object class="ru.sfedu.constrcaclconsol.bean.Materials">
+      <id>16</id>
+      <name>window sill</name>
+      <number>10</number>
+      <priceForOne>10000</priceForOne>
+   </object>
+   <object class="ru.sfedu.constrcaclconsol.bean.Materials">
+      <id>17</id>
+      <name>waterproofing</name>
+      <number>100</number>
+      <priceForOne>50000</priceForOne>
+   </object>
+   <object class="ru.sfedu.constrcaclconsol.bean.Materials">
+      <id>18</id>
+      <name>insulation</name>
+      <number>100</number>
+      <priceForOne>45000</priceForOne>
+   </object>
+   <object class="ru.sfedu.constrcaclconsol.bean.Materials">
+      <id>19</id>
+      <name>drywall</name>
+      <number>150</number>
+      <priceForOne>52000</priceForOne>
+   </object>
+   <object class="ru.sfedu.constrcaclconsol.bean.Materials">
+      <id>20</id>
+      <name>sound-absorbing material</name>
+      <number>150</number>
+      <priceForOne>48000</priceForOne>
+   </object>
+</main>

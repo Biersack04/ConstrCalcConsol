@@ -1,0 +1,18 @@
+<main>
+   <object class="ru.sfedu.constrcaclconsol.bean.Executor">
+      <id>0</id>
+      <name>newName</name>
+      <surname>newSurname</surname>
+      <mailbox>newMailbox</mailbox>
+      <numberOfCompletedProjects>10</numberOfCompletedProjects>
+      <numberOfWorkers>100</numberOfWorkers>
+   </object>
+   <object class="ru.sfedu.constrcaclconsol.bean.Executor">
+      <id>1</id>
+      <name>name5</name>
+      <surname>surname5</surname>
+      <mailbox>google@google.com</mailbox>
+      <numberOfCompletedProjects>5</numberOfCompletedProjects>
+      <numberOfWorkers>50</numberOfWorkers>
+   </object>
+</main>

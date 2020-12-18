@@ -1,0 +1,194 @@
+<main>
+   <object class="ru.sfedu.constrcaclconsol.bean.Works">
+      <id>1</id>
+      <name>To paint walls</name>
+      <price>200</price>
+      <priority>LOW</priority>
+      <needDaysToCompleted>10</needDaysToCompleted>
+      <status>DONE</status>
+      <listMaterials class="java.util.ArrayList">
+         <materials>
+            <id>1</id>
+            <name>RewriteName</name>
+            <number>10</number>
+            <priceForOne>100</priceForOne>
+         </materials>
+      </listMaterials>
+   </object>
+   <object class="ru.sfedu.constrcaclconsol.bean.Works">
+      <id>3</id>
+      <name>To lay pipeline</name>
+      <price>400</price>
+      <priority>MEDIUM</priority>
+      <needDaysToCompleted>20</needDaysToCompleted>
+      <status>CREATE</status>
+      <listMaterials class="java.util.ArrayList">
+         <materials>
+            <id>5</id>
+            <name>pipe</name>
+            <number>100</number>
+            <priceForOne>50000</priceForOne>
+         </materials>
+         <materials>
+            <id>6</id>
+            <name>fasteners</name>
+            <number>70</number>
+            <priceForOne>5000</priceForOne>
+         </materials>
+      </listMaterials>
+   </object>
+   <object class="ru.sfedu.constrcaclconsol.bean.Works">
+      <id>4</id>
+      <name>To lay cable</name>
+      <price>500</price>
+      <priority>MEDIUM</priority>
+      <needDaysToCompleted>20</needDaysToCompleted>
+      <status>CREATE</status>
+      <listMaterials class="java.util.ArrayList">
+         <materials>
+            <id>7</id>
+            <name>cable</name>
+            <number>70</number>
+            <priceForOne>45000</priceForOne>
+         </materials>
+         <materials>
+            <id>8</id>
+            <name>box for cable</name>
+            <number>75</number>
+            <priceForOne>8000</priceForOne>
+         </materials>
+      </listMaterials>
+   </object>
+   <object class="ru.sfedu.constrcaclconsol.bean.Works">
+      <id>5</id>
+      <name>Assemble the electrical panel</name>
+      <price>400</price>
+      <priority>MEDIUM</priority>
+      <needDaysToCompleted>10</needDaysToCompleted>
+      <status>DONE</status>
+      <listMaterials class="java.util.ArrayList">
+         <materials>
+            <id>9</id>
+            <name>electrical panel</name>
+            <number>1</number>
+            <priceForOne>17000</priceForOne>
+         </materials>
+         <materials>
+            <id>10</id>
+            <name>electrical machine</name>
+            <number>40</number>
+            <priceForOne>20000</priceForOne>
+         </materials>
+      </listMaterials>
+   </object>
+   <object class="ru.sfedu.constrcaclconsol.bean.Works">
+      <id>6</id>
+      <name>Hang up lights</name>
+      <price>300</price>
+      <priority>LOW</priority>
+      <needDaysToCompleted>10</needDaysToCompleted>
+      <status>CREATE</status>
+      <listMaterials class="java.util.ArrayList">
+         <materials>
+            <id>11</id>
+            <name>light</name>
+            <number>60</number>
+            <priceForOne>17000</priceForOne>
+         </materials>
+         <materials>
+            <id>12</id>
+            <name>switch</name>
+            <number>30</number>
+            <priceForOne>3000</priceForOne>
+         </materials>
+      </listMaterials>
+   </object>
+   <object class="ru.sfedu.constrcaclconsol.bean.Works">
+      <id>7</id>
+      <name>Laying tiles on the floor</name>
+      <price>500</price>
+      <priority>LOW</priority>
+      <needDaysToCompleted>10</needDaysToCompleted>
+      <status>DONE</status>
+      <listMaterials class="java.util.ArrayList">
+         <materials>
+            <id>13</id>
+            <name>tile</name>
+            <number>80</number>
+            <priceForOne>70000</priceForOne>
+         </materials>
+         <materials>
+            <id>14</id>
+            <name>adhesive for tiles</name>
+            <number>10</number>
+            <priceForOne>10000</priceForOne>
+         </materials>
+      </listMaterials>
+   </object>
+   <object class="ru.sfedu.constrcaclconsol.bean.Works">
+      <id>8</id>
+      <name>Install windows</name>
+      <price>600</price>
+      <priority>HIGH</priority>
+      <needDaysToCompleted>10</needDaysToCompleted>
+      <status>DONE</status>
+      <listMaterials class="java.util.ArrayList">
+         <materials>
+            <id>15</id>
+            <name>window</name>
+            <number>10</number>
+            <priceForOne>30000</priceForOne>
+         </materials>
+         <materials>
+            <id>16</id>
+            <name>window sill</name>
+            <number>10</number>
+            <priceForOne>10000</priceForOne>
+         </materials>
+      </listMaterials>
+   </object>
+   <object class="ru.sfedu.constrcaclconsol.bean.Works">
+      <id>9</id>
+      <name>Floor insulation</name>
+      <price>700</price>
+      <priority>HIGH</priority>
+      <needDaysToCompleted>10</needDaysToCompleted>
+      <status>CREATE</status>
+      <listMaterials class="java.util.ArrayList">
+         <materials>
+            <id>17</id>
+            <name>waterproofing</name>
+            <number>100</number>
+            <priceForOne>50000</priceForOne>
+         </materials>
+         <materials>
+            <id>18</id>
+            <name>insulation</name>
+            <number>100</number>
+            <priceForOne>45000</priceForOne>
+         </materials>
+      </listMaterials>
+   </object>
+   <object class="ru.sfedu.constrcaclconsol.bean.Works">
+      <id>10</id>
+      <name>Soundproofing</name>
+      <price>650</price>
+      <priority>HIGH</priority>
+      <needDaysToCompleted>10</needDaysToCompleted>
+      <status>DONE</status>
+      <listMaterials class="java.util.ArrayList">
+         <materials>
+            <id>19</id>
+            <name>drywall</name>
+            <number>150</number>
+            <priceForOne>52000</priceForOne>
+         </materials>
+         <materials>
+            <id>20</id>
+            <name>sound-absorbing material</name>
+            <number>150</number>
+            <priceForOne>48000</priceForOne>
+         </materials>
+      </listMaterials>
+   </object>
+</main>

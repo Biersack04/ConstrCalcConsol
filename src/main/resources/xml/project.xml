@@ -1,0 +1,137 @@
+<main>
+   <object class="ru.sfedu.constrcaclconsol.bean.Project">
+      <id>1</id>
+      <name>Проект 2х этажного дома</name>
+      <createdDate>12.11.19</createdDate>
+      <deadline>12.12.22</deadline>
+      <numberOfWorkers>10</numberOfWorkers>
+      <worksList class="java.util.ArrayList">
+         <works>
+            <id>6</id>
+            <name>Hang up lights</name>
+            <price>300</price>
+            <priority>LOW</priority>
+            <needDaysToCompleted>10</needDaysToCompleted>
+            <status>CREATE</status>
+            <listMaterials class="java.util.ArrayList">
+               <materials>
+                  <id>11</id>
+                  <name>light</name>
+                  <number>60</number>
+                  <priceForOne>17000</priceForOne>
+               </materials>
+               <materials>
+                  <id>12</id>
+                  <name>switch</name>
+                  <number>30</number>
+                  <priceForOne>3000</priceForOne>
+               </materials>
+            </listMaterials>
+         </works>
+         <works>
+            <id>7</id>
+            <name>Laying tiles on the floor</name>
+            <price>500</price>
+            <priority>LOW</priority>
+            <needDaysToCompleted>10</needDaysToCompleted>
+            <status>DONE</status>
+            <listMaterials class="java.util.ArrayList">
+               <materials>
+                  <id>13</id>
+                  <name>tile</name>
+                  <number>80</number>
+                  <priceForOne>70000</priceForOne>
+               </materials>
+               <materials>
+                  <id>14</id>
+                  <name>adhesive for tiles</name>
+                  <number>10</number>
+                  <priceForOne>10000</priceForOne>
+               </materials>
+            </listMaterials>
+         </works>
+         <works>
+            <id>8</id>
+            <name>Install windows</name>
+            <price>600</price>
+            <priority>HIGH</priority>
+            <needDaysToCompleted>10</needDaysToCompleted>
+            <status>DONE</status>
+            <listMaterials class="java.util.ArrayList">
+               <materials>
+                  <id>15</id>
+                  <name>window</name>
+                  <number>10</number>
+                  <priceForOne>30000</priceForOne>
+               </materials>
+               <materials>
+                  <id>16</id>
+                  <name>window sill</name>
+                  <number>10</number>
+                  <priceForOne>10000</priceForOne>
+               </materials>
+            </listMaterials>
+         </works>
+         <works>
+            <id>9</id>
+            <name>Floor insulation</name>
+            <price>700</price>
+            <priority>HIGH</priority>
+            <needDaysToCompleted>10</needDaysToCompleted>
+            <status>CREATE</status>
+            <listMaterials class="java.util.ArrayList">
+               <materials>
+                  <id>17</id>
+                  <name>waterproofing</name>
+                  <number>100</number>
+                  <priceForOne>50000</priceForOne>
+               </materials>
+               <materials>
+                  <id>18</id>
+                  <name>insulation</name>
+                  <number>100</number>
+                  <priceForOne>45000</priceForOne>
+               </materials>
+            </listMaterials>
+         </works>
+         <works>
+            <id>10</id>
+            <name>Soundproofing</name>
+            <price>650</price>
+            <priority>HIGH</priority>
+            <needDaysToCompleted>10</needDaysToCompleted>
+            <status>DONE</status>
+            <listMaterials class="java.util.ArrayList">
+               <materials>
+                  <id>19</id>
+                  <name>drywall</name>
+                  <number>150</number>
+                  <priceForOne>52000</priceForOne>
+               </materials>
+               <materials>
+                  <id>20</id>
+                  <name>sound-absorbing material</name>
+                  <number>150</number>
+                  <priceForOne>48000</priceForOne>
+               </materials>
+            </listMaterials>
+         </works>
+      </worksList>
+      <projectAddress>Ставропольский 15</projectAddress>
+      <executor class="ru.sfedu.constrcaclconsol.bean.Executor">
+         <id>1</id>
+         <name>name5</name>
+         <surname>surname5</surname>
+         <mailbox>google@google.com</mailbox>
+         <numberOfCompletedProjects>5</numberOfCompletedProjects>
+         <numberOfWorkers>50</numberOfWorkers>
+      </executor>
+      <customer class="ru.sfedu.constrcaclconsol.bean.Customer">
+         <id>2</id>
+         <name>newName</name>
+         <surname>newSurname</surname>
+         <mailbox>newMailbox</mailbox>
+         <telephone>newTelephone</telephone>
+      </customer>
+   </object>
+</main>

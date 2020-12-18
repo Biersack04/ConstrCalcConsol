@@ -1,8 +1,8 @@
 package ru.sfedu.constrcaclconsol.bean;
+
 import com.opencsv.bean.CsvBindByName;
 import com.opencsv.bean.CsvCustomBindByName;
 import ru.sfedu.constrcaclconsol.converter.MaterialsConverter;
-
 import java.io.Serializable;
 import java.util.*;
 
@@ -17,14 +17,19 @@ public class Works implements Serializable {
   //
   @CsvBindByName
   private Long id;
+
   @CsvBindByName
   private String name;
+
   @CsvBindByName
   private Long price;
+
   @CsvBindByName
   private String priority;
+
   @CsvBindByName
-  private Long daysNeedToCompleted;
+  private Long needDaysToCompleted;
+
   @CsvBindByName
   private String status;
 
@@ -35,11 +40,7 @@ public class Works implements Serializable {
   //
   // Constructors
   //
-/*private String priority;
-  @CsvBindByName
-  private String startDate;
-  @CsvBindByName
-  private String status;*/
+  public Works () { };
   
   //
   // Methods
@@ -52,10 +53,10 @@ public class Works implements Serializable {
 
   /**
    * Set the value of id
-   * @param newVar the new value of id
+   * @param newId the new value of id
    */
-  public void setId (Long newVar) {
-    id = newVar;
+  public void setId (Long newId) {
+    id = newId;
   }
 
   /**
@@ -68,10 +69,10 @@ public class Works implements Serializable {
 
   /**
    * Set the value of name
-   * @param newVar the new value of name
+   * @param newName the new value of name
    */
-  public void setName (String newVar) {
-    name = newVar;
+  public void setName (String newName) {
+    name = newName;
   }
 
   /**
@@ -84,10 +85,10 @@ public class Works implements Serializable {
 
   /**
    * Set the value of price
-   * @param newVar the new value of price
+   * @param newPrice the new value of price
    */
-  public void setPrice (Long newVar) {
-    price = newVar;
+  public void setPrice (Long newPrice) {
+    price = newPrice;
   }
 
   /**
@@ -97,53 +98,82 @@ public class Works implements Serializable {
   public Long getPrice () {
     return price;
   }
-    public Long getDaysNeedToCompleted() {
-        return daysNeedToCompleted;
-    }
 
-    public void setDaysNeedToCompleted(Long daysNeedToCompleted) {
-        this.daysNeedToCompleted = daysNeedToCompleted;
-    }
+  /** Set the value of daysNeedToCompleted
+   * @param newDaysNeedToCompleted the value of daysNeedToCompleted
+   */
+  public void setNeedDaysToCompleted(Long newDaysNeedToCompleted ) {
+    this.needDaysToCompleted = newDaysNeedToCompleted ;
+  }
+
+  /**
+   * Get the value of daysNeedToCompleted
+   * @return the value of daysNeedToCompleted
+   */
+  public Long getNeedDaysToCompleted() { return needDaysToCompleted; }
+
+  /**Set the value of listMaterials
+   * @param newListMaterials the value of listMaterials
+   */
+  public void setListMaterials(List<Materials> newListMaterials) {
+    this.listMaterials = newListMaterials;
+  }
 
 
+  /** Get the value of listMaterials
+   * @return the value of listMaterials
+   */
   public List<Materials> getListMaterials() {
     return listMaterials;
   }
 
-  public void setListMaterials(List<Materials> listMaterials) {
-    this.listMaterials = listMaterials;
+  /** Set the value of priority
+   * @param newPriority the value of priority
+   */
+  public void setPriority(String newPriority) {
+    this.priority = newPriority;
   }
 
 
-
+  /** Get the value of priority
+   * @return the value of priority
+   */
     public String getPriority() {
       return priority;
     }
 
-    public void setPriority(String priority) {
-      this.priority = priority;
-    }
+  /** Set the value of status
+   * @param newStatus the value of status
+   */
+  public void setStatus(String newStatus) {
+    this.status = newStatus;
+  }
 
+  /** Get the value of status
+   * @return the value of status
+   */
     public String getStatus() {
       return status;
     }
 
-    public void setStatus(String status) {
-      this.status = status;
-    }
 
-
+  /** Get the Object value
+   * @param o
+   * And compare the equality of the current object
+   * with the object of same type
+   * @return the boolean value of comparisons
+   */
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     Works works = (Works) o;
-    return id.equals(works.id) && name.equals(works.name) && price.equals(works.price) && priority.equals(works.priority) && daysNeedToCompleted.equals(works.daysNeedToCompleted) && status.equals(works.status) && listMaterials.equals(works.listMaterials);
+    return id.equals(works.id) && name.equals(works.name) && price.equals(works.price) && priority.equals(works.priority) && needDaysToCompleted.equals(works.needDaysToCompleted) && status.equals(works.status) && listMaterials.equals(works.listMaterials);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, name, price, priority, daysNeedToCompleted, status, listMaterials);
+    return Objects.hash(id, name, price, priority, needDaysToCompleted, status, listMaterials);
   }
 
   @Override
@@ -153,7 +183,7 @@ public class Works implements Serializable {
             ", name='" + name + '\'' +
             ", price=" + price +
             ", priority='" + priority + '\'' +
-            ", daysNeedToCompleted='" + daysNeedToCompleted + '\'' +
+            ", daysNeedToCompleted='" + needDaysToCompleted + '\'' +
             ", status='" + status + '\'' +
             ", listMaterials=" + listMaterials +
             '}';

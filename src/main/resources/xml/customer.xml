@@ -1,0 +1,16 @@
+<main>
+   <object class="ru.sfedu.constrcaclconsol.bean.Customer">
+      <id>0</id>
+      <name>name1</name>
+      <surname>surname1</surname>
+      <mailbox>google@google.com</mailbox>
+      <telephone>telephone1</telephone>
+   </object>
+   <object class="ru.sfedu.constrcaclconsol.bean.Customer">
+      <id>2</id>
+      <name>newName</name>
+      <surname>newSurname</surname>
+      <mailbox>newMailbox</mailbox>
+      <telephone>newTelephone</telephone>
+   </object>
+</main>

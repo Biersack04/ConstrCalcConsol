@@ -12,20 +12,17 @@ public class Executor extends People {
   //
 
   private Long numberOfCompletedProjects;
+
+
   private Long numberOfWorkers;
-
-  public Executor(){};
-
-/*  public Executor(Long id, String name, String surname, String mailbox) {
-    super(id, name, surname, mailbox);
-  }*/
 
   //
   // Constructors
   //
-  /*public Executor () {
-    super(id);
-  };*/
+
+  public Executor(){};
+
+
   
   //
   // Methods
@@ -38,10 +35,10 @@ public class Executor extends People {
 
   /**
    * Set the value of numberOfCompletedProject
-   * @param newVar the new value of numberOfCompletedProject
+   * @param newNumberOfCompletedProjects the new value of numberOfCompletedProject
    */
-  public void setNumberOfCompletedProjects(Long newVar) {
-    numberOfCompletedProjects = newVar;
+  public void setNumberOfCompletedProjects(Long newNumberOfCompletedProjects) {
+    numberOfCompletedProjects = newNumberOfCompletedProjects;
   }
 
   /**
@@ -54,10 +51,10 @@ public class Executor extends People {
 
   /**
    * Set the value of NumberOfWorkers
-   * @param newVar the new value of NumberOfWorkers
+   * @param newNumberOfWorkers the new value of NumberOfWorkers
    */
-  public void setNumberOfWorkers (Long newVar) {
-    numberOfWorkers = newVar;
+  public void setNumberOfWorkers (Long newNumberOfWorkers) {
+    numberOfWorkers = newNumberOfWorkers;
   }
 
   /**
@@ -68,6 +65,12 @@ public class Executor extends People {
     return numberOfWorkers;
   }
 
+  /** Get the Object value
+   * @param o
+   * And compare the equality of the current object
+   * with the object of same type
+   * @return the boolean value of comparisons
+   */
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;

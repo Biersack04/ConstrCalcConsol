@@ -1,19 +1,26 @@
 package ru.sfedu.constrcaclconsol.bean;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 /**
  * Class People
  */
-public class People {
+public class People implements Serializable {
 
   //
   // Fields
   //
 
   private Long id;
+
+
   private String name;
+
+
   private String surname;
+
+
   private String mailbox;
   
   //
@@ -22,9 +29,6 @@ public class People {
   public People() {
 
   }
-
-  public People(Long id,String name, String surname, String mailbox) { };
-
 
 
   //
@@ -38,10 +42,10 @@ public class People {
 
   /**
    * Set the value of id
-   * @param newVar the new value of id
+   * @param newId the new value of id
    */
-  public void setId (Long newVar) {
-    id = newVar;
+  public void setId (Long newId) {
+    id = newId;
   }
 
   /**
@@ -54,10 +58,10 @@ public class People {
 
   /**
    * Set the value of name
-   * @param newVar the new value of name
+   * @param newName the new value of name
    */
-  public void setName (String newVar) {
-    name = newVar;
+  public void setName (String newName) {
+    name = newName;
   }
 
   /**
@@ -70,10 +74,10 @@ public class People {
 
   /**
    * Set the value of surname
-   * @param newVar the new value of surname
+   * @param newSurname the new value of surname
    */
-  public void setSurname (String newVar) {
-    surname = newVar;
+  public void setSurname (String newSurname) {
+    surname = newSurname;
   }
 
   /**
@@ -86,10 +90,10 @@ public class People {
 
   /**
    * Set the value of email
-   * @param newVar the new value of email
+   * @param newMailbox the new value of email
    */
-  public void setMailbox(String newVar) {
-    mailbox = newVar;
+  public void setMailbox(String newMailbox) {
+    mailbox = newMailbox;
   }
 
   /**
@@ -100,7 +104,12 @@ public class People {
     return mailbox;
   }
 
-
+  /** Get the Object value
+   * @param o
+   * And compare the equality of the current object
+   * with the object of same type
+   * @return the boolean value of comparisons
+   */
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;

@@ -15,9 +15,9 @@ public class TestBase {
         project.setName(name);
         project.setCreatedDate(createDate);
         project.setDeadline(deadline);
-        project.setNumberOfWorks(numberOfWorks);
+        project.setNumberOfWorkers(numberOfWorks);
         project.setWorksList(worksList);
-        project.setAddress(address);
+        project.setProjectAddress(address);
         project.setExecutor(executor);
         project.setCustomer(customer);
 
@@ -33,7 +33,7 @@ public class TestBase {
         works.setId(id);
         works.setName(name);
         works.setPrice(price);
-        works.setDaysNeedToCompleted(daysNeedToCompleted);
+        works.setNeedDaysToCompleted(daysNeedToCompleted);
         works.setStatus(status);
         works.setPriority(priority);
         works.setListMaterials(listOfMaterials);
@@ -49,27 +49,14 @@ public class TestBase {
         materials.setId(id);
         materials.setName(name);
         materials.setNumber(number);
-        materials.setTotalPrice(totalPrice);
+        materials.setPriceForOne(totalPrice);
 
         return materials;
     }
-/*
-       public People createPeople(long id, String name, String surname, String mailbox){
-
-       // People people = new People(id,name,surname, mailbox);
-           People people = new People();
-
-        people.setId(id);
-        people.setName(name);
-        people.setSurname(surname);
-        people.setMailbox(mailbox);
-
-        return people;
-
-    }*/
 
 
-    public Customer createCustomer(Long id, String name, String surname, String mailbox, String address, String telephone){
+
+    public Customer createCustomer(Long id, String name, String surname, String mailbox, String telephone){
 
 
         Customer customer = new Customer();
@@ -78,7 +65,6 @@ public class TestBase {
         customer.setName(name);
         customer.setSurname(surname);
         customer.setMailbox(mailbox);
-        customer.setOrderAddress(address);
         customer.setTelephone(telephone);
 
         return customer;

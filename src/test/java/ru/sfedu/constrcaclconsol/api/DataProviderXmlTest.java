@@ -1,5 +1,6 @@
 package ru.sfedu.constrcaclconsol.api;
 
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.After;
@@ -19,23 +20,23 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
 
-
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class DataProviderCsvTest extends TestBase {
+class DataProviderXmlTest extends TestBase {
 
+    private static final DataProvider dataProvider = new DataProviderXml();
+    private static final Logger log = LogManager.getLogger(DataProviderXmlTest.class);
 
-    private static final Logger log = LogManager.getLogger(DataProviderCsvTest.class);
-    private static final DataProvider dataProvider = new DataProviderCsv();
 
     private static <T> void deleteFile(Class<T> tClass) {
         try {
-            log.debug(new File(ConfigurationUtil.getConfigurationEntry(Constants.PATH_CSV)
+            log.debug(new File(ConfigurationUtil.getConfigurationEntry(Constants.PATH_XML)
                     + tClass.getSimpleName().toLowerCase()
-                    + ConfigurationUtil.getConfigurationEntry(Constants.FILE_EXTENSION_CSV)).delete());
+                    + ConfigurationUtil.getConfigurationEntry(Constants.FILE_EXTENSION_XML)).delete());
         } catch (IOException e) {
             log.error(e);
         }
     }
+
     private static void deleteAll() {
         List<Class> classList = new ArrayList<>();
         classList.add(Customer.class);
@@ -44,13 +45,14 @@ class DataProviderCsvTest extends TestBase {
         classList.add(People.class);
         classList.add(Project.class);
         classList.add(Works.class);
-        classList.forEach(DataProviderCsvTest::deleteFile);
+        classList.forEach(DataProviderXmlTest::deleteFile);
     }
 
 
-    public DataProviderCsvTest(){
+    public DataProviderXmlTest(){
 
     }
+
 
     @BeforeAll
     static void init(){
@@ -61,7 +63,7 @@ class DataProviderCsvTest extends TestBase {
     @Before
     public void setUpClass()  {
 
-        }
+    }
 
 
     @AfterClass
@@ -137,7 +139,7 @@ class DataProviderCsvTest extends TestBase {
     }
 
 
-//CRUD Materials
+    //CRUD Materials
     @Test
     @org.junit.jupiter.api.Order(0)
     public void insertMaterialSuccess() throws Exception {
@@ -239,7 +241,7 @@ class DataProviderCsvTest extends TestBase {
 
 
 
-//CRUD Works
+    //CRUD Works
     @Test
     @org.junit.jupiter.api.Order(4)
     public void insertWorksSuccess() throws Exception {

@@ -5,7 +5,6 @@ import com.opencsv.bean.CsvCustomBindByName;
 import ru.sfedu.constrcaclconsol.converter.CustomerConverter;
 import ru.sfedu.constrcaclconsol.converter.ExecutorConverter;
 import ru.sfedu.constrcaclconsol.converter.WorksConverter;
-
 import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
@@ -20,20 +19,28 @@ public class Project implements Serializable {
   //
   @CsvBindByName
   private Long id;
+
   @CsvBindByName
   private String name;
+
   @CsvBindByName
   private String createdDate;
+
   @CsvBindByName
   private String deadline;
+
   @CsvBindByName
-  private Integer numberOfWorks;
+  private Integer numberOfWorkers;
+
   @CsvCustomBindByName(converter = WorksConverter.class)
   private List<Works> worksList;
+
   @CsvBindByName
-  private String address;
+  private String projectAddress;
+
   @CsvCustomBindByName(converter = ExecutorConverter.class)
   private People executor;
+
   @CsvCustomBindByName(converter = CustomerConverter.class)
   private People customer;
   
@@ -53,10 +60,10 @@ public class Project implements Serializable {
 
   /**
    * Set the value of id
-   * @param newVar the new value of id
+   * @param newId the new value of id
    */
-  public void setId (Long newVar) {
-    id = newVar;
+  public void setId (Long newId) {
+    id = newId;
   }
 
   /**
@@ -69,10 +76,10 @@ public class Project implements Serializable {
 
   /**
    * Set the value of name
-   * @param newVar the new value of name
+   * @param newName the new value of name
    */
-  public void setName (String newVar) {
-    name = newVar;
+  public void setName (String newName) {
+    name = newName;
   }
 
   /**
@@ -85,10 +92,10 @@ public class Project implements Serializable {
 
   /**
    * Set the value of createdDate
-   * @param newVar the new value of createdDate
+   * @param newCreatedDate the new value of createdDate
    */
-  public void setCreatedDate (String newVar) {
-    createdDate = newVar;
+  public void setCreatedDate (String newCreatedDate) {
+    createdDate = newCreatedDate;
   }
 
   /**
@@ -101,10 +108,10 @@ public class Project implements Serializable {
 
   /**
    * Set the value of deadline
-   * @param newVar the new value of deadline
+   * @param newDeadline the new value of deadline
    */
-  public void setDeadline (String newVar) {
-    deadline = newVar;
+  public void setDeadline (String newDeadline) {
+    deadline = newDeadline;
   }
 
   /**
@@ -117,26 +124,26 @@ public class Project implements Serializable {
 
   /**
    * Set the value of numberOfWorks
-   * @param newVar the new value of numberOfWorks
+   * @param newNumberOfWorks  the new value of numberOfWorks
    */
-  public void setNumberOfWorks (Integer newVar) {
-    numberOfWorks = newVar;
+  public void setNumberOfWorkers(Integer newNumberOfWorks ) {
+    numberOfWorkers = newNumberOfWorks ;
   }
 
   /**
    * Get the value of numberOfWorks
    * @return the value of numberOfWorks
    */
-  public Integer getNumberOfWorks () {
-    return numberOfWorks;
+  public Integer getNumberOfWorkers() {
+    return numberOfWorkers;
   }
 
   /**
    * Set the value of worksList
-   * @param newVar the new value of worksList
+   * @param newWorksList the new value of worksList
    */
-  public void setWorksList (List<Works> newVar) {
-    worksList = newVar;
+  public void setWorksList (List<Works> newWorksList) {
+    worksList = newWorksList;
   }
 
   /**
@@ -149,26 +156,26 @@ public class Project implements Serializable {
 
   /**
    * Set the value of adress
-   * @param newVar the new value of adress
+   * @param newAddress the new value of adress
    */
-  public void setAddress(String newVar) {
-    address = newVar;
+  public void setProjectAddress(String newAddress) {
+    projectAddress = newAddress;
   }
 
   /**
    * Get the value of adress
    * @return the value of adress
    */
-  public String getAddress() {
-    return address;
+  public String getProjectAddress() {
+    return projectAddress;
   }
 
   /**
    * Set the value of executor
-   * @param newVar the new value of executor
+   * @param newExecutor the new value of executor
    */
-  public void setExecutor (People newVar) {
-    executor = newVar;
+  public void setExecutor (People newExecutor) {
+    executor = newExecutor;
   }
 
   /**
@@ -181,10 +188,10 @@ public class Project implements Serializable {
 
   /**
    * Set the value of customer
-   * @param newVar the new value of customer
+   * @param newCustomer  the new value of customer
    */
-  public void setCustomer (People newVar) {
-    customer = newVar;
+  public void setCustomer (People newCustomer ) {
+    customer = newCustomer ;
   }
 
   /**
@@ -195,6 +202,12 @@ public class Project implements Serializable {
     return customer;
   }
 
+  /** Get the Object value
+   * @param o
+   * And compare the equality of the current object
+   * with the object of same type
+   * @return the boolean value of comparisons
+   */
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
@@ -204,16 +217,16 @@ public class Project implements Serializable {
             name.equals(project.name) &&
             createdDate.equals(project.createdDate) &&
             deadline.equals(project.deadline) &&
-            numberOfWorks.equals(project.numberOfWorks) &&
+            numberOfWorkers.equals(project.numberOfWorkers) &&
             worksList.equals(project.worksList) &&
-            address.equals(project.address) &&
+            projectAddress.equals(project.projectAddress) &&
             executor.equals(project.executor) &&
             customer.equals(project.customer);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, name, createdDate, deadline, numberOfWorks, worksList, address, executor, customer);
+    return Objects.hash(id, name, createdDate, deadline, numberOfWorkers, worksList, projectAddress, executor, customer);
   }
 
   @Override
@@ -223,9 +236,9 @@ public class Project implements Serializable {
             ", name='" + name + '\'' +
             ", createdDate='" + createdDate + '\'' +
             ", deadline='" + deadline + '\'' +
-            ", numberOfWorks=" + numberOfWorks +
+            ", numberOfWorks=" + numberOfWorkers +
             ", worksList=" + worksList +
-            ", address='" + address + '\'' +
+            ", address='" + projectAddress + '\'' +
             ", executor=" + executor +
             ", customer=" + customer +
             '}';

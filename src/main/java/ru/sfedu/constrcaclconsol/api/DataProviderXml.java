@@ -1,184 +1,146 @@
 package ru.sfedu.constrcaclconsol.api;
 
-import com.opencsv.CSVReader;
-import com.opencsv.CSVWriter;
-import com.opencsv.bean.CsvToBean;
-import com.opencsv.bean.CsvToBeanBuilder;
-import com.opencsv.bean.StatefulBeanToCsv;
-import com.opencsv.bean.StatefulBeanToCsvBuilder;
-import com.opencsv.exceptions.CsvDataTypeMismatchException;
-import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.simpleframework.xml.Serializer;
+import org.simpleframework.xml.core.Persister;
 import ru.sfedu.constrcaclconsol.Constants;
 import ru.sfedu.constrcaclconsol.bean.*;
 import ru.sfedu.constrcaclconsol.utils.ConfigurationUtil;
-import java.io.*;
+import ru.sfedu.constrcaclconsol.utils.WrapperXML;
+
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
+
 import static ru.sfedu.constrcaclconsol.Constants.*;
 import static ru.sfedu.constrcaclconsol.utils.ConfigurationUtil.getConfigurationEntry;
 
+public class DataProviderXml implements DataProvider {
 
-public class DataProviderCsv implements DataProvider{
+    private static Logger log = LogManager.getLogger(DataProviderXml.class);
 
-    private static Logger log = LogManager.getLogger(DataProviderCsv.class);
-
-    //Read
-    private <T> CSVReader getCsvFileToRead(Class<T> tClass) throws IOException {
-
-        File file = new File(getConfigurationEntry(PATH_CSV) + tClass.getSimpleName().toLowerCase()
-                + getConfigurationEntry(FILE_EXTENSION_CSV));
-
-        if (!file.exists()) {
-
-            if (!file.createNewFile()) {
-
-                throw new IOException(getConfigurationEntry(CANNOT_CREATE_FILE));
-            }
-        }
-
-        FileReader fileReader = new FileReader(file);
-        BufferedReader bufferedReader = new BufferedReader(fileReader);
-
-        return new CSVReader(bufferedReader);
-    }
-
-    private <T> List<T> getDataFromCsv(Class<T> tClass) throws IOException {
-
-        List<T> tList;
-
+    public <T> boolean insertListIntoXml(List<T> listClass) throws Exception {
         try {
 
-            CSVReader csvReader = getCsvFileToRead(tClass);
+            String path = ConfigurationUtil.getConfigurationEntry(Constants.PATH_XML) + listClass.get(0).getClass().getSimpleName().toLowerCase() + ConfigurationUtil.getConfigurationEntry(Constants.FILE_EXTENSION_XML);
+            log.info(path);
+            File targetFile = new File(ConfigurationUtil.getConfigurationEntry(Constants.PATH_XML), listClass.get(0).getClass().getSimpleName().toLowerCase() + ConfigurationUtil.getConfigurationEntry(Constants.FILE_EXTENSION_XML));
+            //File file = new File (path);
+            // file.createNewFile();
+          /*  if (targetFile.createNewFile()) {
+                System.out.println(path + " Файл создан");
+            }**/
+            // (new File(path)).createNewFile();
+            // (new File(//  FileWriter writer = new FileWriter(ConfigurationUtil.getConfigurationEntry(Constants.PATH_XML)+ listClass.get(0).getClass().getSimpleName().toLowerCase()+ConfigurationUtil.getConfigurationEntry(Constants.FILE_EXTENSION_XML));
+            FileWriter writer = new FileWriter(path, false);
+            Serializer serializer = new Persister();
 
-            CsvToBean<T> csvToBean = new CsvToBeanBuilder<T>(csvReader)
-                    .withType(tClass)
-                    .withIgnoreLeadingWhiteSpace(true)
-                    .build();
-            tList = csvToBean.parse();
-            csvReader.close();
+            //Определяем контейнер, в котором будут находиться все объекты
+            WrapperXML xml = new WrapperXML();
+            //Записываем список объектов в котнейнер
+            xml.setList(listClass);
 
-            log.debug(getConfigurationEntry(GET_FROM_CSV));
+            //Записываем в файл
+            serializer.write(xml, writer);
 
+            return true;
+
+
+        } catch (IndexOutOfBoundsException e) {
+
+            log.error(e);
+
+            return false;
+        }
+    }
+
+
+    public <T> boolean writeToXml(Class<?> tClass, List<T> object, boolean overwrite) throws Exception {
+        List<T> fileObjectList;
+        if (!overwrite) {
+            fileObjectList = (List<T>) readFromXml(tClass);
+            fileObjectList.addAll(object);
+        } else {
+            fileObjectList = new ArrayList<>(object);
+        }
+        try {
+
+            log.info(this.getFilePath(tClass));
+            (new File(this.getFilePath(tClass))).createNewFile();
+            //Подключаемся к потоку записи файла
+            FileWriter writer = new FileWriter(this.getFilePath(tClass), false);
+            //Определяем сериалайзер
+            Serializer serializer = new Persister();
+
+            //Определяем контейнер, в котором будут находиться все объекты
+            WrapperXML xml = new WrapperXML();
+            //Записываем список объектов в котнейнер
+            xml.setList(fileObjectList);
+
+            //Записываем в файл
+            serializer.write(xml, writer);
+            return true;
+        } catch (IndexOutOfBoundsException e) {
+            log.error(e);
+            return false;
+        }
+    }
+
+    public <T> List<T> readFromXml(Class cl) throws Exception {
+        try {
+            //Подключаемся к считывающему потоку из файла
+            FileReader fileReader = new FileReader(this.getFilePath(cl));
+            //Определяем сериалайзер
+            Serializer serializer = new Persister();
+            //Определяем контейнер и записываем в него объекты
+            WrapperXML xml = serializer.read(WrapperXML.class, fileReader);
+            //Если список null, то делаем его пустым списком
+            if (xml.getList() == null) xml.setList(new ArrayList<T>());
+            //Возвращаем список объектов
+            return xml.getList();
         } catch (IOException e) {
 
             log.error(e);
 
-            throw e;
-        }
-
-        return tList;
-    }
-
-    //Write
-    private <T> boolean insertListIntoCsv(List<T> listClass) throws IOException {
-
-        try{
-
-            FileWriter writer = new FileWriter(getConfigurationEntry(PATH_CSV)
-                    + listClass.get(0).getClass().getSimpleName().toLowerCase()
-                    + getConfigurationEntry(FILE_EXTENSION_CSV));
-
-            CSVWriter csvWriter = new CSVWriter(writer);
-
-            StatefulBeanToCsv<T> beanToCsv = new StatefulBeanToCsvBuilder<T>(csvWriter)
-                    .withApplyQuotesToAll(false)
-                    .build();
-            beanToCsv.write(listClass);
-            csvWriter.close();
-
-            log.debug(getConfigurationEntry(Constants.WRITE_TO_CSV));
-
-            return true;
-
-        }catch (IndexOutOfBoundsException | CsvRequiredFieldEmptyException | CsvDataTypeMismatchException e){
-
-            log.error(e);
-
-            return false;
-
+            return new ArrayList<>();
         }
     }
 
-    private <T> boolean writeToCsv (Class<?> tClass, List<T> object, boolean overwrite) throws IOException {
-
-        List<T> fileObjectList;
-
-        if (!overwrite) {
-
-            fileObjectList = (List<T>) getDataFromCsv(tClass);
-
-            fileObjectList.addAll(object);
-        }
-        else {
-
-            fileObjectList = new ArrayList<>(object);
-        }
-
-        CSVWriter csvWriter;
-
-        try {
-
-            FileWriter writer = new FileWriter(ConfigurationUtil.getConfigurationEntry(Constants.PATH_CSV)
-                    + tClass.getSimpleName().toLowerCase()
-                    + ConfigurationUtil.getConfigurationEntry(Constants.FILE_EXTENSION_CSV));
-
-            csvWriter = new CSVWriter(writer);
-
-            StatefulBeanToCsv<T> beanToCsv = new StatefulBeanToCsvBuilder<T>(csvWriter)
-                    .withApplyQuotesToAll(false)
-                    .build();
-            beanToCsv.write(fileObjectList);
-            csvWriter.close();
-
-            log.debug( ConfigurationUtil.getConfigurationEntry(WRITE_TO_CSV));
-
-            log.info( ConfigurationUtil.getConfigurationEntry(WRITE_SUCCESS));
-
-            return true;
-
-        } catch (CsvDataTypeMismatchException | CsvRequiredFieldEmptyException | IOException e ) {
-
-            log.info( ConfigurationUtil.getConfigurationEntry(WRITE_FAIL));
-
-            log.error(e);
-
-            return false;
-        }
-    }
-
-    private <T> boolean writeToCsv (T object) throws IOException {
-
+    private <T> boolean writeToXml(T object) throws Exception {
         if (object == null) {
-
-            log.error(getConfigurationEntry(NULL));
-
+            log.info(ConfigurationUtil.getConfigurationEntry(NULL));
             return false;
         }
-
-        return writeToCsv(object.getClass(), Collections.singletonList(object), false);
+        return writeToXml(object.getClass(), Collections.singletonList(object), false);
     }
 
+
+    private String getFilePath(Class cl) throws IOException {
+        return ConfigurationUtil.getConfigurationEntry(Constants.PATH_XML) + cl.getSimpleName().toLowerCase() + ConfigurationUtil.getConfigurationEntry(Constants.FILE_EXTENSION_XML);
+    }
 
     /** Create the List of objects of the Materials class type
      * @param work the object of the class of Works to get a list of materials for
      * @return List of objects of the Materials class type
      * @throws IOException
      */
-    private <T> List<Materials> getMaterialList( T work) throws IOException {
+    private <T> List<Materials> getMaterialList( T work) throws Exception {
 
         try {
 
-           List<Materials> materialList;
+            List<Materials> materialList;
 
-           Works works = (Works) work;
+            Works works = (Works) work;
 
-           materialList = works.getListMaterials();
+            materialList = works.getListMaterials();
 
-           List<Materials> materialsList = getDataFromCsv(Materials.class);
+            List<Materials> materialsList = readFromXml(Materials.class);
 
-           List<Long> idMaterialInWorks;
+            List<Long> idMaterialInWorks;
 
             idMaterialInWorks = materialList
                     .stream()
@@ -208,9 +170,8 @@ public class DataProviderCsv implements DataProvider{
     /** Create the List of objects of the Works class type
      * @param projectObject the object of the class of Project to get a list of works for
      * @return List of objects of the Works class type
-     * @throws IOException
      */
-    private <T> List<Works> getWorksList(T projectObject) throws IOException {
+    private <T> List<Works> getWorksList(T projectObject) {
 
         try {
 
@@ -220,7 +181,7 @@ public class DataProviderCsv implements DataProvider{
 
             objectWorkList = project.getWorksList();
 
-            List<Works> workList = getDataFromCsv(Works.class);
+            List<Works> workList = readFromXml(Works.class);
 
             List<Works> workListInProject;
 
@@ -242,13 +203,19 @@ public class DataProviderCsv implements DataProvider{
 
 
             workListInProject
-                    .forEach(x -> worksInProjectWithMaterials.add(getWork(x.getId()).get()));
+                    .forEach(x -> {
+                        try {
+                            worksInProjectWithMaterials.add(getWork(x.getId()).get());
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    });
 
             log.debug(getConfigurationEntry(GET_WORKS_LIST));
 
             return worksInProjectWithMaterials;
 
-        }catch(IOException e){
+        }catch(Exception e){
 
             log.error(e);
 
@@ -261,7 +228,7 @@ public class DataProviderCsv implements DataProvider{
      * @return objects of the People class type
      * @throws IOException
      */
-    private <T> People getCustomerInProject(T customerObject) throws IOException {
+    private <T> People getCustomerInProject(T customerObject) throws Exception {
 
         Customer customerInProject;
 
@@ -269,7 +236,7 @@ public class DataProviderCsv implements DataProvider{
 
         People customer = project.getCustomer();
 
-        List<Customer> customerList = getDataFromCsv(Customer.class);
+        List<Customer> customerList = readFromXml(Customer.class);
 
         customerInProject = customerList
                 .stream()
@@ -288,14 +255,14 @@ public class DataProviderCsv implements DataProvider{
      * @return objects of the People class type
      * @throws IOException
      */
-    private <T> People getExecutorInProject(T executorObject) throws IOException {
+    private <T> People getExecutorInProject(T executorObject) throws Exception {
 
         Executor executorInProject;
         Project project = (Project) executorObject;
 
         People executor = project.getExecutor();
 
-        List<Executor> executorList = getDataFromCsv(Executor.class);
+        List<Executor> executorList = readFromXml(Executor.class);
         executorInProject = executorList
                 .stream()
                 .filter(x -> x.getId().equals(executor.getId()))
@@ -308,11 +275,11 @@ public class DataProviderCsv implements DataProvider{
 
     }
 
-    private long getNextCustomerId() {
+    private long getNextCustomerId() throws Exception {
 
         try {
 
-            List<Customer> customerList = getDataFromCsv(Customer.class);
+            List<Customer> customerList = readFromXml(Customer.class);
 
 
             final long[] maxId = {-1};
@@ -340,7 +307,7 @@ public class DataProviderCsv implements DataProvider{
 
         try {
 
-            List<Executor> executorList = getDataFromCsv(Executor.class);
+            List<Executor> executorList = readFromXml(Executor.class);
 
             final long[] maxId = {-1};
 
@@ -355,7 +322,7 @@ public class DataProviderCsv implements DataProvider{
 
             return maxId[0] +1;
 
-        }catch (NullPointerException | IOException e){
+        }catch (Exception e){
 
             log.error(e);
 
@@ -363,11 +330,11 @@ public class DataProviderCsv implements DataProvider{
         }
     }
 
-    private long getNextProjectId() {
+    private long getNextProjectId() throws Exception {
 
         try {
 
-            List<Project> projectList = getDataFromCsv(Project.class);
+            List<Project> projectList = readFromXml(Project.class);
 
             final long[] maxId = {-1};
 
@@ -430,7 +397,7 @@ public class DataProviderCsv implements DataProvider{
         {
             if (checkEmptyList(listMaterials)){
 
-                return insertListIntoCsv(listMaterials);
+                return insertListIntoXml(listMaterials);
 
             }
 
@@ -439,7 +406,7 @@ public class DataProviderCsv implements DataProvider{
                 return false;
             }
 
-        }catch (NullPointerException e){
+        }catch (Exception e){
 
             log.error(e);
 
@@ -449,9 +416,9 @@ public class DataProviderCsv implements DataProvider{
     }
 
     @Override
-    public Optional<Materials> getMaterialById(long materialId) throws IOException {
+    public Optional<Materials> getMaterialById(long materialId) throws Exception {
 
-        List<Materials> listMaterials = getDataFromCsv(Materials.class);
+        List<Materials> listMaterials = readFromXml(Materials.class);
 
         try {
 
@@ -473,9 +440,9 @@ public class DataProviderCsv implements DataProvider{
     }
 
     @Override
-    public boolean deleteMaterialById(long id) throws IOException {
+    public boolean deleteMaterialById(long id) throws Exception {
 
-        List<Materials> listMaterials = getDataFromCsv(Materials.class);
+        List<Materials> listMaterials = readFromXml(Materials.class);
 
         try {
 
@@ -485,7 +452,7 @@ public class DataProviderCsv implements DataProvider{
 
             listMaterials.remove(materials);
 
-            writeToCsv(Materials.class, listMaterials,true);
+            writeToXml(Materials.class, listMaterials,true);
 
             log.debug(getConfigurationEntry(DELETE_MATERIALS));
 
@@ -502,9 +469,9 @@ public class DataProviderCsv implements DataProvider{
     }
 
     @Override
-    public boolean updateMaterial(long id, String name, Long number, Long totalPrice) throws IOException {
+    public boolean updateMaterial(long id, String name, Long number, Long totalPrice) throws Exception {
 
-        List<Materials> listMaterials = getDataFromCsv(Materials.class);
+        List<Materials> listMaterials = readFromXml(Materials.class);
 
         int newId = Integer.parseInt(String.valueOf(id))-1;
 
@@ -519,7 +486,7 @@ public class DataProviderCsv implements DataProvider{
 
             listMaterials.set(newId,newMaterials);
 
-            writeToCsv(Materials.class, listMaterials,true);
+            writeToXml(Materials.class, listMaterials,true);
 
             log.debug(getConfigurationEntry(UPDATE_MATERIALS));
 
@@ -538,7 +505,7 @@ public class DataProviderCsv implements DataProvider{
 
     //CRUD WORKS
     @Override
-    public boolean createWork(List<Works> listWorks) throws IOException {
+    public boolean createWork(List<Works> listWorks) throws Exception {
 
         log.debug(getConfigurationEntry(CREATE_WORKS));
 
@@ -546,7 +513,7 @@ public class DataProviderCsv implements DataProvider{
         {
             if (checkEmptyList(listWorks)){
 
-            return insertListIntoCsv(listWorks);
+                return insertListIntoXml(listWorks);
 
             }
             else
@@ -564,11 +531,11 @@ public class DataProviderCsv implements DataProvider{
     }
 
     @Override
-    public Optional<Works> getWork(long id) {
+    public Optional<Works> getWork(long id) throws Exception {
 
         try {
 
-            List<Works> workList = getDataFromCsv(Works.class);
+            List<Works> workList = readFromXml(Works.class);
 
             var optionalWorks = workList.stream()
                     .filter(task -> task.getId() == id)
@@ -595,9 +562,9 @@ public class DataProviderCsv implements DataProvider{
     }
 
     @Override
-    public boolean deleteWorkById(long id) throws IOException {
+    public boolean deleteWorkById(long id) throws Exception {
 
-        List<Works> listWorks = getDataFromCsv(Works.class);
+        List<Works> listWorks = readFromXml(Works.class);
 
         try {
 
@@ -607,7 +574,7 @@ public class DataProviderCsv implements DataProvider{
 
             listWorks.remove(works);
 
-            writeToCsv(Works.class, listWorks,true);
+            writeToXml(Works.class, listWorks,true);
 
             log.debug(getConfigurationEntry(DELETE_WORKS));
 
@@ -624,9 +591,9 @@ public class DataProviderCsv implements DataProvider{
 
     @Override
     public boolean updateWork(Long id, String name, Long price, String priority,
-                              Long daysToCompletedWorks, String status, List<Materials> listMaterials ) throws IOException {
+                              Long daysToCompletedWorks, String status, List<Materials> listMaterials ) throws Exception {
 
-        List<Works> listWorks = getDataFromCsv(Works.class);
+        List<Works> listWorks = readFromXml(Works.class);
 
         int newId = Integer.parseInt(String.valueOf(id))-1;
 
@@ -644,7 +611,7 @@ public class DataProviderCsv implements DataProvider{
 
             listWorks.set(newId,newWorks);
 
-            writeToCsv(Works.class, listWorks,true);
+            writeToXml(Works.class, listWorks,true);
 
             log.debug(getConfigurationEntry(UPDATE_WORKS));
 
@@ -663,7 +630,7 @@ public class DataProviderCsv implements DataProvider{
 
     //CRUD CUSTOMER
     @Override
-    public boolean createCustomer(String name, String surname, String mailbox,String telephone) throws IOException {
+    public boolean createCustomer(String name, String surname, String mailbox,String telephone) throws Exception {
 
         log.debug(getConfigurationEntry(CREATE_CUSTOMER));
 
@@ -682,7 +649,7 @@ public class DataProviderCsv implements DataProvider{
                 customer.setMailbox(mailbox);
                 customer.setTelephone(telephone);
 
-                return writeToCsv(customer);
+                return writeToXml(customer);
             }
 
         }catch (NullPointerException e){
@@ -695,9 +662,9 @@ public class DataProviderCsv implements DataProvider{
     }
 
     @Override
-    public Optional<Customer> getCustomerById(long id) throws IOException {
+    public Optional<Customer> getCustomerById(long id) throws Exception {
 
-        List<Customer> listCustomer = getDataFromCsv(Customer.class);
+        List<Customer> listCustomer = readFromXml(Customer.class);
 
         try {
 
@@ -719,9 +686,9 @@ public class DataProviderCsv implements DataProvider{
     }
 
     @Override
-    public boolean deleteCustomerById(long id) throws IOException {
+    public boolean deleteCustomerById(long id) throws Exception {
 
-        List<Customer> listCustomer = getDataFromCsv(Customer.class);
+        List<Customer> listCustomer = readFromXml(Customer.class);
 
         try {
 
@@ -731,7 +698,7 @@ public class DataProviderCsv implements DataProvider{
 
             listCustomer.remove(customer);
 
-            writeToCsv(Customer.class, listCustomer,true);
+            writeToXml(Customer.class, listCustomer,true);
 
             log.debug(getConfigurationEntry(DELETE_CUSTOMER));
 
@@ -748,9 +715,9 @@ public class DataProviderCsv implements DataProvider{
     }
 
     @Override
-    public boolean updateCustomer(long id, String name, String surname, String mailbox, String telephone ) throws IOException {
+    public boolean updateCustomer(long id, String name, String surname, String mailbox, String telephone ) throws Exception {
 
-        List<Customer> listCustomer = getDataFromCsv(Customer.class);
+        List<Customer> listCustomer = readFromXml(Customer.class);
         Customer customer;
 
         customer = listCustomer
@@ -772,7 +739,7 @@ public class DataProviderCsv implements DataProvider{
             newCustomer.setTelephone(telephone);
             listCustomer.set(idPosition,newCustomer);
 
-            writeToCsv(Customer.class, listCustomer,true);
+            writeToXml(Customer.class, listCustomer,true);
 
             log.debug(getConfigurationEntry(UPDATE_CUSTOMER));
 
@@ -790,7 +757,7 @@ public class DataProviderCsv implements DataProvider{
 
     //CRUD EXECUTOR
     @Override
-    public boolean createExecutor(String name, String surname, String mailbox, Long numberOfCompletedProjects, Long numberOfWorkers) throws IOException, CsvDataTypeMismatchException, CsvRequiredFieldEmptyException {
+    public boolean createExecutor(String name, String surname, String mailbox, Long numberOfCompletedProjects, Long numberOfWorkers) throws Exception {
 
         log.debug(getConfigurationEntry(CREATE_EXECUTOR));
 
@@ -812,7 +779,7 @@ public class DataProviderCsv implements DataProvider{
                 executor.setNumberOfCompletedProjects(numberOfCompletedProjects);
                 executor.setNumberOfWorkers(numberOfWorkers);
 
-                return writeToCsv(executor);
+                return writeToXml(executor);
             }
 
         }catch (NullPointerException e){
@@ -825,9 +792,9 @@ public class DataProviderCsv implements DataProvider{
     }
 
     @Override
-    public Optional<Executor> getExecutorById(long id) throws IOException {
+    public Optional<Executor> getExecutorById(long id) throws Exception {
 
-        List<Executor> listExecutor = getDataFromCsv(Executor.class);
+        List<Executor> listExecutor = readFromXml(Executor.class);
 
         try {
 
@@ -849,9 +816,9 @@ public class DataProviderCsv implements DataProvider{
     }
 
     @Override
-    public boolean deleteExecutorById(long id) throws IOException {
+    public boolean deleteExecutorById(long id) throws Exception {
 
-        List<Executor> listExecutor = getDataFromCsv(Executor.class);
+        List<Executor> listExecutor = readFromXml(Executor.class);
 
         try {
 
@@ -861,7 +828,7 @@ public class DataProviderCsv implements DataProvider{
 
             listExecutor.remove(executor);
 
-            writeToCsv(Executor.class, listExecutor,true);
+            writeToXml(Executor.class, listExecutor,true);
 
             log.debug(getConfigurationEntry(DELETE_EXECUTOR));
 
@@ -878,9 +845,9 @@ public class DataProviderCsv implements DataProvider{
     }
 
     @Override
-    public boolean updateExecutor(long id, String name, String surname, String mailbox, Long numberOfCompletedProject, Long numberOfWorkers) throws IOException, CsvDataTypeMismatchException, CsvRequiredFieldEmptyException {
+    public boolean updateExecutor(long id, String name, String surname, String mailbox, Long numberOfCompletedProject, Long numberOfWorkers) throws Exception {
 
-        List<Executor> listExecutor = getDataFromCsv(Executor.class);
+        List<Executor> listExecutor = readFromXml(Executor.class);
         Executor executor;
 
         executor= listExecutor
@@ -904,7 +871,7 @@ public class DataProviderCsv implements DataProvider{
 
             listExecutor.set(idPosition,newExecutor);
 
-            writeToCsv(Executor.class, listExecutor,true);
+            writeToXml(Executor.class, listExecutor,true);
 
             log.debug(getConfigurationEntry(Constants.UPDATE_EXECUTOR));
 
@@ -923,7 +890,7 @@ public class DataProviderCsv implements DataProvider{
     @Override
     public boolean createProject(String name, String createdDate,
                                  String deadline, Integer numberOfWorkers, List<Works> worksList, String address,
-                                 People executor, People customer ) throws IOException {
+                                 People executor, People customer ) throws Exception {
 
         log.debug(getConfigurationEntry(CREATE_PROJECT));
 
@@ -950,7 +917,7 @@ public class DataProviderCsv implements DataProvider{
                 project.setExecutor(executor);
                 project.setCustomer(customer);
 
-                return writeToCsv(project);
+                return writeToXml(project);
             }
 
         }catch (NullPointerException e){
@@ -963,10 +930,10 @@ public class DataProviderCsv implements DataProvider{
     }
 
     @Override
-    public Optional<Project> getProject(long id) {
+    public Optional<Project> getProject(long id) throws Exception {
         try {
 
-            List<Project> projectList = getDataFromCsv(Project.class);
+            List<Project> projectList = readFromXml(Project.class);
 
             var optionalProject = projectList.stream()
                     .filter(task -> task.getId() == id)
@@ -998,9 +965,9 @@ public class DataProviderCsv implements DataProvider{
     @Override
     public boolean updateProject(Long id, String name, String createdDate,
                                  String deadline, Integer numberOfWorkers, List<Works> worksList, String address,
-                                 People executor, People customer ) throws IOException {
+                                 People executor, People customer ) throws Exception {
 
-        List<Project> listProject = getDataFromCsv(Project.class);
+        List<Project> listProject = readFromXml(Project.class);
 
         int newId = Integer.parseInt(String.valueOf(id))-1;
 
@@ -1020,7 +987,7 @@ public class DataProviderCsv implements DataProvider{
 
             listProject.set(newId,newProject);
 
-            writeToCsv(Project.class,listProject,true);
+            writeToXml(Project.class,listProject,true);
 
             log.debug(getConfigurationEntry(UPDATE_PROJECT));
 
@@ -1037,43 +1004,43 @@ public class DataProviderCsv implements DataProvider{
     }
 
 
-//Other Methods
+    //Other Methods
     @Override
-    public boolean deleteProject(long id, boolean createReport) throws IOException {
+    public boolean deleteProject(long id, boolean createReport) throws Exception {
 
-    List<Project> listProject = getDataFromCsv(Project.class);
+        List<Project> listProject = readFromXml(Project.class);
 
-    try {
+        try {
 
-        Project project = listProject.stream()
-                .filter(el -> el.getId() == id)
-                .findFirst().get();
+            Project project = listProject.stream()
+                    .filter(el -> el.getId() == id)
+                    .findFirst().get();
 
-        if (createReport)
-        {
-            log.debug(createReportAboutProject(id));
+            if (createReport)
+            {
+                log.debug(createReportAboutProject(id));
+            }
+
+            listProject.remove(project);
+
+            writeToXml(Project.class,listProject,true);
+
+            log.debug(getConfigurationEntry(DELETE_PROJECT));
+
+            return true;
+
+        } catch (NoSuchElementException | IndexOutOfBoundsException e) {
+
+            log.error(e);
+
+            return false;
         }
 
-        listProject.remove(project);
 
-        writeToCsv(Project.class,listProject,true);
-
-        log.debug(getConfigurationEntry(Constants.DELETE_PROJECT));
-
-        return true;
-
-    } catch (NoSuchElementException | IndexOutOfBoundsException e) {
-
-        log.error(e);
-
-        return false;
     }
 
-
-}
-
     @Override
-    public StringBuffer createReportAboutProject(long idProject)throws IOException{
+    public StringBuffer createReportAboutProject(long idProject) throws Exception {
 
         Project projectForReport = getProject(idProject).get();
 
@@ -1081,7 +1048,7 @@ public class DataProviderCsv implements DataProvider{
 
         reportAboutProject
 
-                .append("\n" + getConfigurationEntry(Constants.PROJECT_REPORT) + "\n" )
+                .append("\n" + getConfigurationEntry(PROJECT_REPORT) + "\n" )
                 .append(getConfigurationEntry(Constants.ID) + Constants.SPACE + projectForReport.getId() + "\n")
                 .append(getConfigurationEntry(Constants.NAME) + Constants.SPACE + projectForReport.getName() + "\n")
                 .append(getConfigurationEntry(Constants.CREATED_DATE) + Constants.SPACE + projectForReport.getCreatedDate()+ "\n")
@@ -1101,16 +1068,16 @@ public class DataProviderCsv implements DataProvider{
         StringBuffer reportAboutProject = new StringBuffer();
 
         reportAboutProject
-                .append("\n"+ getConfigurationEntry(Constants.ESTIMATE_REPORT) +"\n")
-                .append(getConfigurationEntry(Constants.PRICE_FOR_WORKS) + Constants.SPACE + workPrice + "\n")
-                .append(getConfigurationEntry(Constants.PRICE_FOR_MATERIALS) + Constants.SPACE + materialPrice + "\n")
-                .append(getConfigurationEntry(Constants.ESTIMATE_TOTAL_PRICE) + Constants.SPACE + totalPrice +  "\n");
+                .append("\n"+ getConfigurationEntry(ESTIMATE_REPORT) +"\n")
+                .append(getConfigurationEntry(PRICE_FOR_WORKS) + Constants.SPACE + workPrice + "\n")
+                .append(getConfigurationEntry(PRICE_FOR_MATERIALS) + Constants.SPACE + materialPrice + "\n")
+                .append(getConfigurationEntry(ESTIMATE_TOTAL_PRICE) + Constants.SPACE + totalPrice +  "\n");
 
         return  reportAboutProject;
     }
 
     @Override
-    public StringBuffer createDeadlineReport(Long idProject, Long needDays) throws IOException {
+    public StringBuffer createDeadlineReport(Long idProject, Long needDays) throws Exception {
         Project project;
 
         project = getProject(idProject).get();
@@ -1121,92 +1088,92 @@ public class DataProviderCsv implements DataProvider{
         StringBuffer deadlineReport = new StringBuffer();
 
         deadlineReport
-                .append("\n"+ getConfigurationEntry(Constants.DEADLINE_REPORT) +"\n")
-                .append(getConfigurationEntry(Constants.NEED_DAYS) + SPACE + needDays +"\n")
-                .append(Constants.START_DAY + Constants.SPACE + startDate + Constants.SPACE + Constants.END_DAY + Constants.SPACE + endDate);
+                .append("\n"+ getConfigurationEntry(DEADLINE_REPORT) +"\n")
+                .append(getConfigurationEntry(NEED_DAYS) + SPACE + needDays +"\n")
+                .append(START_DAY + SPACE + startDate + SPACE + END_DAY + SPACE + endDate);
 
         return deadlineReport;
 
     }
 
     @Override
-    public Long GetTheCostOfWorksInProject(long idProject)  throws IOException{
+    public Long GetTheCostOfWorksInProject(long idProject) throws Exception {
 
-       try {
-           Project project;
+        try {
+            Project project;
 
-           project = getProject(idProject).get();
+            project = getProject(idProject).get();
 
-           Long projectPriceForWorks;
+            Long projectPriceForWorks;
 
-           List<Works> worksList;
-           worksList = getWorksList(project);
+            List<Works> worksList;
+            worksList = getWorksList(project);
 
-           List<Long> priceForWorks;
+            List<Long> priceForWorks;
 
-           priceForWorks = worksList
-                   .stream()
-                   .map(value -> value.getPrice())
-                   .collect(Collectors.toList());
+            priceForWorks = worksList
+                    .stream()
+                    .map(value -> value.getPrice())
+                    .collect(Collectors.toList());
 
-           projectPriceForWorks = priceForWorks
-                   .stream()
-                   .map(value -> value.longValue())
-                   .filter(a -> a != null)
-                   .mapToLong(a -> a).sum();
+            projectPriceForWorks = priceForWorks
+                    .stream()
+                    .map(value -> value.longValue())
+                    .filter(a -> a != null)
+                    .mapToLong(a -> a).sum();
 
-           log.debug(getConfigurationEntry(Constants.GET_THE_COST_OF_WORKS));
+            log.debug(getConfigurationEntry(GET_THE_COST_OF_WORKS));
 
-           return projectPriceForWorks;
-       }
-       catch (IOException e)
-       {
-           log.error(e);
-           return null;
-       }
+            return projectPriceForWorks;
+        }
+        catch (IOException e)
+        {
+            log.error(e);
+            return null;
+        }
 
     }
 
     @Override
-    public Long GetTheCostOfMaterialsInProject(long idProject)  throws IOException{
-       try {
-           Project project;
+    public Long GetTheCostOfMaterialsInProject(long idProject) throws Exception {
+        try {
+            Project project;
 
-           project = getProject(idProject).get();
+            project = getProject(idProject).get();
 
-           Long projectPriceForMaterials;
-           List<Long> priceForMaterials;
+            Long projectPriceForMaterials;
+            List<Long> priceForMaterials;
 
-           List<Works> worksList;
-           worksList = getWorksList(project);
+            List<Works> worksList;
+            worksList = getWorksList(project);
 
-           List<Materials> materilsListInWorks;
+            List<Materials> materilsListInWorks;
 
-           //Список всех материалов в работах
-           materilsListInWorks = worksList.stream()
-                   .flatMap(value -> value.getListMaterials().stream())
-                   .collect(Collectors.toList());
+            //Список всех материалов в работах
+            materilsListInWorks = worksList.stream()
+                    .flatMap(value -> value.getListMaterials().stream())
+                    .collect(Collectors.toList());
 
-           priceForMaterials = materilsListInWorks
-                   .stream()
-                   .map(value -> value.getPriceForOne() * value.getNumber())
-                   .collect(Collectors.toList());
+            priceForMaterials = materilsListInWorks
+                    .stream()
+                    .map(value -> value.getPriceForOne() * value.getNumber())
+                    .collect(Collectors.toList());
 
-           projectPriceForMaterials = priceForMaterials
-                   .stream()
-                   .map(value -> value.longValue())
-                   .filter(a -> a != null)
-                   .mapToLong(a -> a).sum();
+            projectPriceForMaterials = priceForMaterials
+                    .stream()
+                    .map(value -> value.longValue())
+                    .filter(a -> a != null)
+                    .mapToLong(a -> a).sum();
 
-           log.debug(getConfigurationEntry(Constants.GET_THE_COST_OF_MATERIALS));
+            log.debug(getConfigurationEntry(GET_THE_COST_OF_MATERIALS));
 
-           return projectPriceForMaterials;
+            return projectPriceForMaterials;
 
-       }catch(IOException e){
+        }catch(IOException e){
 
-           log.error(e);
-           return null;
-       }
+            log.error(e);
+            return null;
+        }
     }
 
     @Override
@@ -1227,7 +1194,7 @@ public class DataProviderCsv implements DataProvider{
                 log.info(createReportAboutEstimate(projectPriceForWorks, projectPriceForMaterials, projectPrice ));
             }
 
-            log.debug(getConfigurationEntry(Constants.CALCULATING_ESTIMATE));
+            log.debug(getConfigurationEntry(CALCULATING_ESTIMATE));
 
             return projectPrice;
 
@@ -1241,74 +1208,74 @@ public class DataProviderCsv implements DataProvider{
     }
 
     @Override
-    public Long calculatingDeadline(Long idProject, boolean createReport) {
-       try {
-           Project project;
+    public Long calculatingDeadline(Long idProject, boolean createReport) throws Exception {
+        try {
+            Project project;
 
-           project = getProject(idProject).get();
+            project = getProject(idProject).get();
 
-           Long projectNeedDays;
+            Long projectNeedDays;
 
 
-           List<Works> worksList;
-           worksList = getWorksList(project);
-           List<Long> priceForWorks;
+            List<Works> worksList;
+            worksList = getWorksList(project);
+            List<Long> priceForWorks;
 
-           priceForWorks = worksList
-                   .stream()
-                   .map(value -> value.getNeedDaysToCompleted())
-                   .collect(Collectors.toList());
+            priceForWorks = worksList
+                    .stream()
+                    .map(value -> value.getNeedDaysToCompleted())
+                    .collect(Collectors.toList());
 
-           projectNeedDays = priceForWorks.stream().map(value -> value.longValue()).filter(a -> a != null).mapToLong(a -> a).sum();
+            projectNeedDays = priceForWorks.stream().map(value -> value.longValue()).filter(a -> a != null).mapToLong(a -> a).sum();
 
-           if (createReport) {
-               log.info(createDeadlineReport(idProject, projectNeedDays));
+            if (createReport) {
+                log.info(createDeadlineReport(idProject, projectNeedDays));
 
-           }
+            }
 
-           log.debug(getConfigurationEntry(Constants.CALCULATING_DEADLINE));
+            log.debug(getConfigurationEntry(CALCULATING_DEADLINE));
 
-           return projectNeedDays;
+            return projectNeedDays;
 
-       }catch(IOException e)
-       {
-           log.error(e);
+        }catch(IOException e)
+        {
+            log.error(e);
 
-           return null;
-       }
+            return null;
+        }
     }
 
     @Override
-    public boolean markTheStatusOfWork (Long idWork, String status) {
-    try {
-        List<Works> listWorks = getDataFromCsv(Works.class);
+    public boolean markTheStatusOfWork (Long idWork, String status) throws Exception {
+        try {
+            List<Works> listWorks = readFromXml(Works.class);
 
-        int newId = (int) (idWork - 1);
+            int newId = (int) (idWork - 1);
 
-        Works newWorks;
+            Works newWorks;
 
-        newWorks = getWork(idWork).get();
+            newWorks = getWork(idWork).get();
 
-        newWorks.setStatus(status);
+            newWorks.setStatus(status);
 
-        listWorks.set(newId, newWorks);
+            listWorks.set(newId, newWorks);
 
-        createWork(listWorks);
+            createWork(listWorks);
 
-        log.debug(getConfigurationEntry(Constants.MARK_THE_STATUS_OF_WORK));
+            log.debug(getConfigurationEntry(Constants.MARK_THE_STATUS_OF_WORK));
 
-        return true;
+            return true;
 
-    }catch (IOException e)
-    {
-        log.error(e);
-        return false;
-    }
+        }catch (IOException e)
+        {
+            log.error(e);
+            return false;
+        }
 
     }
 
     @Override
-    public HashMap<Integer, String> getProgressReport(Long idProject) {
+    public HashMap<Integer, String> getProgressReport(Long idProject) throws Exception {
         try {
             Project project;
 
@@ -1322,7 +1289,7 @@ public class DataProviderCsv implements DataProvider{
                 workAndStatus.put(Math.toIntExact(worksList.get(i).getId()), worksList.get(i).getStatus());
             }
 
-            log.debug(getConfigurationEntry(Constants.GET_THE_PROGRESS_REPORT));
+            log.debug(getConfigurationEntry(GET_THE_PROGRESS_REPORT));
 
             return workAndStatus;
 
@@ -1335,44 +1302,39 @@ public class DataProviderCsv implements DataProvider{
     }
 
     @Override
-    public Long getTheRemainingTimeToComplete(Long idProject) {
-       try {
-           Project project;
+    public Long getTheRemainingTimeToComplete(Long idProject) throws Exception {
+        try {
+            Project project;
 
-           project = getProject(idProject).get();
+            project = getProject(idProject).get();
 
-           List<Works> worksList;
-           worksList = getWorksList(project);
+            List<Works> worksList;
+            worksList = getWorksList(project);
 
-           List<Long> NotCompletedWork;
-           List<Works> worksListNotCompleted;
+            List<Long> NotCompletedWork;
+            List<Works> worksListNotCompleted;
 
-           worksListNotCompleted = worksList
-                   .stream()
-                   .filter(value -> value.getStatus().equals(CREATE))
-                   .collect(Collectors.toList());
+            worksListNotCompleted = worksList
+                    .stream()
+                    .filter(value -> value.getStatus().equals(CREATE))
+                    .collect(Collectors.toList());
 
-           NotCompletedWork = worksListNotCompleted
-                   .stream()
-                   .map(value -> value.getNeedDaysToCompleted())
-                   .collect(Collectors.toList());
+            NotCompletedWork = worksListNotCompleted
+                    .stream()
+                    .map(value -> value.getNeedDaysToCompleted())
+                    .collect(Collectors.toList());
 
 
-           Long projectNeedDays = NotCompletedWork.stream().map(value -> value.longValue()).filter(a -> a != null).mapToLong(a -> a).sum();
+            Long projectNeedDays = NotCompletedWork.stream().map(value -> value.longValue()).filter(a -> a != null).mapToLong(a -> a).sum();
 
-           log.debug(getConfigurationEntry(Constants.GET_THE_REMAINING_TIME));
-
-           return projectNeedDays;
-       }
-       catch(IOException e)
-       {
-           log.error(e);
-           return null;
-       }
+            log.debug(getConfigurationEntry(Constants.GET_THE_REMAINING_TIME));
+            return projectNeedDays;
+        }
+        catch(IOException e)
+        {
+            log.error(e);
+            return null;
+        }
     }
 
 }
-
-
-
-
