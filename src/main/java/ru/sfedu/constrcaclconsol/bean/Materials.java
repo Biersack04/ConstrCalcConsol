@@ -130,7 +130,7 @@ public class Materials implements Serializable {
             "id=" + id +
             ", name='" + name + '\'' +
             ", number=" + number +
-            ", totalPrice=" + priceForOne +
+            ", priceForOne=" + priceForOne +
             '}';
   }
 

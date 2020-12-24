@@ -1,0 +1,6 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="const">
+    <output-path>$PROJECT_DIR$/out/artifacts/const</output-path>
+    <root id="archive" name="const.jar" />
+  </artifact>
+</component>

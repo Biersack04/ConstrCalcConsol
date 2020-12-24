@@ -42,26 +42,26 @@ public class TestBase {
     }
 
 
-    public static Materials createMaterials(long id, String name, long number, long totalPrice){
+    public static Materials createMaterials(long id, String name, long number, long priceForOne){
 
         Materials materials = new Materials();
 
         materials.setId(id);
         materials.setName(name);
         materials.setNumber(number);
-        materials.setPriceForOne(totalPrice);
+        materials.setPriceForOne(priceForOne);
 
         return materials;
     }
 
 
 
-    public Customer createCustomer(Long id, String name, String surname, String mailbox, String telephone){
+    public Customer createCustomer(String name, String surname, String mailbox, String telephone){
 
 
         Customer customer = new Customer();
 
-        customer.setId(id);
+       // customer.setId(id);
         customer.setName(name);
         customer.setSurname(surname);
         customer.setMailbox(mailbox);

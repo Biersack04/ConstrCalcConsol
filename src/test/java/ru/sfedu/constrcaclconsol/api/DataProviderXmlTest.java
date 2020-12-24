@@ -88,7 +88,7 @@ class DataProviderXmlTest extends TestBase {
         for (int i = 1; i <= Constants.MATERIALS_NUMBER; i++) {
 
             material_str = properties.getProperty(Constants.NAME_MATERIAL + i);
-            words = material_str.split("\\|");
+            words = material_str.split(Constants.REGEX);
             Materials material;
             material = createMaterials(i,words[0],Long.parseLong(words[1]),Long.parseLong(words[2]));
             listMaterials.add(material);
@@ -119,7 +119,7 @@ class DataProviderXmlTest extends TestBase {
             List<Materials> listMaterialsForWorks = new ArrayList<>();
 
             work_str = propertiesWorks.getProperty(Constants.NAME_WORKS + i);
-            words = work_str.split("\\|");
+            words = work_str.split(Constants.REGEX);
 
             listMaterialsForWorks.add(listMaterials.get(count));
             count++;

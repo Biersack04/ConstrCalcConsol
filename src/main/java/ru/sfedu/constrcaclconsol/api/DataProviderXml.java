@@ -469,7 +469,7 @@ public class DataProviderXml implements DataProvider {
     }
 
     @Override
-    public boolean updateMaterial(long id, String name, Long number, Long totalPrice) throws Exception {
+    public boolean updateMaterial(long id, String name, Long number, Long priceForOne) throws Exception {
 
         List<Materials> listMaterials = readFromXml(Materials.class);
 
@@ -482,7 +482,7 @@ public class DataProviderXml implements DataProvider {
             newMaterials.setId(id);
             newMaterials.setName(name);
             newMaterials.setNumber(number);
-            newMaterials.setPriceForOne(totalPrice);
+            newMaterials.setPriceForOne(priceForOne);
 
             listMaterials.set(newId,newMaterials);
 

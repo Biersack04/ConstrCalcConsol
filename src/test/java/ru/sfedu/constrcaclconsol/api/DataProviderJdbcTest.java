@@ -2,18 +2,15 @@ package ru.sfedu.constrcaclconsol.api;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.jupiter.api.*;
 import ru.sfedu.constrcaclconsol.Constants;
 import ru.sfedu.constrcaclconsol.TestBase;
 import ru.sfedu.constrcaclconsol.bean.*;
-import ru.sfedu.constrcaclconsol.utils.ConfigurationUtil;
 
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -21,80 +18,43 @@ import java.util.Properties;
 
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class DataProviderCsvTest extends TestBase {
+class DataProviderJdbcTest extends TestBase  {
 
+    private static final Logger log = LogManager.getLogger(DataProviderJdbcTest.class);
 
-    private static final Logger log = LogManager.getLogger(DataProviderCsvTest.class);
-    private static final DataProvider dataProvider = new DataProviderCsv();
-
-    private static <T> void deleteFile(Class<T> tClass) {
-        try {
-            log.debug(new File(ConfigurationUtil.getConfigurationEntry(Constants.PATH_CSV)
-                    + tClass.getSimpleName().toLowerCase()
-                    + ConfigurationUtil.getConfigurationEntry(Constants.FILE_EXTENSION_CSV)).delete());
-        } catch (IOException e) {
-            log.error(e);
-        }
-    }
+    private static final DataProviderJdbc dataProvider = new DataProviderJdbc();
 
     private static void deleteAll() {
-        List<Class> classList = new ArrayList<>();
-        classList.add(Customer.class);
-        classList.add(Executor.class);
-        classList.add(Materials.class);
-        classList.add(People.class);
-        classList.add(Project.class);
-        classList.add(Works.class);
-        classList.forEach(DataProviderCsvTest::deleteFile);
+        dataProvider.execute(Constants.DROP_TABLES);
     }
 
-
-    public DataProviderCsvTest(){
-
-    }
 
     @BeforeAll
-    static void init(){
+    static void init() {
         deleteAll();
-    }
-
-
-    @Before
-    public void setUpClass()  {
-
-        }
-
-
-    @AfterClass
-    public static void tearDownClass(){
-
-    }
-
-
-    @After
-    public void tearDown(){
+        dataProvider.createTable();
 
     }
 
     private static List<Materials> getCorrectMaterialTestData() throws IOException {
-        List<Materials> listMaterials = new ArrayList<>();
-        String material_str;
-        String[] words;
-        File file = new File(Constants.MATERIALS_ENVIROMENT_PATH);
-        Properties properties = new Properties();
-        properties.load(new FileReader(file));
+       List<Materials> listMaterials = new ArrayList<>();
+       String material_str;
+       String[] words;
+       File file = new File(Constants.MATERIALS_ENVIROMENT_PATH);
+       Properties properties = new Properties();
+       properties.load(new FileReader(file));
 
-        for (int i = 1; i <= Constants.MATERIALS_NUMBER; i++) {
+       for (int i = 1; i <= Constants.MATERIALS_NUMBER; i++) {
 
-            material_str = properties.getProperty(Constants.NAME_MATERIAL + i);
-            words = material_str.split(Constants.REGEX);
-            Materials material;
-            material = createMaterials(i,words[0],Long.parseLong(words[1]),Long.parseLong(words[2]));
-            listMaterials.add(material);
-        }
+           material_str = properties.getProperty(Constants.NAME_MATERIAL + i);
+           words = material_str.split(Constants.REGEX);
+           Materials material;
+           material = createMaterials(i,words[0],Long.parseLong(words[1]),Long.parseLong(words[2]));
+           listMaterials.add(material);
+       }
 
-        return listMaterials;
-    }
+       return listMaterials;
+   }
 
     private static List<Works> getCorrectWorksTestData() throws IOException {
         String work_str;
@@ -138,7 +98,7 @@ class DataProviderCsvTest extends TestBase {
     }
 
 
-//CRUD Materials
+    //CRUD Materials
     @Test
     @org.junit.jupiter.api.Order(0)
     public void insertMaterialSuccess() throws Exception {
@@ -152,7 +112,7 @@ class DataProviderCsvTest extends TestBase {
     }
 
     @Test
-    @org.junit.jupiter.api.Order(0)
+    @org.junit.jupiter.api.Order(1)
     public void insertMaterialFail() throws Exception {
 
         log.info("insertMaterialFail");
@@ -163,18 +123,19 @@ class DataProviderCsvTest extends TestBase {
     }
 
     @Test
-    @org.junit.jupiter.api.Order(1)
+    @org.junit.jupiter.api.Order(2)
     public void getMaterialByIdSuccess() throws Exception {
 
         log.info("getMaterialByIdSuccess");
 
         Optional<Materials> optionalMaterial = dataProvider.getMaterialById(1);
+        Assertions.assertTrue(optionalMaterial.isPresent());
         Assertions.assertEquals("paint", optionalMaterial.get().getName());
 
     }
 
     @Test
-    @org.junit.jupiter.api.Order(1)
+    @org.junit.jupiter.api.Order(3)
     public void getMeterialByIdFail() throws Exception {
 
         log.info("getMeterialByIdFail");
@@ -185,8 +146,8 @@ class DataProviderCsvTest extends TestBase {
     }
 
     @Test
-    @org.junit.jupiter.api.Order(2)
-    public void deleteMaterialSuccess() throws Exception {
+    @org.junit.jupiter.api.Order(4)
+    public void deleteMaterialSuccess() throws SQLException {
 
         log.info("deleteMaterialSuccess");
 
@@ -197,23 +158,24 @@ class DataProviderCsvTest extends TestBase {
     }
 
     @Test
-    @org.junit.jupiter.api.Order(2)
-    public void deleteMaterialFail() throws Exception {
+    @org.junit.jupiter.api.Order(5)
+    public void deleteMaterialFail() throws IOException, SQLException, ClassNotFoundException {
 
         log.info("deleteMaterialFail");
 
         long id = 21;
 
         Assertions.assertFalse(dataProvider.deleteMaterialById(id));
+        Assertions.assertEquals(dataProvider.getMaterialById(id), Optional.empty());
     }
 
     @Test
-    @org.junit.jupiter.api.Order(3)
+    @org.junit.jupiter.api.Order(6)
     public void updateMaterialSuccess() throws Exception {
 
         log.info("updateMaterialSuccess");
 
-        long idRewriteMaterial = 1;
+        long idRewriteMaterial = 3;
         String newName = "RewriteName";
         long newNumber = 10;
         long newTotalPrice = 100;
@@ -223,7 +185,7 @@ class DataProviderCsvTest extends TestBase {
     }
 
     @Test
-    @org.junit.jupiter.api.Order(3)
+    @org.junit.jupiter.api.Order(7)
     public void updateMaterialFail() throws Exception {
 
         log.info("updateMaterialFail");
@@ -238,10 +200,9 @@ class DataProviderCsvTest extends TestBase {
     }
 
 
-
-//CRUD Works
+    //CRUD Works
     @Test
-    @org.junit.jupiter.api.Order(4)
+    @org.junit.jupiter.api.Order(8)
     public void insertWorksSuccess() throws Exception {
 
         log.info("insertWorksSuccess");
@@ -250,10 +211,21 @@ class DataProviderCsvTest extends TestBase {
         listWorks.addAll(getCorrectWorksTestData());
 
         Assertions.assertTrue(dataProvider.createWork(listWorks));
+
+        List<Long> list1 = new ArrayList<>();
+        list1.add((long) 1);
+        list1.add((long) 2);
+        Assertions.assertEquals(list1, dataProvider.getListMaterialsById(1));
+        List<Long> list2 = new ArrayList<>();
+        list2.add((long) 3);
+        list2.add((long) 4);
+        Assertions.assertEquals(list2, dataProvider.getListMaterialsById(2));
+
+
     }
 
     @Test
-    @org.junit.jupiter.api.Order(4)
+    @org.junit.jupiter.api.Order(9)
     public void insertWorksFail() throws Exception {
 
         log.info("insertWorksFail");
@@ -262,22 +234,42 @@ class DataProviderCsvTest extends TestBase {
 
         Assertions.assertFalse(dataProvider.createWork(listWorks));
 
+
+        //dataProvider.createListMaterials(1,30);
+        //dataProvider.createListMaterials(21,30);
+        List<Long> list = new ArrayList<>();
+        //Assertions.assertEquals(list, dataProvider.getListMaterialsById(21));
+        Assertions.assertEquals(list, dataProvider.getListMaterialsById(30));
+
+
     }
 
     @Test
-    @org.junit.jupiter.api.Order(5)
+    @org.junit.jupiter.api.Order(10)
     public void getWorksByIdSuccess() throws Exception {
 
         log.info("getWorksByIdSuccess");
 
-        Optional<Works> optionalWork = dataProvider.getWork(3);
+        Optional<Works> optionalWork = dataProvider.getWork(2);
+
+        List<Long> list1 = new ArrayList<>();
+        list1.add((long) 3);
+        list1.add((long) 4);
+
         Assertions.assertTrue(optionalWork.isPresent());
-        Assertions.assertEquals("To lay pipeline", optionalWork.get().getName());
+
+        log.debug(optionalWork.get());
+
+        Assertions.assertEquals("To paste wallpaper", optionalWork.get().getName());
+
+        Assertions.assertEquals(list1, dataProvider.getListMaterialsById(2));
+
+
 
     }
 
     @Test
-    @org.junit.jupiter.api.Order(5)
+    @org.junit.jupiter.api.Order(11)
     public void getWorksByIdFail() throws Exception {
 
         log.info("getWorksByIdFail");
@@ -285,10 +277,15 @@ class DataProviderCsvTest extends TestBase {
         Optional<Works> optionalWork = dataProvider.getWork(40);
         Assertions.assertFalse(optionalWork.isPresent());
 
+        List<Long> list = new ArrayList<>();
+        Assertions.assertEquals(list, dataProvider.getListMaterialsById(40));
+
+
     }
 
+
     @Test
-    @org.junit.jupiter.api.Order(6)
+    @org.junit.jupiter.api.Order(12)
     public void updateWorksSuccess() throws Exception {
 
         log.info("updateWorksSuccess");
@@ -299,17 +296,18 @@ class DataProviderCsvTest extends TestBase {
 
         List<Materials> listMaterials = new ArrayList<>();
 
-        long newId = Integer.parseInt(String.valueOf(2));
+        long newId = Integer.parseInt(String.valueOf(8));
 
         listMaterials.add(dataProvider.getMaterialById(5).get());
-        listMaterials.add(dataProvider.getMaterialById(3).get());
-        listMaterials.add(dataProvider.getMaterialById(4).get());
+        listMaterials.add(dataProvider.getMaterialById(9).get());
+
 
         Assertions.assertTrue(dataProvider.updateWork(newId,"rewriteName",price,priority,(long)100,status,listMaterials));
+
     }
 
     @Test
-    @org.junit.jupiter.api.Order(6)
+    @org.junit.jupiter.api.Order(13)
     public void updateWorksFail() throws Exception {
 
         log.info("updateWorksFail");
@@ -327,33 +325,38 @@ class DataProviderCsvTest extends TestBase {
         listMaterials.add(dataProvider.getMaterialById(4).get());
 
         Assertions.assertFalse(dataProvider.updateWork(newId,"rewriteName",price,priority,(long)100,status,listMaterials));
+        List<Long> list = new ArrayList<>();
+        Assertions.assertEquals(list, dataProvider.getListMaterialsById(30));
 
     }
 
+
     @Test
-    @org.junit.jupiter.api.Order(7)
+    @org.junit.jupiter.api.Order(14)
     public void deleteWorksSuccess() throws Exception {
 
         log.info("deleteWorksSuccess");
 
-        Assertions.assertTrue(dataProvider.deleteWorkById(2));
+        Assertions.assertTrue(dataProvider.deleteWorkById(5));
+       // Assertions.assertTrue(dataProvider.deleteListMaterials(5));
+
     }
 
     @Test
-    @org.junit.jupiter.api.Order(7)
+    @org.junit.jupiter.api.Order(15)
     public void deleteWorksFail() throws Exception {
 
         log.info("deleteWorksFail");
 
         Assertions.assertFalse(dataProvider.deleteWorkById(45));
+
     }
 
 
     //CRUD Customer
     @Test
-    @org.junit.jupiter.api.Order(8)
+    @org.junit.jupiter.api.Order(16)
     public void insertCustomerSuccess() throws Exception {
-
         log.info("insertCustomerSuccess");
 
         Assertions.assertTrue(dataProvider.createCustomer("name1","surname1","google@google.com","telephone1"));
@@ -364,7 +367,7 @@ class DataProviderCsvTest extends TestBase {
 
 
     @Test
-    @org.junit.jupiter.api.Order(8)
+    @org.junit.jupiter.api.Order(17)
     public void insertCustomerFail() throws Exception {
 
         log.info("insertCustomerFail");
@@ -378,7 +381,7 @@ class DataProviderCsvTest extends TestBase {
     }
 
     @Test
-    @org.junit.jupiter.api.Order(9)
+    @org.junit.jupiter.api.Order(18)
     public void getByIdCustomerSuccess() throws Exception {
 
         log.info("getByIdCustomerSuccess");
@@ -389,7 +392,7 @@ class DataProviderCsvTest extends TestBase {
 
 
     @Test
-    @org.junit.jupiter.api.Order(9)
+    @org.junit.jupiter.api.Order(19)
     public void getByIdCustomerFail() throws Exception {
 
         log.info("getByIdCustomerFail");
@@ -399,7 +402,7 @@ class DataProviderCsvTest extends TestBase {
 
 
     @Test
-    @org.junit.jupiter.api.Order(10)
+    @org.junit.jupiter.api.Order(20)
     public void deleteCustomerSuccess() throws Exception {
 
         log.info("deleteCustomerSuccess");
@@ -410,7 +413,7 @@ class DataProviderCsvTest extends TestBase {
 
 
     @Test
-    @org.junit.jupiter.api.Order(10)
+    @org.junit.jupiter.api.Order(21)
     public void deleteCustomerFail() throws Exception {
 
         log.info("deleteCustomerFail");
@@ -420,7 +423,7 @@ class DataProviderCsvTest extends TestBase {
 
 
     @Test
-    @org.junit.jupiter.api.Order(11)
+    @org.junit.jupiter.api.Order(22)
     public void updateCustomerSuccess() throws Exception {
 
         log.info("updateCustomerSuccess");
@@ -437,7 +440,7 @@ class DataProviderCsvTest extends TestBase {
 
 
     @Test
-    @org.junit.jupiter.api.Order(11)
+    @org.junit.jupiter.api.Order(23)
     public void updateCustomerFail() throws Exception {
 
         log.info("updateCustomerFail");
@@ -453,9 +456,10 @@ class DataProviderCsvTest extends TestBase {
 
 
 
+
     //CRUD Executor
     @Test
-    @org.junit.jupiter.api.Order(12)
+    @org.junit.jupiter.api.Order(24)
     public void insertExecutorSuccess() throws Exception {
 
         log.info("insertExecutorSuccess");
@@ -468,7 +472,7 @@ class DataProviderCsvTest extends TestBase {
 
 
     @Test
-    @org.junit.jupiter.api.Order(12)
+    @org.junit.jupiter.api.Order(25)
     public void insertExecutorFail() throws Exception {
 
         log.info("insertExecutorFail");
@@ -480,7 +484,7 @@ class DataProviderCsvTest extends TestBase {
     }
 
     @Test
-    @org.junit.jupiter.api.Order(13)
+    @org.junit.jupiter.api.Order(26)
     public void getByIdExecutorSuccess() throws Exception {
 
         log.info("getByIdExecutorSuccess");
@@ -491,7 +495,7 @@ class DataProviderCsvTest extends TestBase {
 
 
     @Test
-    @org.junit.jupiter.api.Order(13)
+    @org.junit.jupiter.api.Order(27)
     public void getByIdExecutorFail() throws Exception {
 
         log.info("getByIdExecutorFail");
@@ -501,7 +505,7 @@ class DataProviderCsvTest extends TestBase {
 
 
     @Test
-    @org.junit.jupiter.api.Order(14)
+    @org.junit.jupiter.api.Order(28)
     public void deleteExecutorSuccess() throws Exception {
 
         log.info("deleteExecutorSuccess");
@@ -511,7 +515,7 @@ class DataProviderCsvTest extends TestBase {
 
 
     @Test
-    @org.junit.jupiter.api.Order(14)
+    @org.junit.jupiter.api.Order(29)
     public void deleteExecutorFail() throws Exception {
 
         log.info("deleteExecutorFail");
@@ -520,12 +524,12 @@ class DataProviderCsvTest extends TestBase {
     }
 
     @Test
-    @org.junit.jupiter.api.Order(15)
+    @org.junit.jupiter.api.Order(30)
     public void updateExecutorSuccess() throws Exception {
 
         log.info("updateExecutorSuccess");
 
-        long idRewriteExecutor = 0;
+        long idRewriteExecutor = 1;
         String newName = "newName";
         String newSurname = "newSurname";
         String newMailbox = "newMailbox";
@@ -538,7 +542,7 @@ class DataProviderCsvTest extends TestBase {
 
 
     @Test
-    @org.junit.jupiter.api.Order(15)
+    @org.junit.jupiter.api.Order(31)
     public void updateExecutorFail() throws Exception {
 
         log.info("updateExecutorFail");
@@ -556,10 +560,11 @@ class DataProviderCsvTest extends TestBase {
 
 
 
+
 //CRUD Project
 
     @Test
-    @org.junit.jupiter.api.Order(16)
+    @org.junit.jupiter.api.Order(32)
     public void insertProjectSuccess() throws Exception {
 
         log.info("insertProjectSuccess");
@@ -567,7 +572,7 @@ class DataProviderCsvTest extends TestBase {
         List<Works> listWorks1 = new ArrayList<>();;
         listWorks1.add(dataProvider.getWork(3).get());
         listWorks1.add(dataProvider.getWork(4).get());
-        listWorks1.add(dataProvider.getWork(5).get());
+        listWorks1.add(dataProvider.getWork(6).get());
 
         List<Works> listWorks2 = new ArrayList<>();
         listWorks2.add(dataProvider.getWork(6).get());
@@ -577,21 +582,22 @@ class DataProviderCsvTest extends TestBase {
         listWorks2.add(dataProvider.getWork(10).get());
 
         People customer1 = dataProvider.getCustomerById(2).get();
-        People executor1 =dataProvider.getExecutorById(0).get();
+        People executor1 =dataProvider.getExecutorById(3).get();
 
-        People customer2 = dataProvider.getCustomerById(2).get();
+        People customer2 = dataProvider.getCustomerById(3).get();
         People executor2 = dataProvider.getExecutorById(1).get();
 
         Assertions.assertTrue(dataProvider.createProject("Проект 3х этажного дома","12.11.20","12.12.21",10,listWorks1,"Ставропольский 14",executor1,customer1));
         Assertions.assertTrue(dataProvider.createProject("Проект 2х этажного дома","12.11.19","12.12.22",10,listWorks2,"Ставропольский 15",executor2,customer2));
-        Assertions.assertTrue(dataProvider.createProject("Проект 4х этажного дома","10.11.18","12.12.22",10,listWorks1,"Ставропольский 17",executor2,customer2));
+        Assertions.assertTrue(dataProvider.createProject("Проект 4х этажного дома","10.11.18","12.12.22",10,listWorks1,"Ставропольский 17",executor1,customer2));
 
     }
 
 
     @Test
-    @org.junit.jupiter.api.Order(16)
-    public void insertProjectFail() throws Exception {
+    @org.junit.jupiter.api.Order(33)
+    public void insertProjectFail() throws Exception
+    {
 
         log.info("insertProjectFail");
 
@@ -617,28 +623,37 @@ class DataProviderCsvTest extends TestBase {
 
 
     @Test
-    @org.junit.jupiter.api.Order(17)
+    @org.junit.jupiter.api.Order(34)
     public void getProjectByIdSuccess() throws Exception {
 
         log.info("getProjectByIdSuccess");
 
-        log.debug(dataProvider.getProject(1));
+        Optional<Project> optionalProject = dataProvider.getProject(1);
+
+        Assertions.assertTrue(optionalProject.isPresent());
+
+        log.debug(optionalProject.get());
+
+        Assertions.assertEquals("Проект 3х этажного дома", optionalProject.get().getName());
+
 
     }
 
 
     @Test
-    @org.junit.jupiter.api.Order(17)
+    @org.junit.jupiter.api.Order(35)
     public void getProjectByIdFail() throws Exception {
 
         log.info("getProjectByIdFail");
 
         log.debug(dataProvider.getProject(10));
 
+        Assertions.assertEquals(Optional.empty(),dataProvider.getProject(10));
+
     }
 
     @Test
-    @org.junit.jupiter.api.Order(18)
+    @org.junit.jupiter.api.Order(36)
     public void updateProjectByIdSuccess() throws Exception {
 
         log.info("updateProjectByIdSuccess");
@@ -661,7 +676,7 @@ class DataProviderCsvTest extends TestBase {
 
 
     @Test
-    @org.junit.jupiter.api.Order(18)
+    @org.junit.jupiter.api.Order(37)
     public void updateProjectByIdFail() throws Exception {
 
         log.info("updateProjectByIdFail");
@@ -682,10 +697,10 @@ class DataProviderCsvTest extends TestBase {
 
     }
 
-    //Other Methods
+
 
     @Test
-    @org.junit.jupiter.api.Order(19)
+    @org.junit.jupiter.api.Order(38)
     public void deleteProjectWithReportSuccess() throws Exception {
 
         log.info("deleteProjectWithReportSuccess");
@@ -695,7 +710,7 @@ class DataProviderCsvTest extends TestBase {
     }
 
     @Test
-    @org.junit.jupiter.api.Order(19)
+    @org.junit.jupiter.api.Order(39)
     public void deleteProjectWithReportFail() throws Exception {
 
         log.info("deleteProjectWithReportFail");
@@ -706,7 +721,7 @@ class DataProviderCsvTest extends TestBase {
 
 
     @Test
-    @org.junit.jupiter.api.Order(20)
+    @org.junit.jupiter.api.Order(40)
     public void deleteProjectWithoutReportSuccess() throws Exception {
 
         log.info("deleteProjectWithoutReportSuccess");
@@ -716,7 +731,7 @@ class DataProviderCsvTest extends TestBase {
     }
 
     @Test
-    @org.junit.jupiter.api.Order(20)
+    @org.junit.jupiter.api.Order(41)
     public void deleteProjectWithoutReportFail() throws Exception {
 
         log.info("deleteProjectWithoutReportFail");
@@ -725,14 +740,15 @@ class DataProviderCsvTest extends TestBase {
 
     }
 
+    //Other Methods
     @Test
-    @org.junit.jupiter.api.Order(21)
+    @org.junit.jupiter.api.Order(42)
     public void  calculatingEstimateWithReportSuccess() throws Exception {
 
         log.info("calculatingEstimateWithReportSuccess");
 
         boolean createReport = true;
-        long projectEstimate = dataProvider.calculatingEstimate((long)1, createReport);
+        long projectEstimate = dataProvider.calculatingEstimate((long)3, createReport);
 
         Assertions.assertNotNull(projectEstimate);
 
@@ -742,12 +758,12 @@ class DataProviderCsvTest extends TestBase {
 
 
     @Test
-    @org.junit.jupiter.api.Order(22)
+    @org.junit.jupiter.api.Order(43)
     public void  calculatingEstimateWithoutReportSuccess() throws Exception {
 
         log.info("calculatingEstimateWithoutReportSuccess");
 
-        long projectEstimate = dataProvider.calculatingEstimate((long)1, false);
+        long projectEstimate = dataProvider.calculatingEstimate((long)3, false);
 
         Assertions.assertNotNull(projectEstimate);
 
@@ -757,13 +773,13 @@ class DataProviderCsvTest extends TestBase {
 
 
     @Test
-    @org.junit.jupiter.api.Order(23)
+    @org.junit.jupiter.api.Order(44)
     public void  calculatingDeadlineWithoutReportSuccess() throws Exception {
 
         log.info("calculatingDeadlineWithoutReportSuccess");
 
 
-        long calculatingDeadline = dataProvider.calculatingDeadline((long)1, false);
+        long calculatingDeadline = dataProvider.calculatingDeadline((long)3, false);
 
         Assertions.assertNotNull(calculatingDeadline);
 
@@ -772,23 +788,23 @@ class DataProviderCsvTest extends TestBase {
     }
 
     @Test
-    @org.junit.jupiter.api.Order(23)
+    @org.junit.jupiter.api.Order(45)
     public void  calculatingDeadlineWithReportSuccess() throws Exception {
 
         log.info("calculatingDeadlineWithoutReportSuccess");
 
-        Assertions.assertNotNull(dataProvider.calculatingDeadline((long)1, true));
+        Assertions.assertNotNull(dataProvider.calculatingDeadline((long)3, true));
 
     }
 
     @Test
-    @org.junit.jupiter.api.Order(24)
+    @org.junit.jupiter.api.Order(46)
     public void  markTheStatusOfWorkSuccess() throws Exception {
 
         log.info("markTheStatusOfWorkSuccess");
 
         String status="DONE";
-        long idOfWork =1;
+        long idOfWork =10;
 
         Assertions.assertTrue( dataProvider.markTheStatusOfWork(idOfWork,status));
 
@@ -799,25 +815,26 @@ class DataProviderCsvTest extends TestBase {
 
 
     @Test
-    @org.junit.jupiter.api.Order(25)
+    @org.junit.jupiter.api.Order(47)
     public void  getProgressReportSuccess() throws Exception {
 
         log.info("getProgressReportSuccess");
 
-        Assertions.assertNotNull(dataProvider.getProgressReport((long)1));
+        Assertions.assertNotNull(dataProvider.getProgressReport((long)3));
 
-        log.debug(dataProvider.getProgressReport((long)1));
+        log.debug(dataProvider.getProgressReport((long)3));
     }
 
     @Test
-    @org.junit.jupiter.api.Order(26)
+    @org.junit.jupiter.api.Order(48)
     public void getTheRemainingTimeToCompleteSuccess() throws Exception {
 
         log.info("getTheRemainingTimeToCompleteSuccess");
 
-        Assertions.assertNotNull(dataProvider.getTheRemainingTimeToComplete((long)1));
+        Assertions.assertNotNull(dataProvider.getTheRemainingTimeToComplete((long)3));
 
-        log.debug(dataProvider.getTheRemainingTimeToComplete((long)1));
+        log.debug(dataProvider.getTheRemainingTimeToComplete((long)3));
     }
-
 }
+
+

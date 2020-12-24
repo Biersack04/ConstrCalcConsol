@@ -166,12 +166,12 @@ public interface DataProvider {
      * @param name the value of name of the executor
      * @param surname the value of surname of the executor
      * @param mailbox the value of mailbox of the executor
-     * @param numberOfCompletedWork the value of number of completed work of the executor
+     * @param numberOfCompletedProjects the value of number of completed work of the executor
      * @param numberOfWorkers the value of number of workers of the executor
      * @return a boolean value depending on the execution outcome
      * @throws IOException
      */
-    boolean updateExecutor(long id, String name, String surname, String mailbox, Long numberOfCompletedWork, Long numberOfWorkers ) throws Exception;
+    boolean updateExecutor(long id, String name, String surname, String mailbox, Long numberOfCompletedProjects, Long numberOfWorkers ) throws Exception;
 
 
     //Project

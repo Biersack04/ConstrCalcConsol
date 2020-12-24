@@ -502,7 +502,7 @@ public class DataProviderCsv implements DataProvider{
     }
 
     @Override
-    public boolean updateMaterial(long id, String name, Long number, Long totalPrice) throws IOException {
+    public boolean updateMaterial(long id, String name, Long number, Long priceForOne) throws IOException {
 
         List<Materials> listMaterials = getDataFromCsv(Materials.class);
 
@@ -515,7 +515,7 @@ public class DataProviderCsv implements DataProvider{
             newMaterials.setId(id);
             newMaterials.setName(name);
             newMaterials.setNumber(number);
-            newMaterials.setPriceForOne(totalPrice);
+            newMaterials.setPriceForOne(priceForOne);
 
             listMaterials.set(newId,newMaterials);
 
