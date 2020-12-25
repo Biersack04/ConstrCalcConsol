@@ -6,7 +6,8 @@ public class Constants {
     static public final String WORKS_ENVIROMENT_PATH="./src/main/resources/works.properties";
     static public final String MATERIALS_ENVIROMENT_PATH="./src/main/resources/material.properties";
     static public final String CUSTOM_CONFIG_PATH = System.getProperty("configPath");
-
+    static public final String ESTIMATE="estimate";
+    static public final String DEADLINING="deadlining";
     static public final int WORKS_NUMBER=10;
     static public final String NAME_WORKS="work";
     static public final int MATERIALS_NUMBER=20;

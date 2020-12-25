@@ -846,7 +846,7 @@ public class DataProviderJdbc implements DataProvider {
 
 
     //CRUD PROJECT
-    public void createListWorks(long idProject, long idWork) throws SQLException {
+    public void createListWorks(long idProject, long idWork) {
 
         this.execute(String.format(DB_INSERT, PROJECT_LIST_WORK, LIST_WORK_FIELDS,
 
@@ -918,10 +918,128 @@ public class DataProviderJdbc implements DataProvider {
         }
     }
 
+    public Long priceForWorks(List<Works> worksList){
+
+        Long projectPriceForWorks;
+
+        List<Long> priceForWorks;
+
+        priceForWorks = worksList
+                .stream()
+                .map(value -> value.getPrice())
+                .collect(Collectors.toList());
+
+        projectPriceForWorks = priceForWorks
+                .stream()
+                .map(value -> value.longValue())
+                .filter(a -> a != null)
+                .mapToLong(a -> a).sum();
+
+        return  projectPriceForWorks;
+
+    }
+
+    public Long priceForMaterials(List<Works> worksList){
+
+        Long projectPriceForMaterials;
+        List<Long> priceForMaterials;
+
+        List<Materials> materilsListInWorks;
+
+        //Список всех материалов в работах
+        materilsListInWorks = worksList.stream()
+                .flatMap(value -> value.getListMaterials().stream())
+                .collect(Collectors.toList());
+
+
+        priceForMaterials = materilsListInWorks
+                .stream()
+                .map(value -> value.getPriceForOne() * value.getNumber())
+                .collect(Collectors.toList());
+
+        projectPriceForMaterials = priceForMaterials
+                .stream()
+                .map(value -> value.longValue())
+                .filter(a -> a != null)
+                .mapToLong(a -> a).sum();
+
+        return projectPriceForMaterials;
+    }
+
+    @Override
+    public Long calculatingEstimate(List<Works> worksList, boolean createReport) throws Exception {
+        try{
+
+            Long projectPriceForWorks;
+            Long projectPriceForMaterials;
+            Long projectPrice;
+
+            projectPriceForWorks =  priceForWorks(worksList);
+            projectPriceForMaterials = priceForMaterials (worksList);
+
+            projectPrice = projectPriceForWorks+projectPriceForMaterials;
+
+            if (createReport) {
+
+                log.info(createReportAboutEstimate(projectPriceForWorks, projectPriceForMaterials, projectPrice ));
+            }
+
+            log.debug(getConfigurationEntry(Constants.CALCULATING_ESTIMATE));
+
+            return projectPrice;
+
+        } catch(IOException e){
+
+            log.error(e);
+
+            return null;
+
+        }
+    }
+
+    @Override
+    public Long calculatingDeadline(List<Works> worksList, long idProject, boolean createReport) throws Exception {
+        try {
+
+            log.debug(getConfigurationEntry(Constants.CALCULATING_DEADLINE));
+
+
+            Long projectNeedDays;
+
+
+            List<Long> priceForWorks;
+
+            priceForWorks = worksList
+                    .stream()
+                    .map(value -> value.getNeedDaysToCompleted())
+                    .collect(Collectors.toList());
+
+            projectNeedDays = priceForWorks.stream().map(value -> value.longValue()).filter(a -> a != null).mapToLong(a -> a).sum();
+
+
+            if (createReport) {
+
+                log.info(createDeadlineReport(idProject, projectNeedDays));
+
+            }
+
+
+
+            return projectNeedDays;
+
+        }catch(IOException e)
+        {
+            log.error(e);
+
+            return null;
+        }
+    }
+
+
 
     @Override
     public boolean createProject(String name, String createdDate, String deadline, Integer numberOfWorkers,
-                                 List<Works> worksList, String address, People executor, People customer) throws Exception {
+                                 List<Works> worksList, String address, People executor, People customer, boolean isCreateEstimateReport, boolean isCreateDeadlineReport) throws Exception {
 
         log.debug(getConfigurationEntry(CREATE_PROJECT));
 
@@ -962,7 +1080,8 @@ public class DataProviderJdbc implements DataProvider {
 
 
                 if (set != null && set.next()) {
-                    log.error(set.getLong(Constants.ID));
+
+                    log.debug(set.getLong(Constants.ID));
                 }
                 project.setId(set.getLong(Constants.ID));
 
@@ -973,6 +1092,18 @@ public class DataProviderJdbc implements DataProvider {
 
                     createListWorks(project.getId(),worksList.get(i).getId());
                 }
+
+
+                Long estimate = calculatingEstimate(worksList, isCreateEstimateReport);
+                Long deadlining = calculatingDeadline(worksList, set.getLong(Constants.ID), isCreateDeadlineReport);
+
+                StringBuffer deadlineReport = new StringBuffer();
+
+                deadlineReport
+                        .append("\n"+ getConfigurationEntry(Constants.ESTIMATE) + SPACE + estimate  +"\n")
+                        .append(getConfigurationEntry(DEADLINING) + SPACE + deadlining +"\n");
+
+
 
                 statement.close();
 
@@ -1315,84 +1446,6 @@ public class DataProviderJdbc implements DataProvider {
         }
     }
 
-    @Override
-    public Long calculatingEstimate(Long idProject, boolean createReport) throws Exception {
-        try{
-
-            Long projectPriceForWorks;
-            Long projectPriceForMaterials;
-            Long projectPrice;
-
-            projectPriceForWorks = GetTheCostOfWorksInProject(idProject);
-            projectPriceForMaterials = GetTheCostOfMaterialsInProject(idProject);
-
-            projectPrice = projectPriceForWorks+projectPriceForMaterials;
-
-            if (createReport) {
-
-                log.info(createReportAboutEstimate(projectPriceForWorks, projectPriceForMaterials, projectPrice ));
-            }
-
-            log.debug(getConfigurationEntry(Constants.CALCULATING_ESTIMATE));
-
-            return projectPrice;
-
-        } catch(IOException e){
-
-            log.error(e);
-
-            return null;
-
-        }
-    }
-
-    @Override
-    public Long calculatingDeadline(Long idProject, boolean createReport) throws Exception {
-        try {
-
-            Long projectNeedDays;
-
-
-
-            List<Long> listIdWork;
-            listIdWork = getListWorkById(idProject);
-            List<Works> works = new ArrayList<>();
-
-
-            for (int i = 0;i<listIdWork.size();i++)
-            {
-
-                works.add((getWork(listIdWork.get(i))).get());
-            }
-
-
-            List<Long> priceForWorks;
-
-            priceForWorks = works
-                    .stream()
-                    .map(value -> value.getNeedDaysToCompleted())
-                    .collect(Collectors.toList());
-
-            projectNeedDays = priceForWorks.stream().map(value -> value.longValue()).filter(a -> a != null).mapToLong(a -> a).sum();
-
-            if (createReport) {
-                log.info(createDeadlineReport(idProject, projectNeedDays));
-
-            }
-
-            log.debug(getConfigurationEntry(Constants.CALCULATING_DEADLINE));
-
-
-            return projectNeedDays;
-
-        }catch(IOException e)
-        {
-
-            log.error(e);
-
-            return null;
-        }
-    }
 
     @Override
     public boolean markTheStatusOfWork (Long idWork, String status) throws Exception {

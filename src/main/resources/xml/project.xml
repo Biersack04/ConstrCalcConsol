@@ -134,4 +134,321 @@
          <telephone>newTelephone</telephone>
       </customer>
    </object>
+   <object class="ru.sfedu.constrcaclconsol.bean.Project">
+      <id>3</id>
+      <name>Проект 3х этажного дома</name>
+      <createdDate>12.11.20</createdDate>
+      <deadline>12.12.21</deadline>
+      <numberOfWorkers>10</numberOfWorkers>
+      <worksList class="java.util.ArrayList">
+         <works>
+            <id>3</id>
+            <name>To lay pipeline</name>
+            <price>400</price>
+            <priority>MEDIUM</priority>
+            <needDaysToCompleted>20</needDaysToCompleted>
+            <status>CREATE</status>
+            <listMaterials class="java.util.ArrayList">
+               <materials>
+                  <id>5</id>
+                  <name>pipe</name>
+                  <number>100</number>
+                  <priceForOne>50000</priceForOne>
+               </materials>
+               <materials>
+                  <id>6</id>
+                  <name>fasteners</name>
+                  <number>70</number>
+                  <priceForOne>5000</priceForOne>
+               </materials>
+            </listMaterials>
+         </works>
+         <works>
+            <id>4</id>
+            <name>To lay cable</name>
+            <price>500</price>
+            <priority>MEDIUM</priority>
+            <needDaysToCompleted>20</needDaysToCompleted>
+            <status>CREATE</status>
+            <listMaterials class="java.util.ArrayList">
+               <materials>
+                  <id>7</id>
+                  <name>cable</name>
+                  <number>70</number>
+                  <priceForOne>45000</priceForOne>
+               </materials>
+               <materials>
+                  <id>8</id>
+                  <name>box for cable</name>
+                  <number>75</number>
+                  <priceForOne>8000</priceForOne>
+               </materials>
+            </listMaterials>
+         </works>
+         <works>
+            <id>5</id>
+            <name>Assemble the electrical panel</name>
+            <price>400</price>
+            <priority>MEDIUM</priority>
+            <needDaysToCompleted>10</needDaysToCompleted>
+            <status>DONE</status>
+            <listMaterials class="java.util.ArrayList">
+               <materials>
+                  <id>9</id>
+                  <name>electrical panel</name>
+                  <number>1</number>
+                  <priceForOne>17000</priceForOne>
+               </materials>
+               <materials>
+                  <id>10</id>
+                  <name>electrical machine</name>
+                  <number>40</number>
+                  <priceForOne>20000</priceForOne>
+               </materials>
+            </listMaterials>
+         </works>
+      </worksList>
+      <projectAddress>Ставропольский 14</projectAddress>
+      <executor class="ru.sfedu.constrcaclconsol.bean.Executor">
+         <id>0</id>
+         <name>newName</name>
+         <surname>newSurname</surname>
+         <mailbox>newMailbox</mailbox>
+         <numberOfCompletedProjects>10</numberOfCompletedProjects>
+         <numberOfWorkers>100</numberOfWorkers>
+      </executor>
+      <customer class="ru.sfedu.constrcaclconsol.bean.Customer">
+         <id>2</id>
+         <name>newName</name>
+         <surname>newSurname</surname>
+         <mailbox>newMailbox</mailbox>
+         <telephone>newTelephone</telephone>
+      </customer>
+   </object>
+   <object class="ru.sfedu.constrcaclconsol.bean.Project">
+      <id>4</id>
+      <name>Проект 2х этажного дома</name>
+      <createdDate>12.11.19</createdDate>
+      <deadline>12.12.22</deadline>
+      <numberOfWorkers>10</numberOfWorkers>
+      <worksList class="java.util.ArrayList">
+         <works>
+            <id>6</id>
+            <name>Hang up lights</name>
+            <price>300</price>
+            <priority>LOW</priority>
+            <needDaysToCompleted>10</needDaysToCompleted>
+            <status>CREATE</status>
+            <listMaterials class="java.util.ArrayList">
+               <materials>
+                  <id>11</id>
+                  <name>light</name>
+                  <number>60</number>
+                  <priceForOne>17000</priceForOne>
+               </materials>
+               <materials>
+                  <id>12</id>
+                  <name>switch</name>
+                  <number>30</number>
+                  <priceForOne>3000</priceForOne>
+               </materials>
+            </listMaterials>
+         </works>
+         <works>
+            <id>7</id>
+            <name>Laying tiles on the floor</name>
+            <price>500</price>
+            <priority>LOW</priority>
+            <needDaysToCompleted>10</needDaysToCompleted>
+            <status>DONE</status>
+            <listMaterials class="java.util.ArrayList">
+               <materials>
+                  <id>13</id>
+                  <name>tile</name>
+                  <number>80</number>
+                  <priceForOne>70000</priceForOne>
+               </materials>
+               <materials>
+                  <id>14</id>
+                  <name>adhesive for tiles</name>
+                  <number>10</number>
+                  <priceForOne>10000</priceForOne>
+               </materials>
+            </listMaterials>
+         </works>
+         <works>
+            <id>8</id>
+            <name>Install windows</name>
+            <price>600</price>
+            <priority>HIGH</priority>
+            <needDaysToCompleted>10</needDaysToCompleted>
+            <status>DONE</status>
+            <listMaterials class="java.util.ArrayList">
+               <materials>
+                  <id>15</id>
+                  <name>window</name>
+                  <number>10</number>
+                  <priceForOne>30000</priceForOne>
+               </materials>
+               <materials>
+                  <id>16</id>
+                  <name>window sill</name>
+                  <number>10</number>
+                  <priceForOne>10000</priceForOne>
+               </materials>
+            </listMaterials>
+         </works>
+         <works>
+            <id>9</id>
+            <name>Floor insulation</name>
+            <price>700</price>
+            <priority>HIGH</priority>
+            <needDaysToCompleted>10</needDaysToCompleted>
+            <status>CREATE</status>
+            <listMaterials class="java.util.ArrayList">
+               <materials>
+                  <id>17</id>
+                  <name>waterproofing</name>
+                  <number>100</number>
+                  <priceForOne>50000</priceForOne>
+               </materials>
+               <materials>
+                  <id>18</id>
+                  <name>insulation</name>
+                  <number>100</number>
+                  <priceForOne>45000</priceForOne>
+               </materials>
+            </listMaterials>
+         </works>
+         <works>
+            <id>10</id>
+            <name>Soundproofing</name>
+            <price>650</price>
+            <priority>HIGH</priority>
+            <needDaysToCompleted>10</needDaysToCompleted>
+            <status>DONE</status>
+            <listMaterials class="java.util.ArrayList">
+               <materials>
+                  <id>19</id>
+                  <name>drywall</name>
+                  <number>150</number>
+                  <priceForOne>52000</priceForOne>
+               </materials>
+               <materials>
+                  <id>20</id>
+                  <name>sound-absorbing material</name>
+                  <number>150</number>
+                  <priceForOne>48000</priceForOne>
+               </materials>
+            </listMaterials>
+         </works>
+      </worksList>
+      <projectAddress>Ставропольский 15</projectAddress>
+      <executor class="ru.sfedu.constrcaclconsol.bean.Executor">
+         <id>1</id>
+         <name>name5</name>
+         <surname>surname5</surname>
+         <mailbox>google@google.com</mailbox>
+         <numberOfCompletedProjects>5</numberOfCompletedProjects>
+         <numberOfWorkers>50</numberOfWorkers>
+      </executor>
+      <customer class="ru.sfedu.constrcaclconsol.bean.Customer">
+         <id>2</id>
+         <name>newName</name>
+         <surname>newSurname</surname>
+         <mailbox>newMailbox</mailbox>
+         <telephone>newTelephone</telephone>
+      </customer>
+   </object>
+   <object class="ru.sfedu.constrcaclconsol.bean.Project">
+      <id>5</id>
+      <name>Проект 4х этажного дома</name>
+      <createdDate>10.11.18</createdDate>
+      <deadline>12.12.22</deadline>
+      <numberOfWorkers>10</numberOfWorkers>
+      <worksList class="java.util.ArrayList">
+         <works>
+            <id>3</id>
+            <name>To lay pipeline</name>
+            <price>400</price>
+            <priority>MEDIUM</priority>
+            <needDaysToCompleted>20</needDaysToCompleted>
+            <status>CREATE</status>
+            <listMaterials class="java.util.ArrayList">
+               <materials>
+                  <id>5</id>
+                  <name>pipe</name>
+                  <number>100</number>
+                  <priceForOne>50000</priceForOne>
+               </materials>
+               <materials>
+                  <id>6</id>
+                  <name>fasteners</name>
+                  <number>70</number>
+                  <priceForOne>5000</priceForOne>
+               </materials>
+            </listMaterials>
+         </works>
+         <works>
+            <id>4</id>
+            <name>To lay cable</name>
+            <price>500</price>
+            <priority>MEDIUM</priority>
+            <needDaysToCompleted>20</needDaysToCompleted>
+            <status>CREATE</status>
+            <listMaterials class="java.util.ArrayList">
+               <materials>
+                  <id>7</id>
+                  <name>cable</name>
+                  <number>70</number>
+                  <priceForOne>45000</priceForOne>
+               </materials>
+               <materials>
+                  <id>8</id>
+                  <name>box for cable</name>
+                  <number>75</number>
+                  <priceForOne>8000</priceForOne>
+               </materials>
+            </listMaterials>
+         </works>
+         <works>
+            <id>5</id>
+            <name>Assemble the electrical panel</name>
+            <price>400</price>
+            <priority>MEDIUM</priority>
+            <needDaysToCompleted>10</needDaysToCompleted>
+            <status>DONE</status>
+            <listMaterials class="java.util.ArrayList">
+               <materials>
+                  <id>9</id>
+                  <name>electrical panel</name>
+                  <number>1</number>
+                  <priceForOne>17000</priceForOne>
+               </materials>
+               <materials>
+                  <id>10</id>
+                  <name>electrical machine</name>
+                  <number>40</number>
+                  <priceForOne>20000</priceForOne>
+               </materials>
+            </listMaterials>
+         </works>
+      </worksList>
+      <projectAddress>Ставропольский 17</projectAddress>
+      <executor class="ru.sfedu.constrcaclconsol.bean.Executor">
+         <id>1</id>
+         <name>name5</name>
+         <surname>surname5</surname>
+         <mailbox>google@google.com</mailbox>
+         <numberOfCompletedProjects>5</numberOfCompletedProjects>
+         <numberOfWorkers>50</numberOfWorkers>
+      </executor>
+      <customer class="ru.sfedu.constrcaclconsol.bean.Customer">
+         <id>2</id>
+         <name>newName</name>
+         <surname>newSurname</surname>
+         <mailbox>newMailbox</mailbox>
+         <telephone>newTelephone</telephone>
+      </customer>
+   </object>
 </main>

@@ -885,12 +885,132 @@ public class DataProviderXml implements DataProvider {
         }
     }
 
+    public Long priceForWorks(List<Works> worksList){
+
+        Long projectPriceForWorks;
+
+        List<Long> priceForWorks;
+
+        priceForWorks = worksList
+                .stream()
+                .map(value -> value.getPrice())
+                .collect(Collectors.toList());
+
+        projectPriceForWorks = priceForWorks
+                .stream()
+                .map(value -> value.longValue())
+                .filter(a -> a != null)
+                .mapToLong(a -> a).sum();
+
+        return  projectPriceForWorks;
+
+    }
+
+    public Long priceForMaterials(List<Works> worksList){
+
+        Long projectPriceForMaterials;
+        List<Long> priceForMaterials;
+
+        List<Materials> materilsListInWorks;
+
+        //Список всех материалов в работах
+        materilsListInWorks = worksList.stream()
+                .flatMap(value -> value.getListMaterials().stream())
+                .collect(Collectors.toList());
+
+
+        priceForMaterials = materilsListInWorks
+                .stream()
+                .map(value -> value.getPriceForOne() * value.getNumber())
+                .collect(Collectors.toList());
+
+        projectPriceForMaterials = priceForMaterials
+                .stream()
+                .map(value -> value.longValue())
+                .filter(a -> a != null)
+                .mapToLong(a -> a).sum();
+
+        return projectPriceForMaterials;
+    }
 
     //CRUD PROJECT
     @Override
+    public Long calculatingEstimate(List<Works> worksList, boolean createReport) throws Exception {
+        try{
+
+            Long projectPriceForWorks;
+            Long projectPriceForMaterials;
+            Long projectPrice;
+
+            projectPriceForWorks =  priceForWorks(worksList);
+            projectPriceForMaterials = priceForMaterials (worksList);
+
+            projectPrice = projectPriceForWorks+projectPriceForMaterials;
+
+            if (createReport) {
+
+                log.info(createReportAboutEstimate(projectPriceForWorks, projectPriceForMaterials, projectPrice ));
+            }
+
+            log.debug(getConfigurationEntry(Constants.CALCULATING_ESTIMATE));
+
+            return projectPrice;
+
+        } catch(IOException e){
+
+            log.error(e);
+
+            return null;
+
+        }
+    }
+
+
+
+    @Override
+    public Long calculatingDeadline(List<Works> worksList, long idProject, boolean createReport) throws Exception {
+        try {
+
+            log.debug(getConfigurationEntry(Constants.CALCULATING_DEADLINE));
+
+
+            Long projectNeedDays;
+
+
+            List<Long> priceForWorks;
+
+            priceForWorks = worksList
+                    .stream()
+                    .map(value -> value.getNeedDaysToCompleted())
+                    .collect(Collectors.toList());
+
+            projectNeedDays = priceForWorks.stream().map(value -> value.longValue()).filter(a -> a != null).mapToLong(a -> a).sum();
+
+
+            if (createReport) {
+
+                log.info(createDeadlineReport(idProject, projectNeedDays));
+
+            }
+
+
+
+            return projectNeedDays;
+
+        }catch(IOException e)
+        {
+            log.error(e);
+
+            return null;
+        }
+    }
+
+
+
+    @Override
     public boolean createProject(String name, String createdDate,
                                  String deadline, Integer numberOfWorkers, List<Works> worksList, String address,
-                                 People executor, People customer ) throws Exception {
+                                 People executor, People customer, boolean isCreateEstimateReport, boolean isCreateDeadlineReport ) throws Exception {
 
         log.debug(getConfigurationEntry(CREATE_PROJECT));
 
@@ -907,7 +1027,9 @@ public class DataProviderXml implements DataProvider {
             {
                 Project project = new Project();
 
-                project.setId(getNextProjectId());
+                long idProject = getNextProjectId();
+
+                project.setId(idProject);
                 project.setName(name);
                 project.setCreatedDate(createdDate);
                 project.setDeadline(deadline);
@@ -917,7 +1039,19 @@ public class DataProviderXml implements DataProvider {
                 project.setExecutor(executor);
                 project.setCustomer(customer);
 
-                return writeToXml(project);
+                writeToXml(project);
+
+                Long estimate = calculatingEstimate(worksList, isCreateEstimateReport);
+                Long deadlining = calculatingDeadline(worksList, idProject, isCreateDeadlineReport);
+
+                StringBuffer deadlineReport = new StringBuffer();
+
+                deadlineReport
+                        .append("\n"+ getConfigurationEntry(Constants.ESTIMATE) + SPACE + estimate  +"\n")
+                        .append(getConfigurationEntry(DEADLINING) + SPACE + deadlining +"\n");
+
+
+                return true;
             }
 
         }catch (NullPointerException e){
@@ -1011,23 +1145,32 @@ public class DataProviderXml implements DataProvider {
         List<Project> listProject = readFromXml(Project.class);
 
         try {
-
-            Project project = listProject.stream()
-                    .filter(el -> el.getId() == id)
-                    .findFirst().get();
-
-            if (createReport)
+            if(getProject(id).equals(Optional.empty()))
             {
-                log.debug(createReportAboutProject(id));
+                return false;
+            }
+            else{
+                Project project = listProject.stream()
+                        .filter(el -> el.getId() == id)
+                        .findFirst().get();
+
+
+                if (createReport)
+                {
+                    log.debug(createReportAboutProject(id));
+                }
+
+                listProject.remove(project);
+
+                writeToXml(Project.class,listProject,true);
+
+                log.debug(getConfigurationEntry(Constants.DELETE_PROJECT));
+
+                return true;
+
             }
 
-            listProject.remove(project);
 
-            writeToXml(Project.class,listProject,true);
-
-            log.debug(getConfigurationEntry(DELETE_PROJECT));
-
-            return true;
 
         } catch (NoSuchElementException | IndexOutOfBoundsException e) {
 
@@ -1048,7 +1191,7 @@ public class DataProviderXml implements DataProvider {
 
         reportAboutProject
 
-                .append("\n" + getConfigurationEntry(PROJECT_REPORT) + "\n" )
+                .append("\n" + getConfigurationEntry(Constants.PROJECT_REPORT) + "\n" )
                 .append(getConfigurationEntry(Constants.ID) + Constants.SPACE + projectForReport.getId() + "\n")
                 .append(getConfigurationEntry(Constants.NAME) + Constants.SPACE + projectForReport.getName() + "\n")
                 .append(getConfigurationEntry(Constants.CREATED_DATE) + Constants.SPACE + projectForReport.getCreatedDate()+ "\n")
@@ -1068,10 +1211,10 @@ public class DataProviderXml implements DataProvider {
         StringBuffer reportAboutProject = new StringBuffer();
 
         reportAboutProject
-                .append("\n"+ getConfigurationEntry(ESTIMATE_REPORT) +"\n")
-                .append(getConfigurationEntry(PRICE_FOR_WORKS) + Constants.SPACE + workPrice + "\n")
-                .append(getConfigurationEntry(PRICE_FOR_MATERIALS) + Constants.SPACE + materialPrice + "\n")
-                .append(getConfigurationEntry(ESTIMATE_TOTAL_PRICE) + Constants.SPACE + totalPrice +  "\n");
+                .append("\n"+ getConfigurationEntry(Constants.ESTIMATE_REPORT) +"\n")
+                .append(getConfigurationEntry(Constants.PRICE_FOR_WORKS) + Constants.SPACE + workPrice + "\n")
+                .append(getConfigurationEntry(Constants.PRICE_FOR_MATERIALS) + Constants.SPACE + materialPrice + "\n")
+                .append(getConfigurationEntry(Constants.ESTIMATE_TOTAL_PRICE) + Constants.SPACE + totalPrice +  "\n");
 
         return  reportAboutProject;
     }
@@ -1088,9 +1231,9 @@ public class DataProviderXml implements DataProvider {
         StringBuffer deadlineReport = new StringBuffer();
 
         deadlineReport
-                .append("\n"+ getConfigurationEntry(DEADLINE_REPORT) +"\n")
-                .append(getConfigurationEntry(NEED_DAYS) + SPACE + needDays +"\n")
-                .append(START_DAY + SPACE + startDate + SPACE + END_DAY + SPACE + endDate);
+                .append("\n"+ getConfigurationEntry(Constants.DEADLINE_REPORT) +"\n")
+                .append(getConfigurationEntry(Constants.NEED_DAYS) + SPACE + needDays +"\n")
+                .append(Constants.START_DAY + Constants.SPACE + startDate + Constants.SPACE + Constants.END_DAY + Constants.SPACE + endDate);
 
         return deadlineReport;
 
@@ -1102,6 +1245,7 @@ public class DataProviderXml implements DataProvider {
         try {
             Project project;
 
+
             project = getProject(idProject).get();
 
             Long projectPriceForWorks;
@@ -1109,20 +1253,9 @@ public class DataProviderXml implements DataProvider {
             List<Works> worksList;
             worksList = getWorksList(project);
 
-            List<Long> priceForWorks;
+            projectPriceForWorks = priceForWorks(worksList);
 
-            priceForWorks = worksList
-                    .stream()
-                    .map(value -> value.getPrice())
-                    .collect(Collectors.toList());
-
-            projectPriceForWorks = priceForWorks
-                    .stream()
-                    .map(value -> value.longValue())
-                    .filter(a -> a != null)
-                    .mapToLong(a -> a).sum();
-
-            log.debug(getConfigurationEntry(GET_THE_COST_OF_WORKS));
+            log.debug(getConfigurationEntry(Constants.GET_THE_COST_OF_WORKS));
 
             return projectPriceForWorks;
         }
@@ -1142,30 +1275,14 @@ public class DataProviderXml implements DataProvider {
             project = getProject(idProject).get();
 
             Long projectPriceForMaterials;
-            List<Long> priceForMaterials;
+
 
             List<Works> worksList;
             worksList = getWorksList(project);
+            projectPriceForMaterials = priceForMaterials(worksList);
 
-            List<Materials> materilsListInWorks;
 
-            //Список всех материалов в работах
-            materilsListInWorks = worksList.stream()
-                    .flatMap(value -> value.getListMaterials().stream())
-                    .collect(Collectors.toList());
-
-            priceForMaterials = materilsListInWorks
-                    .stream()
-                    .map(value -> value.getPriceForOne() * value.getNumber())
-                    .collect(Collectors.toList());
-
-            projectPriceForMaterials = priceForMaterials
-                    .stream()
-                    .map(value -> value.longValue())
-                    .filter(a -> a != null)
-                    .mapToLong(a -> a).sum();
-
-            log.debug(getConfigurationEntry(GET_THE_COST_OF_MATERIALS));
+            log.debug(getConfigurationEntry(Constants.GET_THE_COST_OF_MATERIALS));
 
             return projectPriceForMaterials;
 
@@ -1176,97 +1293,37 @@ public class DataProviderXml implements DataProvider {
         }
     }
 
-    @Override
-    public Long calculatingEstimate(Long idProject, boolean createReport) throws Exception {
-        try{
-
-            Long projectPriceForWorks;
-            Long projectPriceForMaterials;
-            Long projectPrice;
-
-            projectPriceForWorks = GetTheCostOfWorksInProject(idProject);
-            projectPriceForMaterials = GetTheCostOfMaterialsInProject(idProject);
-
-            projectPrice = projectPriceForWorks+projectPriceForMaterials;
-
-            if (createReport) {
-
-                log.info(createReportAboutEstimate(projectPriceForWorks, projectPriceForMaterials, projectPrice ));
-            }
-
-            log.debug(getConfigurationEntry(CALCULATING_ESTIMATE));
-
-            return projectPrice;
-
-        } catch(IOException e){
-
-            log.error(e);
-
-            return null;
-
-        }
-    }
-
-    @Override
-    public Long calculatingDeadline(Long idProject, boolean createReport) throws Exception {
-        try {
-            Project project;
-
-            project = getProject(idProject).get();
-
-            Long projectNeedDays;
-
-
-            List<Works> worksList;
-            worksList = getWorksList(project);
-            List<Long> priceForWorks;
-
-            priceForWorks = worksList
-                    .stream()
-                    .map(value -> value.getNeedDaysToCompleted())
-                    .collect(Collectors.toList());
-
-            projectNeedDays = priceForWorks.stream().map(value -> value.longValue()).filter(a -> a != null).mapToLong(a -> a).sum();
-
-            if (createReport) {
-                log.info(createDeadlineReport(idProject, projectNeedDays));
-
-            }
-
-            log.debug(getConfigurationEntry(CALCULATING_DEADLINE));
-
-            return projectNeedDays;
-
-        }catch(IOException e)
-        {
-            log.error(e);
-
-            return null;
-        }
-    }
 
     @Override
     public boolean markTheStatusOfWork (Long idWork, String status) throws Exception {
         try {
-            List<Works> listWorks = readFromXml(Works.class);
+            if (!(getProject(idWork)).equals(Optional.empty()) && !status.equals("") )
+            {
+                List<Works> listWorks = readFromXml(Works.class);
 
-            int newId = (int) (idWork - 1);
+                int newId = (int) (idWork - 1);
 
-            Works newWorks;
+                Works newWorks;
 
-            newWorks = getWork(idWork).get();
+                newWorks = getWork(idWork).get();
 
-            newWorks.setStatus(status);
+                newWorks.setStatus(status);
 
-            listWorks.set(newId, newWorks);
+                listWorks.set(newId, newWorks);
 
-            createWork(listWorks);
+                createWork(listWorks);
 
-            log.debug(getConfigurationEntry(Constants.MARK_THE_STATUS_OF_WORK));
+                log.debug(getConfigurationEntry(Constants.MARK_THE_STATUS_OF_WORK));
 
-            return true;
+                return true;
+            }
+            else {
 
-        }catch (IOException e)
+                return false;
+            }
+
+
+        }catch (IOException | NoSuchElementException e)
         {
             log.error(e);
             return false;
@@ -1277,22 +1334,27 @@ public class DataProviderXml implements DataProvider {
     @Override
     public HashMap<Integer, String> getProgressReport(Long idProject) throws Exception {
         try {
-            Project project;
-
-            project = getProject(idProject).get();
-
-            List<Works> worksList;
-            worksList = getWorksList(project);
-            HashMap<Integer, String> workAndStatus = new HashMap<>();
-
-            for (int i = 0; i < worksList.size(); i++) {
-                workAndStatus.put(Math.toIntExact(worksList.get(i).getId()), worksList.get(i).getStatus());
+            if(getProject(idProject).equals(Optional.empty()))
+            {
+                return null;
             }
+            else {
+                Project project;
 
-            log.debug(getConfigurationEntry(GET_THE_PROGRESS_REPORT));
+                project = getProject(idProject).get();
 
-            return workAndStatus;
+                List<Works> worksList;
+                worksList = getWorksList(project);
+                HashMap<Integer, String> workAndStatus = new HashMap<>();
 
+                for (int i = 0; i < worksList.size(); i++) {
+                    workAndStatus.put(Math.toIntExact(worksList.get(i).getId()), worksList.get(i).getStatus());
+                }
+
+                log.debug(getConfigurationEntry(Constants.GET_THE_PROGRESS_REPORT));
+
+                return workAndStatus;
+            }
         } catch (IOException e) {
 
             log.error(e);
@@ -1304,31 +1366,38 @@ public class DataProviderXml implements DataProvider {
     @Override
     public Long getTheRemainingTimeToComplete(Long idProject) throws Exception {
         try {
-            Project project;
+            if(getProject(idProject).equals(Optional.empty()))
+            {
+                return null;
+            }
+            else {
+                Project project;
 
-            project = getProject(idProject).get();
+                project = getProject(idProject).get();
 
-            List<Works> worksList;
-            worksList = getWorksList(project);
+                List<Works> worksList;
+                worksList = getWorksList(project);
 
-            List<Long> NotCompletedWork;
-            List<Works> worksListNotCompleted;
+                List<Long> NotCompletedWork;
+                List<Works> worksListNotCompleted;
 
-            worksListNotCompleted = worksList
-                    .stream()
-                    .filter(value -> value.getStatus().equals(CREATE))
-                    .collect(Collectors.toList());
+                worksListNotCompleted = worksList
+                        .stream()
+                        .filter(value -> value.getStatus().equals(CREATE))
+                        .collect(Collectors.toList());
 
-            NotCompletedWork = worksListNotCompleted
-                    .stream()
-                    .map(value -> value.getNeedDaysToCompleted())
-                    .collect(Collectors.toList());
+                NotCompletedWork = worksListNotCompleted
+                        .stream()
+                        .map(value -> value.getNeedDaysToCompleted())
+                        .collect(Collectors.toList());
 
 
-            Long projectNeedDays = NotCompletedWork.stream().map(value -> value.longValue()).filter(a -> a != null).mapToLong(a -> a).sum();
+                Long projectNeedDays = NotCompletedWork.stream().map(value -> value.longValue()).filter(a -> a != null).mapToLong(a -> a).sum();
 
-            log.debug(getConfigurationEntry(Constants.GET_THE_REMAINING_TIME));
-            return projectNeedDays;
+                log.debug(getConfigurationEntry(Constants.GET_THE_REMAINING_TIME));
+
+                return projectNeedDays;
+            }
         }
         catch(IOException e)
         {

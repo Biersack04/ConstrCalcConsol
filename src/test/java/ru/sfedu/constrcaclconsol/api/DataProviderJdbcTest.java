@@ -565,7 +565,7 @@ class DataProviderJdbcTest extends TestBase  {
 
     @Test
     @org.junit.jupiter.api.Order(32)
-    public void insertProjectSuccess() throws Exception {
+    public void insertProjectWithReportsSuccess() throws Exception {
 
         log.info("insertProjectSuccess");
 
@@ -582,22 +582,25 @@ class DataProviderJdbcTest extends TestBase  {
         listWorks2.add(dataProvider.getWork(10).get());
 
         People customer1 = dataProvider.getCustomerById(2).get();
-        People executor1 =dataProvider.getExecutorById(3).get();
+        People executor1 =dataProvider.getExecutorById(1).get();
 
-        People customer2 = dataProvider.getCustomerById(3).get();
+        People customer2 = dataProvider.getCustomerById(2).get();
         People executor2 = dataProvider.getExecutorById(1).get();
 
-        Assertions.assertTrue(dataProvider.createProject("Проект 3х этажного дома","12.11.20","12.12.21",10,listWorks1,"Ставропольский 14",executor1,customer1));
-        Assertions.assertTrue(dataProvider.createProject("Проект 2х этажного дома","12.11.19","12.12.22",10,listWorks2,"Ставропольский 15",executor2,customer2));
-        Assertions.assertTrue(dataProvider.createProject("Проект 4х этажного дома","10.11.18","12.12.22",10,listWorks1,"Ставропольский 17",executor1,customer2));
+
+        boolean isCreateEstimateReport =true;
+        boolean isCreateDeadlineReport=true;
+
+        Assertions.assertTrue(dataProvider.createProject("Проект 3х этажного дома","12.11.20","12.12.21",10,listWorks1,"Ставропольский 14",executor1,customer1, isCreateEstimateReport,  isCreateDeadlineReport));
+        Assertions.assertTrue(dataProvider.createProject("Проект 2х этажного дома","12.11.19","12.12.22",10,listWorks2,"Ставропольский 15",executor2,customer2, isCreateEstimateReport,  isCreateDeadlineReport));
+        Assertions.assertTrue(dataProvider.createProject("Проект 4х этажного дома","10.11.18","12.12.22",10,listWorks1,"Ставропольский 17",executor2,customer2, isCreateEstimateReport,  isCreateDeadlineReport));
 
     }
 
 
     @Test
     @org.junit.jupiter.api.Order(33)
-    public void insertProjectFail() throws Exception
-    {
+    public void insertProjectWithReportsFail() throws Exception {
 
         log.info("insertProjectFail");
 
@@ -615,15 +618,83 @@ class DataProviderJdbcTest extends TestBase  {
 
         People customer2 = dataProvider.getCustomerById(2).get();
 
+        boolean isCreateEstimateReport =true;
+        boolean isCreateDeadlineReport=true;
 
-        Assertions.assertFalse(dataProvider.createProject(null,"12.11.20","12.12.21",10,listWorks1,"Ставропольский 14",executor1,customer1));
-        Assertions.assertFalse(dataProvider.createProject("Проект 2х этажного дома","12.11.19","12.12.22",10,listWorks2,"Ставропольский 15",null,customer2));
+
+        Assertions.assertFalse(dataProvider.createProject(null,"12.11.20","12.12.21",10,listWorks1,"Ставропольский 14",executor1,customer1, isCreateEstimateReport,  isCreateDeadlineReport));
+        Assertions.assertFalse(dataProvider.createProject("Проект 2х этажного дома","12.11.19","12.12.22",10,listWorks2,"Ставропольский 15",null,customer2, isCreateEstimateReport,  isCreateDeadlineReport));
 
     }
 
 
     @Test
     @org.junit.jupiter.api.Order(34)
+    public void insertProjectWithoutReportsSuccess() throws Exception {
+
+        log.info("insertProjectSuccess");
+
+        List<Works> listWorks1 = new ArrayList<>();;
+        listWorks1.add(dataProvider.getWork(3).get());
+        listWorks1.add(dataProvider.getWork(4).get());
+        listWorks1.add(dataProvider.getWork(6).get());
+
+        List<Works> listWorks2 = new ArrayList<>();
+        listWorks2.add(dataProvider.getWork(6).get());
+        listWorks2.add(dataProvider.getWork(7).get());
+        listWorks2.add(dataProvider.getWork(8).get());
+        listWorks2.add(dataProvider.getWork(9).get());
+        listWorks2.add(dataProvider.getWork(10).get());
+
+        People customer1 = dataProvider.getCustomerById(2).get();
+        People executor1 =dataProvider.getExecutorById(1).get();
+
+        People customer2 = dataProvider.getCustomerById(2).get();
+        People executor2 = dataProvider.getExecutorById(1).get();
+        boolean isCreateEstimateReport =false;
+        boolean isCreateDeadlineReport=false;
+
+        Assertions.assertTrue(dataProvider.createProject("Проект 3х этажного дома","12.11.20","12.12.21",10,listWorks1,"Ставропольский 14",executor1,customer1, isCreateEstimateReport,  isCreateDeadlineReport));
+        Assertions.assertTrue(dataProvider.createProject("Проект 2х этажного дома","12.11.19","12.12.22",10,listWorks2,"Ставропольский 15",executor2,customer2, isCreateEstimateReport,  isCreateDeadlineReport));
+        Assertions.assertTrue(dataProvider.createProject("Проект 4х этажного дома","10.11.18","12.12.22",10,listWorks1,"Ставропольский 17",executor2,customer2, isCreateEstimateReport,  isCreateDeadlineReport));
+
+    }
+
+
+    @Test
+    @org.junit.jupiter.api.Order(35)
+    public void insertProjectWithoutReportsFail() throws Exception {
+
+        log.info("insertProjectFail");
+
+        List<Works> listWorks1 = new ArrayList<>();
+
+        List<Works> listWorks2 = new ArrayList<>();
+        listWorks2.add(dataProvider.getWork(6).get());
+        listWorks2.add(dataProvider.getWork(7).get());
+        listWorks2.add(dataProvider.getWork(8).get());
+        listWorks2.add(dataProvider.getWork(9).get());
+        listWorks2.add(dataProvider.getWork(10).get());
+
+        People customer1 = dataProvider.getCustomerById(2).get();
+        People executor1 =dataProvider.getExecutorById(1).get();
+
+        People customer2 = dataProvider.getCustomerById(2).get();
+
+        boolean isCreateEstimateReport =false;
+        boolean isCreateDeadlineReport=false;
+
+
+        Assertions.assertFalse(dataProvider.createProject(null,"12.11.20","12.12.21",10,listWorks1,"Ставропольский 14",executor1,customer1, isCreateEstimateReport,  isCreateDeadlineReport));
+        Assertions.assertFalse(dataProvider.createProject("Проект 2х этажного дома","12.11.19","12.12.22",10,listWorks2,"Ставропольский 15",null,customer2, isCreateEstimateReport,  isCreateDeadlineReport));
+
+    }
+
+
+
+
+    @Test
+    @org.junit.jupiter.api.Order(36)
     public void getProjectByIdSuccess() throws Exception {
 
         log.info("getProjectByIdSuccess");
@@ -641,7 +712,7 @@ class DataProviderJdbcTest extends TestBase  {
 
 
     @Test
-    @org.junit.jupiter.api.Order(35)
+    @org.junit.jupiter.api.Order(37)
     public void getProjectByIdFail() throws Exception {
 
         log.info("getProjectByIdFail");
@@ -653,7 +724,7 @@ class DataProviderJdbcTest extends TestBase  {
     }
 
     @Test
-    @org.junit.jupiter.api.Order(36)
+    @org.junit.jupiter.api.Order(38)
     public void updateProjectByIdSuccess() throws Exception {
 
         log.info("updateProjectByIdSuccess");
@@ -676,7 +747,7 @@ class DataProviderJdbcTest extends TestBase  {
 
 
     @Test
-    @org.junit.jupiter.api.Order(37)
+    @org.junit.jupiter.api.Order(39)
     public void updateProjectByIdFail() throws Exception {
 
         log.info("updateProjectByIdFail");
@@ -700,7 +771,7 @@ class DataProviderJdbcTest extends TestBase  {
 
 
     @Test
-    @org.junit.jupiter.api.Order(38)
+    @org.junit.jupiter.api.Order(40)
     public void deleteProjectWithReportSuccess() throws Exception {
 
         log.info("deleteProjectWithReportSuccess");
@@ -710,18 +781,18 @@ class DataProviderJdbcTest extends TestBase  {
     }
 
     @Test
-    @org.junit.jupiter.api.Order(39)
+    @org.junit.jupiter.api.Order(41)
     public void deleteProjectWithReportFail() throws Exception {
 
         log.info("deleteProjectWithReportFail");
 
-        Assertions.assertFalse(dataProvider.deleteProject(5, true));
+        Assertions.assertFalse(dataProvider.deleteProject(10, true));
 
     }
 
 
     @Test
-    @org.junit.jupiter.api.Order(40)
+    @org.junit.jupiter.api.Order(42)
     public void deleteProjectWithoutReportSuccess() throws Exception {
 
         log.info("deleteProjectWithoutReportSuccess");
@@ -731,74 +802,17 @@ class DataProviderJdbcTest extends TestBase  {
     }
 
     @Test
-    @org.junit.jupiter.api.Order(41)
+    @org.junit.jupiter.api.Order(43)
     public void deleteProjectWithoutReportFail() throws Exception {
 
         log.info("deleteProjectWithoutReportFail");
 
-        Assertions.assertFalse(dataProvider.deleteProject(5, false));
+        Assertions.assertFalse(dataProvider.deleteProject(10, false));
 
     }
-
-    //Other Methods
-    @Test
-    @org.junit.jupiter.api.Order(42)
-    public void  calculatingEstimateWithReportSuccess() throws Exception {
-
-        log.info("calculatingEstimateWithReportSuccess");
-
-        boolean createReport = true;
-        long projectEstimate = dataProvider.calculatingEstimate((long)3, createReport);
-
-        Assertions.assertNotNull(projectEstimate);
-
-        log.debug(projectEstimate);
-
-    }
-
-
-    @Test
-    @org.junit.jupiter.api.Order(43)
-    public void  calculatingEstimateWithoutReportSuccess() throws Exception {
-
-        log.info("calculatingEstimateWithoutReportSuccess");
-
-        long projectEstimate = dataProvider.calculatingEstimate((long)3, false);
-
-        Assertions.assertNotNull(projectEstimate);
-
-        log.debug(projectEstimate);
-
-    }
-
 
     @Test
     @org.junit.jupiter.api.Order(44)
-    public void  calculatingDeadlineWithoutReportSuccess() throws Exception {
-
-        log.info("calculatingDeadlineWithoutReportSuccess");
-
-
-        long calculatingDeadline = dataProvider.calculatingDeadline((long)3, false);
-
-        Assertions.assertNotNull(calculatingDeadline);
-
-        log.debug(calculatingDeadline);
-
-    }
-
-    @Test
-    @org.junit.jupiter.api.Order(45)
-    public void  calculatingDeadlineWithReportSuccess() throws Exception {
-
-        log.info("calculatingDeadlineWithoutReportSuccess");
-
-        Assertions.assertNotNull(dataProvider.calculatingDeadline((long)3, true));
-
-    }
-
-    @Test
-    @org.junit.jupiter.api.Order(46)
     public void  markTheStatusOfWorkSuccess() throws Exception {
 
         log.info("markTheStatusOfWorkSuccess");
@@ -815,7 +829,7 @@ class DataProviderJdbcTest extends TestBase  {
 
 
     @Test
-    @org.junit.jupiter.api.Order(47)
+    @org.junit.jupiter.api.Order(45)
     public void  getProgressReportSuccess() throws Exception {
 
         log.info("getProgressReportSuccess");
@@ -826,7 +840,7 @@ class DataProviderJdbcTest extends TestBase  {
     }
 
     @Test
-    @org.junit.jupiter.api.Order(48)
+    @org.junit.jupiter.api.Order(46)
     public void getTheRemainingTimeToCompleteSuccess() throws Exception {
 
         log.info("getTheRemainingTimeToCompleteSuccess");

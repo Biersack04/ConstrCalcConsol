@@ -176,24 +176,24 @@ public interface DataProvider {
 
     //Project
 
-    /** This method create objects of the Project class
+    /**
      *
-     * @param name the value of name of the project
-     * @param createdDate the value of created date of the project
-     * @param deadline the value of deadline of the project
-     * @param numberOfWorkers the value of number of workers of the project
-     * @param worksList the value of list of works of the project
-     * @param address the value of address of the project
-     * @param executor the value of executor of the project
-     * @param customer the value of customer of the project
+     * @param name
+     * @param createdDate
+     * @param deadline
+     * @param numberOfWorkers
+     * @param worksList
+     * @param address
+     * @param executor
+     * @param customer
+     * @param isCreateEstimateReport
+     * @param isCreateDeadlineReport
      * @return
-     * @throws IOException
-     * @throws CsvDataTypeMismatchException
-     * @throws CsvRequiredFieldEmptyException
+     * @throws Exception
      */
     boolean createProject(String name, String createdDate,
                           String deadline, Integer numberOfWorkers, List<Works> worksList, String address,
-                          People executor, People customer ) throws Exception;
+                          People executor, People customer, boolean isCreateEstimateReport, boolean isCreateDeadlineReport ) throws Exception;
 
     /** This method finds the required instance of the class by id and gets all the information about it
      * @param id value of the id of the object of the class to get
@@ -268,22 +268,25 @@ public interface DataProvider {
      * @throws IOException
      */
     Long GetTheCostOfMaterialsInProject(long idProject) throws Exception;
-
+/*
     /**Происходит расчет итоговой стоимости
      * @param idProject  - id проекта
      * @param createReport - флаг для вызова дополнительного метода создания отчета
      * @return  Long projectPrice - итоговая стоимость
      * @throws Exception
      */
-    Long calculatingEstimate(Long idProject, boolean createReport) throws Exception;
+   // Long calculatingEstimate(Long idProject, boolean createReport) throws Exception;
+
+    //CRUD PROJECT
+    Long calculatingEstimate(List<Works> worksList, boolean createReport) throws Exception;
 
     /**Расчёт необходимого количества дней для выполнения проекта
-     * @param idProject - id проекта
      * @param createReport - флаг для вызова дополнительного метода создания отчета
      * @return Long projectDeadline - итоговое количество дней
      * @throws Exception
      */
-    Long calculatingDeadline(Long idProject, boolean createReport) throws Exception;
+
+    Long calculatingDeadline(List<Works> worksList, long idProject, boolean createReport) throws Exception;
 
     /** Изменение статуса выполнения работы в проекте
      *
