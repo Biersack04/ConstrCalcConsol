@@ -1,6 +1,7 @@
 package ru.sfedu.constrcaclconsol;
 
 public class Constants {
+    public static final String SOURCE =  "source";
 
     static public final String WORKS_ENVIROMENT_PATH="./src/main/resources/works.properties";
     static public final String MATERIALS_ENVIROMENT_PATH="./src/main/resources/material.properties";

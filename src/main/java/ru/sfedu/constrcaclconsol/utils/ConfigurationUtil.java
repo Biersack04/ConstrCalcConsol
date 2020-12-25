@@ -17,7 +17,7 @@ import static ru.sfedu.constrcaclconsol.Constants.CUSTOM_CONFIG_PATH;
 public class ConfigurationUtil {
 
     private static final String DEFAULT_CONFIG_PATH = "./src/main/resources/enviroment.properties";
-   //private static final String DEFAULT_CONFIG_PATH = "./enviroment.properties";
+   // private static final String DEFAULT_CONFIG_PATH = "./enviroment.properties";
     private static final Properties configuration = new Properties();
 
     private static final String CUSTOM_CONFIG_PATH = System.getProperty("configPath");
