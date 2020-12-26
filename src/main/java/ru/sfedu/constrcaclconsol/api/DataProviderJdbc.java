@@ -22,17 +22,12 @@ public class DataProviderJdbc implements DataProvider {
     private static Logger log = LogManager.getLogger(DataProviderJdbc.class);
 
 
-
-
     private Connection connection;
-
 
 
     public DataProviderJdbc() {
         try {
             getConnection();
-
-
 
         } catch (ClassNotFoundException | SQLException | IOException e) {
 
@@ -40,6 +35,9 @@ public class DataProviderJdbc implements DataProvider {
         }
     }
 
+    /**
+     * Создание всех таблиц
+     */
     public void createTable() {
         try {
             String createDb = new String(Files.readAllBytes(Paths.get(Constants.DB_CREATE)));
@@ -51,7 +49,12 @@ public class DataProviderJdbc implements DataProvider {
         }
     }
 
-
+    /**
+     * Установка соединения с БД
+     * @throws ClassNotFoundException
+     * @throws SQLException
+     * @throws IOException
+     */
     public void getConnection() throws ClassNotFoundException, SQLException, IOException {
         try {
 
@@ -89,8 +92,12 @@ public class DataProviderJdbc implements DataProvider {
     }
 
 
-
-
+    /**
+     * Проверка списка на пустоту
+     * @param list список для проверки
+     * @return boolean в зависимости от результата
+     * @throws IOException
+     */
     private <T> boolean checkEmptyList(List<T> list) throws IOException {
 
         if (list.isEmpty()) {
@@ -105,6 +112,12 @@ public class DataProviderJdbc implements DataProvider {
         }
     }
 
+    /**
+     * Проверка экземпляра на пустоту
+     * @param object объект для проверки
+     * @return boolean в зависимости от результата
+     * @throws IOException
+     */
     private <T> boolean checkNull(T object) throws IOException{
         if (object == null) {
 
@@ -127,7 +140,7 @@ public class DataProviderJdbc implements DataProvider {
         {
             if (checkEmptyList(listMaterials)){
 
-                log.debug(getConfigurationEntry(Constants.CREATE_MATERIALS));
+                log.info(getConfigurationEntry(Constants.CREATE_MATERIALS));
 
                 pst = connection.prepareStatement(MATERIALS_INSERT);
 
@@ -140,6 +153,7 @@ public class DataProviderJdbc implements DataProvider {
                 }
                 pst.close();
 
+                log.debug(listMaterials);
 
                 return true;
             }
@@ -205,14 +219,13 @@ public class DataProviderJdbc implements DataProvider {
 
         try {
             
-            log.debug(getConfigurationEntry(DELETE_MATERIALS));
+            log.info(getConfigurationEntry(DELETE_MATERIALS));
 
             if (!(getMaterialById(id).get()).equals(Optional.empty())) {
 
-                log.error("Такой материал существует");
-
                 Statement statement = createStatement();
                 statement.executeUpdate(String.format(DB_DELETE, Materials.class.getSimpleName().toLowerCase(), id));
+
                 log.debug(statement);
 
                 log.info(DELETED);
@@ -260,7 +273,7 @@ public class DataProviderJdbc implements DataProvider {
 
             this.execute(String.format(DB_UPDATE_MATERIALS, newMaterials.getName(), newMaterials.getNumber(), newMaterials.getPriceForOne(), id));
 
-            log.debug(getConfigurationEntry(UPDATE_MATERIALS));
+            log.info(getConfigurationEntry(UPDATE_MATERIALS));
 
 
             return true;
@@ -277,6 +290,12 @@ public class DataProviderJdbc implements DataProvider {
 
 
     //CRUD WORKS
+
+    /**
+     * Создание таблицы, в которой показаня связь между материалами и работами
+     * @param idWork
+     * @param idMaterial
+     */
     public void createListMaterials(long idWork, long idMaterial) {
 
         this.execute(String.format(DB_INSERT, WORK_LIST_MATERIAL, LIST_MATERIAL_FIELDS,
@@ -285,6 +304,12 @@ public class DataProviderJdbc implements DataProvider {
 
     }
 
+    /**
+     * Получение списка id материалов для конкретной работы
+     * @param idWork - id работы
+     * @return
+     * @throws SQLException
+     */
     public List<Long> getListMaterialsById(long idWork) throws SQLException {
 
         try {
@@ -321,6 +346,12 @@ public class DataProviderJdbc implements DataProvider {
         }
     }
 
+    /**
+     * Удаление материалов для конкретной работы
+     * @param idWork
+     * @return
+     * @throws SQLException
+     */
     public boolean deleteListMaterials(long idWork) throws SQLException {
         try{
             if (getListMaterialsById(idWork) == null){
@@ -350,7 +381,8 @@ public class DataProviderJdbc implements DataProvider {
     @Override
     public boolean createWork(List<Works> listWorks) throws Exception {
         PreparedStatement pst = null;
-        log.debug(getConfigurationEntry(CREATE_WORKS));
+
+        log.info(getConfigurationEntry(CREATE_WORKS));
 
 
         List<Materials> listMaterials;
@@ -377,18 +409,18 @@ public class DataProviderJdbc implements DataProvider {
                         createListMaterials(a.getId(),listMaterials.get(i).getId());
                     }
 
+
                     pst.execute();
                 }
 
                 pst.close();
-
-
 
                 return true;
 
             }
             else
             {
+                log.error(getConfigurationEntry(NULL_VALUE));
                 pst.close();
 
 
@@ -429,7 +461,7 @@ public class DataProviderJdbc implements DataProvider {
                 listIdMaterial = getListMaterialsById(id);
                 List<Materials> materials = new ArrayList<>();
 
-                log.error(listIdMaterial);
+                log.debug(listIdMaterial);
 
 
                 for (int i = 0;i<listIdMaterial.size();i++)
@@ -441,6 +473,8 @@ public class DataProviderJdbc implements DataProvider {
                 newWorks.setListMaterials(materials);
 
                 statement.close();
+
+                log.debug(Optional.of(newWorks));
 
 
                 return Optional.of(newWorks);
@@ -472,7 +506,7 @@ public class DataProviderJdbc implements DataProvider {
 
             }else{
 
-                log.debug(getConfigurationEntry(DELETE_WORKS));
+                log.info(getConfigurationEntry(DELETE_WORKS));
 
                 Statement statement = createStatement();
                 statement.executeUpdate(String.format(DB_DELETE, Works.class.getSimpleName().toLowerCase(), id));
@@ -482,7 +516,6 @@ public class DataProviderJdbc implements DataProvider {
                 log.info(DELETED);
 
                 statement.close();
-
 
                 return true;
             }
@@ -527,7 +560,8 @@ public class DataProviderJdbc implements DataProvider {
                 createListMaterials(id,listMaterials.get(i).getId());
             }
 
-            log.error(listMaterials);
+            log.debug(listMaterials);
+            log.debug(newWorks);
 
             execute(String.format(DB_UPDATE_WORK, newWorks.getName(), newWorks.getPrice(), newWorks.getPriority(), newWorks.getNeedDaysToCompleted(), newWorks.getStatus(), id));
 
@@ -572,10 +606,10 @@ public class DataProviderJdbc implements DataProvider {
 
                 Statement statement = createStatement();
                 ResultSet set = statement.executeQuery(String.format(GET_CUSTOMER_ID + nameCustomer + QUOTATION_MARK));
-                log.error(statement);
+                log.debug(statement);
 
                 if (set != null && set.next()) {
-                    log.error(set.getLong(Constants.ID));
+                    log.debug(set.getLong(Constants.ID));
                 }
                 customer.setId(set.getLong(Constants.ID));
 
@@ -603,7 +637,7 @@ public class DataProviderJdbc implements DataProvider {
 
             if (resultSet != null && resultSet.next()) {
 
-                log.debug(getConfigurationEntry(GET_CUSTOMER));
+                log.info(getConfigurationEntry(GET_CUSTOMER));
 
                 Customer customer = new Customer();
                 customer.setId(resultSet.getLong(Constants.ID));
@@ -613,6 +647,8 @@ public class DataProviderJdbc implements DataProvider {
                 customer.setTelephone(resultSet.getString(Constants.TELEPHONE));
 
                 statement.close();
+
+                log.debug(Optional.of(customer));
 
                 return Optional.of(customer);
 
@@ -638,9 +674,11 @@ public class DataProviderJdbc implements DataProvider {
 
             if ((getCustomerById(id).get()).equals(Optional.empty()) ){
 
+                log.error(getConfigurationEntry(NULL_VALUE));
                 return false;
 
             }else {
+
                 Statement statement = createStatement();
                 statement.executeUpdate(String.format(DB_DELETE, Customer.class.getSimpleName().toLowerCase(), id));
 
@@ -677,7 +715,8 @@ public class DataProviderJdbc implements DataProvider {
             newCustomer.setMailbox(mailbox);
             newCustomer.setTelephone(telephone);
 
-            log.debug(getConfigurationEntry(UPDATE_CUSTOMER));
+            log.info(getConfigurationEntry(UPDATE_CUSTOMER));
+            log.debug(newCustomer);
 
             this.execute(String.format(DB_UPDATE_CUSTOMER, newCustomer.getName(), newCustomer.getSurname(), newCustomer.getMailbox(),newCustomer.getTelephone(), id));
 
@@ -694,7 +733,7 @@ public class DataProviderJdbc implements DataProvider {
     @Override
     public boolean createExecutor(String name, String surname, String mailbox, Long numberOfCompletedProjects, Long numberOfWorkers) throws Exception {
 
-        log.debug(getConfigurationEntry(CREATE_EXECUTOR));
+        log.info(getConfigurationEntry(CREATE_EXECUTOR));
 
 
         try
@@ -727,6 +766,8 @@ public class DataProviderJdbc implements DataProvider {
                     log.error(set.getLong(Constants.ID));
                 }
                 executor.setId(set.getLong(Constants.ID));
+
+                log.debug(executor);
 
                 statement.close();
 
@@ -764,6 +805,8 @@ public class DataProviderJdbc implements DataProvider {
 
                 statement.close();
 
+                log.debug(Optional.of(executor));
+
                 return Optional.of(executor);
 
             } else {
@@ -787,6 +830,7 @@ public class DataProviderJdbc implements DataProvider {
 
             if ((getExecutorById(id).get()).equals(Optional.empty()) ){
 
+                log.error(getConfigurationEntry(NULL_VALUE));
                 return false;
 
             }else {
@@ -829,10 +873,11 @@ public class DataProviderJdbc implements DataProvider {
             newExecutor.setNumberOfCompletedProjects(numberOfCompletedProject);
             newExecutor.setNumberOfWorkers(numberOfWorkers);
 
-            log.debug(getConfigurationEntry(UPDATE_EXECUTOR));
+            log.info(getConfigurationEntry(UPDATE_EXECUTOR));
 
             this.execute(String.format(DB_UPDATE_EXECUTOR, newExecutor.getName(), newExecutor.getSurname(), newExecutor.getMailbox(), newExecutor.getNumberOfCompletedProjects(), newExecutor.getNumberOfWorkers(), id));
 
+            log.debug(newExecutor);
             return true;
 
         } catch (NoSuchElementException | IndexOutOfBoundsException | NullPointerException | SQLException | ClassNotFoundException e) {
@@ -984,7 +1029,7 @@ public class DataProviderJdbc implements DataProvider {
                 log.info(createReportAboutEstimate(projectPriceForWorks, projectPriceForMaterials, projectPrice ));
             }
 
-            log.debug(getConfigurationEntry(Constants.CALCULATING_ESTIMATE));
+            log.info(getConfigurationEntry(Constants.CALCULATING_ESTIMATE));
 
             return projectPrice;
 
@@ -1293,6 +1338,8 @@ public class DataProviderJdbc implements DataProvider {
     @Override
     public StringBuffer createReportAboutProject(long idProject) throws Exception {
 
+        log.info(getConfigurationEntry(Constants.PROJECT_REPORT));
+
         Project projectForReport = getProject(idProject).get();
 
         StringBuffer reportAboutProject = new StringBuffer();
@@ -1316,6 +1363,7 @@ public class DataProviderJdbc implements DataProvider {
 
     @Override
     public StringBuffer createReportAboutEstimate(long workPrice, long materialPrice, long totalPrice)throws Exception{
+    log.info(getConfigurationEntry(Constants.ESTIMATE_REPORT));
 
         StringBuffer reportAboutProject = new StringBuffer();
 
@@ -1331,6 +1379,9 @@ public class DataProviderJdbc implements DataProvider {
 
     @Override
     public StringBuffer createDeadlineReport(Long idProject, Long needDays) throws Exception {
+
+        log.info(getConfigurationEntry(Constants.DEADLINE_REPORT));
+
         Project project;
 
         project = getProject(idProject).get();
@@ -1350,41 +1401,45 @@ public class DataProviderJdbc implements DataProvider {
     }
 
     @Override
-    public Long GetTheCostOfWorksInProject(long idProject) throws Exception {
+    public Long getTheCostOfWorksInProject(long idProject) throws Exception {
 
         try {
-             List<Long> listIdWork;
+            if (getProject(idProject).equals(Optional.empty())){
+                log.info(getConfigurationEntry(NULL_VALUE));
+                return null;
+            } else {
+
+                List<Long> listIdWork;
                 listIdWork = getListWorkById(idProject);
                 List<Works> works = new ArrayList<>();
 
 
-                for (int i = 0;i<listIdWork.size();i++)
-                {
+                for (int i = 0; i < listIdWork.size(); i++) {
 
                     works.add((getWork(listIdWork.get(i))).get());
                 }
 
 
+                Long projectPriceForWorks;
 
-            Long projectPriceForWorks;
 
+                List<Long> priceForWorks;
 
-            List<Long> priceForWorks;
+                priceForWorks = works
+                        .stream()
+                        .map(value -> value.getPrice())
+                        .collect(Collectors.toList());
 
-            priceForWorks = works
-                    .stream()
-                    .map(value -> value.getPrice())
-                    .collect(Collectors.toList());
+                projectPriceForWorks = priceForWorks
+                        .stream()
+                        .map(value -> value.longValue())
+                        .filter(a -> a != null)
+                        .mapToLong(a -> a).sum();
 
-            projectPriceForWorks = priceForWorks
-                    .stream()
-                    .map(value -> value.longValue())
-                    .filter(a -> a != null)
-                    .mapToLong(a -> a).sum();
+                log.debug(getConfigurationEntry(Constants.GET_THE_COST_OF_WORKS));
 
-            log.debug(getConfigurationEntry(Constants.GET_THE_COST_OF_WORKS));
-
-            return projectPriceForWorks;
+                return projectPriceForWorks;
+            }
         }
         catch (IOException e)
         {
@@ -1395,49 +1450,50 @@ public class DataProviderJdbc implements DataProvider {
     }
 
     @Override
-    public Long GetTheCostOfMaterialsInProject(long idProject) throws Exception {
+    public Long getTheCostOfMaterialsInProject(long idProject) throws Exception {
         try {
+            if (getProject(idProject).equals(Optional.empty())){
+                log.info(getConfigurationEntry(NULL_VALUE));
+                return null;
+            } else {
 
-            Long projectPriceForMaterials;
-            List<Long> priceForMaterials;
+                Long projectPriceForMaterials;
+                List<Long> priceForMaterials;
 
 
-            List<Long> listIdWork;
-            listIdWork = getListWorkById(idProject);
-            List<Works> works = new ArrayList<>();
+                List<Long> listIdWork;
+                listIdWork = getListWorkById(idProject);
+                List<Works> works = new ArrayList<>();
 
 
-            for (int i = 0;i<listIdWork.size();i++)
-            {
+                for (int i = 0; i < listIdWork.size(); i++) {
 
-                works.add((getWork(listIdWork.get(i))).get());
+                    works.add((getWork(listIdWork.get(i))).get());
+                }
+
+
+                List<Materials> materilsListInWorks;
+
+                //Список всех материалов в работах
+                materilsListInWorks = works.stream()
+                        .flatMap(value -> value.getListMaterials().stream())
+                        .collect(Collectors.toList());
+
+                priceForMaterials = materilsListInWorks
+                        .stream()
+                        .map(value -> value.getPriceForOne() * value.getNumber())
+                        .collect(Collectors.toList());
+
+                projectPriceForMaterials = priceForMaterials
+                        .stream()
+                        .map(value -> value.longValue())
+                        .filter(a -> a != null)
+                        .mapToLong(a -> a).sum();
+
+                log.debug(getConfigurationEntry(Constants.GET_THE_COST_OF_MATERIALS));
+
+                return projectPriceForMaterials;
             }
-
-
-
-
-            List<Materials> materilsListInWorks;
-
-            //Список всех материалов в работах
-            materilsListInWorks = works.stream()
-                    .flatMap(value -> value.getListMaterials().stream())
-                    .collect(Collectors.toList());
-
-            priceForMaterials = materilsListInWorks
-                    .stream()
-                    .map(value -> value.getPriceForOne() * value.getNumber())
-                    .collect(Collectors.toList());
-
-            projectPriceForMaterials = priceForMaterials
-                    .stream()
-                    .map(value -> value.longValue())
-                    .filter(a -> a != null)
-                    .mapToLong(a -> a).sum();
-
-            log.debug(getConfigurationEntry(Constants.GET_THE_COST_OF_MATERIALS));
-
-          //  connection.close();
-            return projectPriceForMaterials;
 
         }catch(IOException e){
 
@@ -1483,28 +1539,32 @@ public class DataProviderJdbc implements DataProvider {
     @Override
     public HashMap<Integer, String> getProgressReport(Long idProject) throws Exception {
         try {
+            if (getProject(idProject).equals(Optional.empty())){
+                log.info(getConfigurationEntry(NULL_VALUE));
+                return null;
+            } else {
 
-            List<Long> listIdWork;
-            listIdWork = getListWorkById(idProject);
-            List<Works> works = new ArrayList<>();
+                List<Long> listIdWork;
+                listIdWork = getListWorkById(idProject);
+                List<Works> works = new ArrayList<>();
 
 
-            for (int i = 0;i<listIdWork.size();i++)
-            {
+                for (int i = 0; i < listIdWork.size(); i++) {
 
-                works.add((getWork(listIdWork.get(i))).get());
+                    works.add((getWork(listIdWork.get(i))).get());
+                }
+
+                HashMap<Integer, String> workAndStatus = new HashMap<>();
+
+                for (int i = 0; i < works.size(); i++) {
+                    workAndStatus.put(Math.toIntExact(works.get(i).getId()), works.get(i).getStatus());
+                }
+
+                log.debug(getConfigurationEntry(Constants.GET_THE_PROGRESS_REPORT));
+
+
+                return workAndStatus;
             }
-
-            HashMap<Integer, String> workAndStatus = new HashMap<>();
-
-            for (int i = 0; i < works.size(); i++) {
-                workAndStatus.put(Math.toIntExact(works.get(i).getId()), works.get(i).getStatus());
-            }
-
-            log.debug(getConfigurationEntry(Constants.GET_THE_PROGRESS_REPORT));
-
-
-            return workAndStatus;
 
         } catch (IOException e) {
 
@@ -1517,37 +1577,41 @@ public class DataProviderJdbc implements DataProvider {
     @Override
     public Long getTheRemainingTimeToComplete(Long idProject) throws Exception {
         try {
+            if (getProject(idProject).equals(Optional.empty())){
+                log.info(getConfigurationEntry(NULL_VALUE));
+                return null;
+            } else {
 
-            List<Long> listIdWork;
-            listIdWork = getListWorkById(idProject);
-            List<Works> works = new ArrayList<>();
+                List<Long> listIdWork;
+                listIdWork = getListWorkById(idProject);
+                List<Works> works = new ArrayList<>();
 
 
-            for (int i = 0;i<listIdWork.size();i++)
-            {
-                works.add((getWork(listIdWork.get(i))).get());
+                for (int i = 0; i < listIdWork.size(); i++) {
+                    works.add((getWork(listIdWork.get(i))).get());
+                }
+
+
+                List<Long> NotCompletedWork;
+                List<Works> worksListNotCompleted;
+
+                worksListNotCompleted = works
+                        .stream()
+                        .filter(value -> value.getStatus().equals(CREATE))
+                        .collect(Collectors.toList());
+
+                NotCompletedWork = worksListNotCompleted
+                        .stream()
+                        .map(value -> value.getNeedDaysToCompleted())
+                        .collect(Collectors.toList());
+
+
+                Long projectNeedDays = NotCompletedWork.stream().map(value -> value.longValue()).filter(a -> a != null).mapToLong(a -> a).sum();
+
+                log.debug(getConfigurationEntry(Constants.GET_THE_REMAINING_TIME));
+
+                return projectNeedDays;
             }
-
-
-            List<Long> NotCompletedWork;
-            List<Works> worksListNotCompleted;
-
-            worksListNotCompleted = works
-                    .stream()
-                    .filter(value -> value.getStatus().equals(CREATE))
-                    .collect(Collectors.toList());
-
-            NotCompletedWork = worksListNotCompleted
-                    .stream()
-                    .map(value -> value.getNeedDaysToCompleted())
-                    .collect(Collectors.toList());
-
-
-            Long projectNeedDays = NotCompletedWork.stream().map(value -> value.longValue()).filter(a -> a != null).mapToLong(a -> a).sum();
-
-            log.debug(getConfigurationEntry(Constants.GET_THE_REMAINING_TIME));
-
-            return projectNeedDays;
         }
         catch(IOException e)
         {

@@ -15,4 +15,12 @@
       <numberOfCompletedProjects>5</numberOfCompletedProjects>
       <numberOfWorkers>50</numberOfWorkers>
    </object>
+   <object class="ru.sfedu.constrcaclconsol.bean.Executor">
+      <id>2</id>
+      <name>proverka</name>
+      <surname>familiya</surname>
+      <mailbox>goooogl@.com</mailbox>
+      <numberOfCompletedProjects>50</numberOfCompletedProjects>
+      <numberOfWorkers>70</numberOfWorkers>
+   </object>
 </main>

@@ -1,7 +1,9 @@
 package ru.sfedu.constrcaclconsol;
 
 public class Constants {
-    public static final String SOURCE =  "source";
+
+
+    public static final String START_APP ="LogClient: starting application.........";
 
     static public final String WORKS_ENVIROMENT_PATH="./src/main/resources/works.properties";
     static public final String MATERIALS_ENVIROMENT_PATH="./src/main/resources/material.properties";
@@ -29,6 +31,8 @@ public class Constants {
     static public final String NULL="NULL";
     static public final String LIST_IS_EMPTY = "list_is_empty";
     public static final String NULL_VALUE = "null_value";
+
+    public static final String CREATE_FILE = "create_file";
 
     static public final String GET_FROM_CSV = "get_from_csv";
     static public final String GET_MATERIAL_LIST = "get_material_list";
@@ -175,6 +179,51 @@ public class Constants {
 
     public static final String DB_DELETE_LIST_WORKS = "DELETE FROM %s WHERE id_project=%d";
     public static final String DB_UPDATE_PROJECT = "UPDATE PROJECT SET name='%s', createdDate='%s', deadline='%s', numberOfWorkers='%s', projectAddress='%s', id_customer='%s', id_executor='%s' WHERE id=%d";
+
+
+
+    public static final String MATERIALS_COMMAND ="materials";
+    public static final String CUSTOMER_COMMAND ="customer";
+    public static final String EXECUTOR_COMMAND ="executor";
+    public static final String WORKS_COMMAND ="works";
+
+
+    public static final String CREATE_COMMAND ="create";
+    public static final String DELETE_COMMAND ="delete";
+    public static final String GET_BY_ID_COMMAND ="getbyid";
+    public static final String GET_ORDER_HISTORY_COMMAND ="history";
+    public static final String CALCULATE_COMMAND ="calculate";
+
+    public static final String LINE ="___________________________________________________________________________________";
+    public static final String COMMA =", ";
+    public static final String READ_FAIL ="Can't read properties";
+    public static final String SOURCE_FAIL ="Command should begin from data source type: ";
+    public static final String FILE_FAIL ="Command should have a table name in the second place: ";
+    public static final String ACTION_FAIL ="Action should take the third place in command, actions: ";
+    public static final String BAD_ID ="Bad id format";
+
+    public static final String DELIMETR =",";
+
+    public static final String LAUNCH_APP ="Launching the application...";
+    public static final String OPERATING_SYS ="Operating System: ";
+    public static final String OS_NAME = "os.name";
+    public static final String OS_VERSION ="os.version";
+    public static final String JRE ="JRE: ";
+    public static final String JAVA_VERSION ="java.version";
+    public static final String JAVA_LAUNCH ="Java Launched From: ";
+    public static final String JAVA_HOME ="java.home";
+    public static final String CLASS_PATH ="Class Path: ";
+    public static final String JAVA_CLASS ="java.class.path";
+    public static final String LIBRARY_PATH ="Library Path: ";
+    public static final String JAVA_LIBRARY ="java.library.path";
+    public static final String USER_HOME_DIRECTORY ="User Home Directory: ";
+    public static final String USER_HOME ="user.home";
+    public static final String USER_WORKING_DIRECTORY ="User Working Directory: ";
+    public static final String USER_DIR ="user.dir";
+    public static final String TEST_INFO ="Test INFO logging.";
+    public static final String PROB = " ";
+
+    public static final String PROPERTIES = "src/main/resources/enviroment.properties";
 
 
 

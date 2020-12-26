@@ -885,5 +885,44 @@ class DataProviderCsvTest extends TestBase {
 
         log.debug(dataProvider.getTheRemainingTimeToComplete((long)10));
     }
+    @Test
+    @org.junit.jupiter.api.Order(27)
+    public void GetTheCostOfWorksInProjectSuccess() throws Exception{
+
+        log.info("GetTheCostOfWorksInProjectSuccess");
+        Assertions.assertNotNull(dataProvider.getTheCostOfWorksInProject(1));
+
+
+
+    }
+    @Test
+    @org.junit.jupiter.api.Order(27)
+    public void GetTheCostOfWorksInProjectFail() throws Exception{
+
+        log.info("GetTheCostOfWorksInProjectFail");
+        Assertions.assertNull(dataProvider.getTheCostOfWorksInProject(10));
+
+    }
+
+
+    @Test
+    @org.junit.jupiter.api.Order(28)
+    public void GetTheCostOfMaterialsInProjectSuccess() throws Exception{
+
+        log.info("GetTheCostOfMaterialsInProjectSuccess");
+        Assertions.assertNotNull(dataProvider.getTheCostOfMaterialsInProject(1));
+
+
+    }
+    @Test
+    @org.junit.jupiter.api.Order(28)
+    public void GetTheCostOfMaterialsInProjectFail() throws Exception{
+
+        log.info("GetTheCostOfMaterialsInProjectFail");
+        Assertions.assertNull(dataProvider.getTheCostOfMaterialsInProject(10));
+
+    }
+
+
 
 }

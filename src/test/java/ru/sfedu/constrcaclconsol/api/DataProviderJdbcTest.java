@@ -176,7 +176,7 @@ class DataProviderJdbcTest extends TestBase  {
         log.info("updateMaterialSuccess");
 
         long idRewriteMaterial = 3;
-        String newName = "RewriteName";
+        String newName = "RewriteName2";
         long newNumber = 10;
         long newTotalPrice = 100;
 
@@ -848,6 +848,43 @@ class DataProviderJdbcTest extends TestBase  {
         Assertions.assertNotNull(dataProvider.getTheRemainingTimeToComplete((long)3));
 
         log.debug(dataProvider.getTheRemainingTimeToComplete((long)3));
+    }
+    @Test
+    @org.junit.jupiter.api.Order(47)
+    public void GetTheCostOfWorksInProjectSuccess() throws Exception{
+
+        log.info("GetTheCostOfWorksInProjectSuccess");
+        dataProvider.getTheCostOfWorksInProject(1);
+
+
+
+    }
+    @Test
+    @org.junit.jupiter.api.Order(48)
+    public void GetTheCostOfWorksInProjectFail() throws Exception{
+
+        log.info("GetTheCostOfWorksInProjectFail");
+        dataProvider.getTheCostOfWorksInProject(10);
+
+    }
+
+
+    @Test
+    @org.junit.jupiter.api.Order(49)
+    public void GetTheCostOfMaterialsInProjectSuccess() throws Exception{
+
+        log.info("GetTheCostOfMaterialsInProjectSuccess");
+        dataProvider.getTheCostOfMaterialsInProject(1);
+
+
+    }
+    @Test
+    @org.junit.jupiter.api.Order(50)
+    public void GetTheCostOfMaterialsInProjectFail() throws Exception{
+
+        log.info("GetTheCostOfMaterialsInProjectFail");
+        dataProvider.getTheCostOfMaterialsInProject(10);
+
     }
 }
 

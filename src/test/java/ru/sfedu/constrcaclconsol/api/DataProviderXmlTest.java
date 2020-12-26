@@ -885,5 +885,42 @@ class DataProviderXmlTest extends TestBase {
 
         log.debug(dataProvider.getTheRemainingTimeToComplete((long)10));
     }
+    @Test
+    @org.junit.jupiter.api.Order(27)
+    public void GetTheCostOfWorksInProjectSuccess() throws Exception{
+
+        log.info("GetTheCostOfWorksInProjectSuccess");
+        dataProvider.getTheCostOfWorksInProject(1);
+
+
+
+    }
+    @Test
+    @org.junit.jupiter.api.Order(27)
+    public void GetTheCostOfWorksInProjectFail() throws Exception{
+
+        log.info("GetTheCostOfWorksInProjectFail");
+        dataProvider.getTheCostOfWorksInProject(10);
+
+    }
+
+
+    @Test
+    @org.junit.jupiter.api.Order(28)
+    public void GetTheCostOfMaterialsInProjectSuccess() throws Exception{
+
+        log.info("GetTheCostOfMaterialsInProjectSuccess");
+        dataProvider.getTheCostOfMaterialsInProject(1);
+
+
+    }
+    @Test
+    @org.junit.jupiter.api.Order(28)
+    public void GetTheCostOfMaterialsInProjectFail() throws Exception{
+
+        log.info("GetTheCostOfMaterialsInProjectFail");
+        dataProvider.getTheCostOfMaterialsInProject(10);
+
+    }
 
 }

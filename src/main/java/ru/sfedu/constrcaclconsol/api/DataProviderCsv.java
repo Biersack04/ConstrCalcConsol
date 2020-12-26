@@ -25,10 +25,18 @@ public class DataProviderCsv implements DataProvider{
     private static Logger log = LogManager.getLogger(DataProviderCsv.class);
 
     //Read
+
+    /**
+     * Проверка на наличие необходимого файла класса, в случае отсутствия - его создание
+     * @param tClass объект класса
+     * @throws IOException
+     */
     private <T> CSVReader getCsvFileToRead(Class<T> tClass) throws IOException {
 
         File file = new File(getConfigurationEntry(PATH_CSV) + tClass.getSimpleName().toLowerCase()
                 + getConfigurationEntry(FILE_EXTENSION_CSV));
+
+        log.debug(getConfigurationEntry(GET_FROM_CSV));
 
         if (!file.exists()) {
 
@@ -36,6 +44,8 @@ public class DataProviderCsv implements DataProvider{
 
                 throw new IOException(getConfigurationEntry(CANNOT_CREATE_FILE));
             }
+
+            log.info(getConfigurationEntry(Constants.CREATE_FILE));
         }
 
         FileReader fileReader = new FileReader(file);
@@ -44,6 +54,13 @@ public class DataProviderCsv implements DataProvider{
         return new CSVReader(bufferedReader);
     }
 
+    /**
+     * Распарсивание файла csv в список объектов
+     * @param tClass
+     * @param <T>
+     * @return
+     * @throws IOException
+     */
     private <T> List<T> getDataFromCsv(Class<T> tClass) throws IOException {
 
         List<T> tList;
@@ -72,6 +89,13 @@ public class DataProviderCsv implements DataProvider{
     }
 
     //Write
+
+    /**
+     * Запись в csv файл
+     * @param listClass список объектов класса
+     * @return успешний или не успешный результат в виде переменной типа boolean
+     * @throws IOException
+     */
     private <T> boolean insertListIntoCsv(List<T> listClass) throws IOException {
 
         try{
@@ -101,6 +125,13 @@ public class DataProviderCsv implements DataProvider{
         }
     }
 
+    /**
+     *Запись в csv файл
+     * @param overwrite -флаг для перезаписи
+     * @param <T>
+     * @return
+     * @throws IOException
+     */
     private <T> boolean writeToCsv (Class<?> tClass, List<T> object, boolean overwrite) throws IOException {
 
         List<T> fileObjectList;
@@ -148,6 +179,13 @@ public class DataProviderCsv implements DataProvider{
         }
     }
 
+    /**
+     * Поверка на не пустоту перед записью в файл
+     * @param object
+     * @param <T>
+     * @return
+     * @throws IOException
+     */
     private <T> boolean writeToCsv (T object) throws IOException {
 
         if (object == null) {
@@ -161,9 +199,9 @@ public class DataProviderCsv implements DataProvider{
     }
 
 
-    /** Create the List of objects of the Materials class type
-     * @param work the object of the class of Works to get a list of materials for
-     * @return List of objects of the Materials class type
+    /** Создает список материалов, относящиеся к конкретной работе
+     * @param work объект класса Works
+     * @return Список всех найденных материалов
      * @throws IOException
      */
     private <T> List<Materials> getMaterialList( T work) throws IOException {
@@ -193,7 +231,8 @@ public class DataProviderCsv implements DataProvider{
                             .anyMatch(workInProject -> workInProject.longValue() ==  worksInProject.getId()))
                     .collect(Collectors.toList());
 
-            log.debug(getConfigurationEntry(GET_MATERIAL_LIST));
+            log.info(getConfigurationEntry(GET_MATERIAL_LIST));
+            log.debug(workListInProject);
 
             return workListInProject;
 
@@ -205,9 +244,9 @@ public class DataProviderCsv implements DataProvider{
         }
     }
 
-    /** Create the List of objects of the Works class type
-     * @param projectObject the object of the class of Project to get a list of works for
-     * @return List of objects of the Works class type
+    /** Создает список объектов
+     * @param projectObject - объект класса Project для получения списка работ, которые к нему относятся
+     * @return список работ
      * @throws IOException
      */
     private <T> List<Works> getWorksList(T projectObject) throws IOException {
@@ -244,7 +283,8 @@ public class DataProviderCsv implements DataProvider{
             workListInProject
                     .forEach(x -> worksInProjectWithMaterials.add(getWork(x.getId()).get()));
 
-            log.debug(getConfigurationEntry(GET_WORKS_LIST));
+            log.info(getConfigurationEntry(GET_WORKS_LIST));
+            log.debug(workListInProject);
 
             return worksInProjectWithMaterials;
 
@@ -256,9 +296,9 @@ public class DataProviderCsv implements DataProvider{
         }
     }
 
-    /** Create the object of the Customer class type
-     * @param customerObject the object of the class of Project to get a class object
-     * @return objects of the People class type
+    /** Получение экземпляра класса Customer
+     * @param customerObject  - объект класса, который связан с конкретным проектом
+     * @return экземпляр класса типа People
      * @throws IOException
      */
     private <T> People getCustomerInProject(T customerObject) throws IOException {
@@ -277,15 +317,16 @@ public class DataProviderCsv implements DataProvider{
                 .findAny()
                 .orElse(null);
 
-        log.debug(getConfigurationEntry(GET_CUSTOMER_IN_PROJECT));
+        log.info(getConfigurationEntry(GET_CUSTOMER_IN_PROJECT));
+        log.debug(customer);
 
         return customerInProject;
 
     }
 
-    /** Create the object of the Executor class type
-     * @param executorObject the object of the class of Project to get a class object
-     * @return objects of the People class type
+    /** Получение экземпляра класса Executor
+     * @param executorObject - объект класса, который связан с конкретным проектом
+     * @return экземпляр класса типа People
      * @throws IOException
      */
     private <T> People getExecutorInProject(T executorObject) throws IOException {
@@ -302,12 +343,17 @@ public class DataProviderCsv implements DataProvider{
                 .findAny()
                 .orElse(null);
 
-        log.debug(getConfigurationEntry(GET_EXECUTOR_IN_PROJECT));
+        log.info(getConfigurationEntry(GET_EXECUTOR_IN_PROJECT));
+        log.debug(executor);
 
         return executorInProject;
 
     }
 
+    /**
+     * Получение следующего id для Customer
+     * @return id
+     */
     private long getNextCustomerId() {
 
         try {
@@ -336,6 +382,10 @@ public class DataProviderCsv implements DataProvider{
         }
     }
 
+    /**
+     * Получение следующего id для Executor
+     * @return id
+     */
     private long getNextExecutorId() {
 
         try {
@@ -363,6 +413,10 @@ public class DataProviderCsv implements DataProvider{
         }
     }
 
+    /**
+     * Получение следующего id для Project
+     * @return id
+     */
     private long getNextProjectId() {
 
         try {
@@ -390,6 +444,12 @@ public class DataProviderCsv implements DataProvider{
         }
     }
 
+    /**
+     * Проверка списка на пустоту
+     * @param list список для проверки
+     * @return boolean в зависимости от результата
+     * @throws IOException
+     */
     private <T> boolean checkEmptyList(List<T> list) throws IOException {
 
         if (list.isEmpty()) {
@@ -404,6 +464,12 @@ public class DataProviderCsv implements DataProvider{
         }
     }
 
+    /**
+     * Проверка экземпляра на пустоту
+     * @param object объект для проверки
+     * @return boolean в зависимости от результата
+     * @throws IOException
+     */
     private <T> boolean checkNull(T object) throws IOException{
         if (object == null) {
 
@@ -424,11 +490,13 @@ public class DataProviderCsv implements DataProvider{
     @Override
     public boolean createMaterials(List<Materials> listMaterials) throws IOException {
 
-        log.debug(getConfigurationEntry(CREATE_MATERIALS));
+        log.info(getConfigurationEntry(CREATE_MATERIALS));
 
         try
         {
             if (checkEmptyList(listMaterials)){
+
+                log.debug(listMaterials);
 
                 return insertListIntoCsv(listMaterials);
 
@@ -436,6 +504,7 @@ public class DataProviderCsv implements DataProvider{
 
             else
             {
+                log.error(getConfigurationEntry(NULL_VALUE));
                 return false;
             }
 
@@ -459,7 +528,8 @@ public class DataProviderCsv implements DataProvider{
                     .filter(el -> el.getId() == materialId)
                     .findFirst().get();
 
-            log.debug(getConfigurationEntry(GET_MATERIALS));
+            log.info(getConfigurationEntry(GET_MATERIALS));
+            log.debug(Optional.of(materials));
 
             return Optional.of(materials);
 
@@ -478,16 +548,19 @@ public class DataProviderCsv implements DataProvider{
         List<Materials> listMaterials = getDataFromCsv(Materials.class);
 
         try {
+            log.info(getConfigurationEntry(DELETE_MATERIALS));
 
             Materials materials = listMaterials.stream()
                     .filter(el -> el.getId() == id)
                     .findFirst().get();
 
+            log.debug(materials);
+
             listMaterials.remove(materials);
 
             writeToCsv(Materials.class, listMaterials,true);
 
-            log.debug(getConfigurationEntry(DELETE_MATERIALS));
+
 
             return true;
 
@@ -521,7 +594,8 @@ public class DataProviderCsv implements DataProvider{
 
             writeToCsv(Materials.class, listMaterials,true);
 
-            log.debug(getConfigurationEntry(UPDATE_MATERIALS));
+            log.info(getConfigurationEntry(UPDATE_MATERIALS));
+            log.debug(newMaterials);
 
             return true;
 
@@ -540,17 +614,20 @@ public class DataProviderCsv implements DataProvider{
     @Override
     public boolean createWork(List<Works> listWorks) throws IOException {
 
-        log.debug(getConfigurationEntry(CREATE_WORKS));
+        log.info(getConfigurationEntry(CREATE_WORKS));
 
         try
         {
             if (checkEmptyList(listWorks)){
+
+                log.debug(listWorks);
 
             return insertListIntoCsv(listWorks);
 
             }
             else
             {
+                log.error(getConfigurationEntry(NULL_VALUE));
                 return false;
             }
 
@@ -582,7 +659,8 @@ public class DataProviderCsv implements DataProvider{
 
             works.setListMaterials(getMaterialList(works));
 
-            log.debug(getConfigurationEntry(GET_WORKS));
+            log.info(getConfigurationEntry(GET_WORKS));
+            log.debug(Optional.of(works));
 
             return Optional.of(works);
 
@@ -609,7 +687,8 @@ public class DataProviderCsv implements DataProvider{
 
             writeToCsv(Works.class, listWorks,true);
 
-            log.debug(getConfigurationEntry(DELETE_WORKS));
+            log.info(getConfigurationEntry(DELETE_WORKS));
+            log.debug(works);
 
             return true;
 
@@ -646,7 +725,9 @@ public class DataProviderCsv implements DataProvider{
 
             writeToCsv(Works.class, listWorks,true);
 
-            log.debug(getConfigurationEntry(UPDATE_WORKS));
+            log.info(getConfigurationEntry(UPDATE_WORKS));
+            log.debug(newWorks);
+
 
             return true;
 
@@ -665,12 +746,13 @@ public class DataProviderCsv implements DataProvider{
     @Override
     public boolean createCustomer(String name, String surname, String mailbox,String telephone) throws IOException {
 
-        log.debug(getConfigurationEntry(CREATE_CUSTOMER));
+        log.info(getConfigurationEntry(CREATE_CUSTOMER));
 
         try
         {
             if ( checkNull(name) || checkNull(surname) || checkNull(mailbox) || checkNull(telephone))
             {
+                log.error(getConfigurationEntry(NULL_VALUE));
                 return false;
             }
             else
@@ -681,6 +763,8 @@ public class DataProviderCsv implements DataProvider{
                 customer.setSurname(surname);
                 customer.setMailbox(mailbox);
                 customer.setTelephone(telephone);
+
+                log.debug(customer);
 
                 return writeToCsv(customer);
             }
@@ -705,7 +789,8 @@ public class DataProviderCsv implements DataProvider{
                     .filter(el -> el.getId() == id)
                     .findFirst().get();
 
-            log.debug(getConfigurationEntry(GET_CUSTOMER));
+            log.info(getConfigurationEntry(GET_CUSTOMER));
+            log.debug(customer);
 
             return Optional.of(customer);
 
@@ -733,7 +818,8 @@ public class DataProviderCsv implements DataProvider{
 
             writeToCsv(Customer.class, listCustomer,true);
 
-            log.debug(getConfigurationEntry(DELETE_CUSTOMER));
+            log.info(getConfigurationEntry(DELETE_CUSTOMER));
+            log.debug(customer);
 
             return true;
 
@@ -774,7 +860,8 @@ public class DataProviderCsv implements DataProvider{
 
             writeToCsv(Customer.class, listCustomer,true);
 
-            log.debug(getConfigurationEntry(UPDATE_CUSTOMER));
+            log.info(getConfigurationEntry(UPDATE_CUSTOMER));
+            log.debug(newCustomer);
 
             return true;
 
@@ -792,13 +879,13 @@ public class DataProviderCsv implements DataProvider{
     @Override
     public boolean createExecutor(String name, String surname, String mailbox, Long numberOfCompletedProjects, Long numberOfWorkers) throws IOException, CsvDataTypeMismatchException, CsvRequiredFieldEmptyException {
 
-        log.debug(getConfigurationEntry(CREATE_EXECUTOR));
+        log.info(getConfigurationEntry(CREATE_EXECUTOR));
 
         try
         {
             if ( checkNull(name) || checkNull(surname) || checkNull(mailbox) || checkNull(numberOfCompletedProjects) || checkNull(numberOfWorkers))
             {
-                log.debug(Constants.NULL_VALUE);
+                log.error(Constants.NULL_VALUE);
 
                 return false;
             }
@@ -835,7 +922,8 @@ public class DataProviderCsv implements DataProvider{
                     .filter(el -> el.getId() == id)
                     .findFirst().get();
 
-            log.debug(getConfigurationEntry(GET_EXECUTOR));
+            log.info(getConfigurationEntry(GET_EXECUTOR));
+            log.debug(executor);
 
             return Optional.of(executor);
 
@@ -863,7 +951,8 @@ public class DataProviderCsv implements DataProvider{
 
             writeToCsv(Executor.class, listExecutor,true);
 
-            log.debug(getConfigurationEntry(DELETE_EXECUTOR));
+            log.info(getConfigurationEntry(DELETE_EXECUTOR));
+            log.debug(executor);
 
             return true;
 
@@ -906,7 +995,8 @@ public class DataProviderCsv implements DataProvider{
 
             writeToCsv(Executor.class, listExecutor,true);
 
-            log.debug(getConfigurationEntry(Constants.UPDATE_EXECUTOR));
+            log.info(getConfigurationEntry(Constants.UPDATE_EXECUTOR));
+            log.debug(newExecutor);
 
             return true;
 
@@ -982,10 +1072,10 @@ public class DataProviderCsv implements DataProvider{
 
             if (createReport) {
 
-                log.info(createReportAboutEstimate(projectPriceForWorks, projectPriceForMaterials, projectPrice ));
+                log.debug(createReportAboutEstimate(projectPriceForWorks, projectPriceForMaterials, projectPrice ));
             }
 
-            log.debug(getConfigurationEntry(Constants.CALCULATING_ESTIMATE));
+            log.info(getConfigurationEntry(Constants.CALCULATING_ESTIMATE));
 
             return projectPrice;
 
@@ -1004,7 +1094,7 @@ public class DataProviderCsv implements DataProvider{
     public Long calculatingDeadline(List<Works> worksList, long idProject, boolean createReport) {
         try {
 
-            log.debug(getConfigurationEntry(Constants.CALCULATING_DEADLINE));
+            log.info(getConfigurationEntry(Constants.CALCULATING_DEADLINE));
 
 
             Long projectNeedDays;
@@ -1022,7 +1112,7 @@ public class DataProviderCsv implements DataProvider{
 
             if (createReport) {
 
-                log.info(createDeadlineReport(idProject, projectNeedDays));
+                log.debug(createDeadlineReport(idProject, projectNeedDays));
 
             }
 
@@ -1045,7 +1135,7 @@ public class DataProviderCsv implements DataProvider{
                                  String deadline, Integer numberOfWorkers, List<Works> worksList, String address,
                                  People executor, People customer, boolean isCreateEstimateReport, boolean isCreateDeadlineReport ) throws Exception {
 
-        log.debug(getConfigurationEntry(CREATE_PROJECT));
+        log.info(getConfigurationEntry(CREATE_PROJECT));
 
         try
         {
@@ -1116,7 +1206,8 @@ public class DataProviderCsv implements DataProvider{
             project.setCustomer(getCustomerInProject(project));
             project.setExecutor(getExecutorInProject(project));
 
-            log.debug(getConfigurationEntry(GET_PROJECT));
+            log.info(getConfigurationEntry(GET_PROJECT));
+            log.debug(Optional.of(project));
 
             return Optional.of(project);
 
@@ -1156,7 +1247,8 @@ public class DataProviderCsv implements DataProvider{
 
             writeToCsv(Project.class,listProject,true);
 
-            log.debug(getConfigurationEntry(UPDATE_PROJECT));
+            log.info(getConfigurationEntry(UPDATE_PROJECT));
+            log.debug(newProject);
 
             return true;
 
@@ -1197,7 +1289,7 @@ public class DataProviderCsv implements DataProvider{
 
             writeToCsv(Project.class,listProject,true);
 
-            log.debug(getConfigurationEntry(Constants.DELETE_PROJECT));
+            log.info(getConfigurationEntry(Constants.DELETE_PROJECT));
 
             return true;
 
@@ -1217,7 +1309,7 @@ public class DataProviderCsv implements DataProvider{
 
     @Override
     public StringBuffer createReportAboutProject(long idProject)throws IOException{
-
+        log.info(getConfigurationEntry(PROJECT_REPORT));
         Project projectForReport = getProject(idProject).get();
 
         StringBuffer reportAboutProject = new StringBuffer();
@@ -1240,6 +1332,7 @@ public class DataProviderCsv implements DataProvider{
 
     @Override
     public StringBuffer createReportAboutEstimate(long workPrice, long materialPrice, long totalPrice)throws Exception{
+        log.info(getConfigurationEntry(ESTIMATE_REPORT));
 
         StringBuffer reportAboutProject = new StringBuffer();
 
@@ -1254,6 +1347,7 @@ public class DataProviderCsv implements DataProvider{
 
     @Override
     public StringBuffer createDeadlineReport(Long idProject, Long needDays) throws IOException {
+        log.info(getConfigurationEntry(DEADLINE_REPORT));
         Project project;
 
         project = getProject(idProject).get();
@@ -1273,24 +1367,29 @@ public class DataProviderCsv implements DataProvider{
     }
 
     @Override
-    public Long GetTheCostOfWorksInProject(long idProject) {
+    public Long getTheCostOfWorksInProject(long idProject) {
 
        try {
-           Project project;
+           if (getProject(idProject).equals(Optional.empty())){
+               log.info(getConfigurationEntry(NULL_VALUE));
+               return null;
+           } else {
+               Project project;
 
 
-           project = getProject(idProject).get();
+               project = getProject(idProject).get();
 
-           Long projectPriceForWorks;
+               Long projectPriceForWorks;
 
-           List<Works> worksList;
-           worksList = getWorksList(project);
+               List<Works> worksList;
+               worksList = getWorksList(project);
 
-           projectPriceForWorks = priceForWorks(worksList);
+               projectPriceForWorks = priceForWorks(worksList);
 
-           log.debug(getConfigurationEntry(Constants.GET_THE_COST_OF_WORKS));
+               log.debug(getConfigurationEntry(Constants.GET_THE_COST_OF_WORKS));
 
-           return projectPriceForWorks;
+               return projectPriceForWorks;
+           }
        }
        catch (IOException e)
        {
@@ -1301,23 +1400,31 @@ public class DataProviderCsv implements DataProvider{
     }
 
     @Override
-    public Long GetTheCostOfMaterialsInProject(long idProject) {
+    public Long getTheCostOfMaterialsInProject(long idProject) {
        try {
-           Project project;
+           if (getProject(idProject).equals(Optional.empty())){
 
-           project = getProject(idProject).get();
+               log.info(getConfigurationEntry(NULL_VALUE));
 
-           Long projectPriceForMaterials;
+               return null;
+
+           } else {
+               Project project;
+
+               project = getProject(idProject).get();
+
+               Long projectPriceForMaterials;
 
 
-           List<Works> worksList;
-           worksList = getWorksList(project);
-           projectPriceForMaterials = priceForMaterials(worksList);
+               List<Works> worksList;
+               worksList = getWorksList(project);
+               projectPriceForMaterials = priceForMaterials(worksList);
 
 
-           log.debug(getConfigurationEntry(Constants.GET_THE_COST_OF_MATERIALS));
+               log.debug(getConfigurationEntry(Constants.GET_THE_COST_OF_MATERIALS));
 
-           return projectPriceForMaterials;
+               return projectPriceForMaterials;
+           }
 
        }catch(IOException e){
 

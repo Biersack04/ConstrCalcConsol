@@ -23,6 +23,14 @@ public class DataProviderXml implements DataProvider {
 
     private static Logger log = LogManager.getLogger(DataProviderXml.class);
 
+
+
+    /**
+     * Запись в xml файл
+     * @param listClass список объектов класса
+     * @return успешний или не успешный результат в виде переменной типа boolean
+     * @throws IOException
+     */
     public <T> boolean insertListIntoXml(List<T> listClass) throws Exception {
         try {
 
@@ -58,7 +66,6 @@ public class DataProviderXml implements DataProvider {
         }
     }
 
-
     public <T> boolean writeToXml(Class<?> tClass, List<T> object, boolean overwrite) throws Exception {
         List<T> fileObjectList;
         if (!overwrite) {
@@ -70,19 +77,17 @@ public class DataProviderXml implements DataProvider {
         try {
 
             log.info(this.getFilePath(tClass));
+
             (new File(this.getFilePath(tClass))).createNewFile();
-            //Подключаемся к потоку записи файла
             FileWriter writer = new FileWriter(this.getFilePath(tClass), false);
-            //Определяем сериалайзер
             Serializer serializer = new Persister();
 
-            //Определяем контейнер, в котором будут находиться все объекты
             WrapperXML xml = new WrapperXML();
-            //Записываем список объектов в котнейнер
             xml.setList(fileObjectList);
-
-            //Записываем в файл
             serializer.write(xml, writer);
+
+            log.debug(getConfigurationEntry(WRITE_SUCCESS));
+
             return true;
         } catch (IndexOutOfBoundsException e) {
             log.error(e);
@@ -90,17 +95,24 @@ public class DataProviderXml implements DataProvider {
         }
     }
 
+    /**
+     * Получение данных из xml файла
+     * @param cl
+     * @param <T>
+     * @return
+     * @throws IOException
+     */
     public <T> List<T> readFromXml(Class cl) throws Exception {
         try {
-            //Подключаемся к считывающему потоку из файла
+
             FileReader fileReader = new FileReader(this.getFilePath(cl));
-            //Определяем сериалайзер
+
             Serializer serializer = new Persister();
-            //Определяем контейнер и записываем в него объекты
+
             WrapperXML xml = serializer.read(WrapperXML.class, fileReader);
-            //Если список null, то делаем его пустым списком
+
             if (xml.getList() == null) xml.setList(new ArrayList<T>());
-            //Возвращаем список объектов
+
             return xml.getList();
         } catch (IOException e) {
 
@@ -110,6 +122,13 @@ public class DataProviderXml implements DataProvider {
         }
     }
 
+    /**
+     * Поверка на не пустоту перед записью в файл
+     * @param object
+     * @param <T>
+     * @return
+     * @throws IOException
+     */
     private <T> boolean writeToXml(T object) throws Exception {
         if (object == null) {
             log.info(ConfigurationUtil.getConfigurationEntry(NULL));
@@ -118,14 +137,19 @@ public class DataProviderXml implements DataProvider {
         return writeToXml(object.getClass(), Collections.singletonList(object), false);
     }
 
-
+    /**
+     * Получение пути файла
+     * @param cl
+     * @return
+     * @throws IOException
+     */
     private String getFilePath(Class cl) throws IOException {
         return ConfigurationUtil.getConfigurationEntry(Constants.PATH_XML) + cl.getSimpleName().toLowerCase() + ConfigurationUtil.getConfigurationEntry(Constants.FILE_EXTENSION_XML);
     }
 
-    /** Create the List of objects of the Materials class type
-     * @param work the object of the class of Works to get a list of materials for
-     * @return List of objects of the Materials class type
+    /** Создает список материалов, относящиеся к конкретной работе
+     * @param work объект класса Works
+     * @return Список всех найденных материалов
      * @throws IOException
      */
     private <T> List<Materials> getMaterialList( T work) throws Exception {
@@ -155,7 +179,8 @@ public class DataProviderXml implements DataProvider {
                             .anyMatch(workInProject -> workInProject.longValue() ==  worksInProject.getId()))
                     .collect(Collectors.toList());
 
-            log.debug(getConfigurationEntry(GET_MATERIAL_LIST));
+            log.info(getConfigurationEntry(GET_MATERIAL_LIST));
+            log.debug(workListInProject);
 
             return workListInProject;
 
@@ -167,9 +192,10 @@ public class DataProviderXml implements DataProvider {
         }
     }
 
-    /** Create the List of objects of the Works class type
-     * @param projectObject the object of the class of Project to get a list of works for
-     * @return List of objects of the Works class type
+    /** Создает список объектов
+     * @param projectObject - объект класса Project для получения списка работ, которые к нему относятся
+     * @return список работ
+     * @throws IOException
      */
     private <T> List<Works> getWorksList(T projectObject) {
 
@@ -211,7 +237,9 @@ public class DataProviderXml implements DataProvider {
                         }
                     });
 
-            log.debug(getConfigurationEntry(GET_WORKS_LIST));
+
+            log.info(getConfigurationEntry(GET_WORKS_LIST));
+            log.debug(workListInProject);
 
             return worksInProjectWithMaterials;
 
@@ -223,9 +251,9 @@ public class DataProviderXml implements DataProvider {
         }
     }
 
-    /** Create the object of the Customer class type
-     * @param customerObject the object of the class of Project to get a class object
-     * @return objects of the People class type
+    /** Получение экземпляра класса Customer
+     * @param customerObject  - объект класса, который связан с конкретным проектом
+     * @return экземпляр класса типа People
      * @throws IOException
      */
     private <T> People getCustomerInProject(T customerObject) throws Exception {
@@ -244,15 +272,16 @@ public class DataProviderXml implements DataProvider {
                 .findAny()
                 .orElse(null);
 
-        log.debug(getConfigurationEntry(GET_CUSTOMER_IN_PROJECT));
+        log.info(getConfigurationEntry(GET_CUSTOMER_IN_PROJECT));
+        log.debug(customer);
 
         return customerInProject;
 
     }
 
-    /** Create the object of the Executor class type
-     * @param executorObject the object of the class of Project to get a class object
-     * @return objects of the People class type
+    /** Получение экземпляра класса Executor
+     * @param executorObject - объект класса, который связан с конкретным проектом
+     * @return экземпляр класса типа People
      * @throws IOException
      */
     private <T> People getExecutorInProject(T executorObject) throws Exception {
@@ -269,12 +298,18 @@ public class DataProviderXml implements DataProvider {
                 .findAny()
                 .orElse(null);
 
-        log.debug(getConfigurationEntry(GET_EXECUTOR_IN_PROJECT));
+        log.info(getConfigurationEntry(GET_EXECUTOR_IN_PROJECT));
+        log.debug(executor);
+
 
         return executorInProject;
 
     }
 
+    /**
+     * Получение следующего id для Customer
+     * @return id
+     */
     private long getNextCustomerId() throws Exception {
 
         try {
@@ -303,6 +338,10 @@ public class DataProviderXml implements DataProvider {
         }
     }
 
+    /**
+     * Получение следующего id для Executor
+     * @return id
+     */
     private long getNextExecutorId() {
 
         try {
@@ -330,6 +369,10 @@ public class DataProviderXml implements DataProvider {
         }
     }
 
+    /**
+     * Получение следующего id для Project
+     * @return id
+     */
     private long getNextProjectId() throws Exception {
 
         try {
@@ -357,6 +400,12 @@ public class DataProviderXml implements DataProvider {
         }
     }
 
+    /**
+     * Проверка списка на пустоту
+     * @param list список для проверки
+     * @return boolean в зависимости от результата
+     * @throws IOException
+     */
     private <T> boolean checkEmptyList(List<T> list) throws IOException {
 
         if (list.isEmpty()) {
@@ -371,6 +420,12 @@ public class DataProviderXml implements DataProvider {
         }
     }
 
+    /**
+     * Проверка экземпляра на пустоту
+     * @param object объект для проверки
+     * @return boolean в зависимости от результата
+     * @throws IOException
+     */
     private <T> boolean checkNull(T object) throws IOException{
         if (object == null) {
 
@@ -391,11 +446,12 @@ public class DataProviderXml implements DataProvider {
     @Override
     public boolean createMaterials(List<Materials> listMaterials) throws IOException {
 
-        log.debug(getConfigurationEntry(CREATE_MATERIALS));
+        log.info(getConfigurationEntry(CREATE_MATERIALS));
 
         try
         {
             if (checkEmptyList(listMaterials)){
+                log.debug(listMaterials);
 
                 return insertListIntoXml(listMaterials);
 
@@ -403,6 +459,7 @@ public class DataProviderXml implements DataProvider {
 
             else
             {
+                log.error(getConfigurationEntry(NULL_VALUE));
                 return false;
             }
 
@@ -426,7 +483,8 @@ public class DataProviderXml implements DataProvider {
                     .filter(el -> el.getId() == materialId)
                     .findFirst().get();
 
-            log.debug(getConfigurationEntry(GET_MATERIALS));
+            log.info(getConfigurationEntry(GET_MATERIALS));
+            log.debug(Optional.of(materials));
 
             return Optional.of(materials);
 
@@ -454,7 +512,8 @@ public class DataProviderXml implements DataProvider {
 
             writeToXml(Materials.class, listMaterials,true);
 
-            log.debug(getConfigurationEntry(DELETE_MATERIALS));
+            log.info(getConfigurationEntry(DELETE_MATERIALS));
+            log.debug(materials);
 
             return true;
 
@@ -488,7 +547,8 @@ public class DataProviderXml implements DataProvider {
 
             writeToXml(Materials.class, listMaterials,true);
 
-            log.debug(getConfigurationEntry(UPDATE_MATERIALS));
+            log.info(getConfigurationEntry(UPDATE_MATERIALS));
+            log.debug(newMaterials);
 
             return true;
 
@@ -507,17 +567,19 @@ public class DataProviderXml implements DataProvider {
     @Override
     public boolean createWork(List<Works> listWorks) throws Exception {
 
-        log.debug(getConfigurationEntry(CREATE_WORKS));
+        log.info(getConfigurationEntry(CREATE_WORKS));
 
         try
         {
             if (checkEmptyList(listWorks)){
+                log.debug(listWorks);
 
                 return insertListIntoXml(listWorks);
 
             }
             else
             {
+                log.error(getConfigurationEntry(NULL_VALUE));
                 return false;
             }
 
@@ -549,7 +611,8 @@ public class DataProviderXml implements DataProvider {
 
             works.setListMaterials(getMaterialList(works));
 
-            log.debug(getConfigurationEntry(GET_WORKS));
+            log.info(getConfigurationEntry(GET_WORKS));
+            log.debug(Optional.of(works));
 
             return Optional.of(works);
 
@@ -576,7 +639,8 @@ public class DataProviderXml implements DataProvider {
 
             writeToXml(Works.class, listWorks,true);
 
-            log.debug(getConfigurationEntry(DELETE_WORKS));
+            log.info(getConfigurationEntry(DELETE_WORKS));
+            log.debug(works);
 
             return true;
 
@@ -613,7 +677,8 @@ public class DataProviderXml implements DataProvider {
 
             writeToXml(Works.class, listWorks,true);
 
-            log.debug(getConfigurationEntry(UPDATE_WORKS));
+            log.info(getConfigurationEntry(UPDATE_WORKS));
+            log.debug(newWorks);
 
             return true;
 
@@ -632,12 +697,13 @@ public class DataProviderXml implements DataProvider {
     @Override
     public boolean createCustomer(String name, String surname, String mailbox,String telephone) throws Exception {
 
-        log.debug(getConfigurationEntry(CREATE_CUSTOMER));
+        log.info(getConfigurationEntry(CREATE_CUSTOMER));
 
         try
         {
             if ( checkNull(name) || checkNull(surname) || checkNull(mailbox) || checkNull(telephone))
             {
+                log.error(getConfigurationEntry(NULL_VALUE));
                 return false;
             }
             else
@@ -648,6 +714,8 @@ public class DataProviderXml implements DataProvider {
                 customer.setSurname(surname);
                 customer.setMailbox(mailbox);
                 customer.setTelephone(telephone);
+
+                log.debug(customer);
 
                 return writeToXml(customer);
             }
@@ -672,7 +740,8 @@ public class DataProviderXml implements DataProvider {
                     .filter(el -> el.getId() == id)
                     .findFirst().get();
 
-            log.debug(getConfigurationEntry(GET_CUSTOMER));
+            log.info(getConfigurationEntry(GET_CUSTOMER));
+            log.debug(customer);
 
             return Optional.of(customer);
 
@@ -700,7 +769,8 @@ public class DataProviderXml implements DataProvider {
 
             writeToXml(Customer.class, listCustomer,true);
 
-            log.debug(getConfigurationEntry(DELETE_CUSTOMER));
+            log.info(getConfigurationEntry(DELETE_CUSTOMER));
+            log.debug(customer);
 
             return true;
 
@@ -741,7 +811,8 @@ public class DataProviderXml implements DataProvider {
 
             writeToXml(Customer.class, listCustomer,true);
 
-            log.debug(getConfigurationEntry(UPDATE_CUSTOMER));
+            log.info(getConfigurationEntry(UPDATE_CUSTOMER));
+            log.debug(newCustomer);
 
             return true;
 
@@ -759,13 +830,13 @@ public class DataProviderXml implements DataProvider {
     @Override
     public boolean createExecutor(String name, String surname, String mailbox, Long numberOfCompletedProjects, Long numberOfWorkers) throws Exception {
 
-        log.debug(getConfigurationEntry(CREATE_EXECUTOR));
+        log.info(getConfigurationEntry(CREATE_EXECUTOR));
 
         try
         {
             if ( checkNull(name) || checkNull(surname) || checkNull(mailbox) || checkNull(numberOfCompletedProjects) || checkNull(numberOfWorkers))
             {
-                log.debug(Constants.NULL_VALUE);
+                log.error(Constants.NULL_VALUE);
 
                 return false;
             }
@@ -778,6 +849,8 @@ public class DataProviderXml implements DataProvider {
                 executor.setMailbox(mailbox);
                 executor.setNumberOfCompletedProjects(numberOfCompletedProjects);
                 executor.setNumberOfWorkers(numberOfWorkers);
+
+                log.debug(executor);
 
                 return writeToXml(executor);
             }
@@ -802,7 +875,8 @@ public class DataProviderXml implements DataProvider {
                     .filter(el -> el.getId() == id)
                     .findFirst().get();
 
-            log.debug(getConfigurationEntry(GET_EXECUTOR));
+            log.info(getConfigurationEntry(GET_EXECUTOR));
+            log.debug(executor);
 
             return Optional.of(executor);
 
@@ -830,7 +904,8 @@ public class DataProviderXml implements DataProvider {
 
             writeToXml(Executor.class, listExecutor,true);
 
-            log.debug(getConfigurationEntry(DELETE_EXECUTOR));
+            log.info(getConfigurationEntry(DELETE_EXECUTOR));
+            log.debug(executor);
 
             return true;
 
@@ -873,7 +948,8 @@ public class DataProviderXml implements DataProvider {
 
             writeToXml(Executor.class, listExecutor,true);
 
-            log.debug(getConfigurationEntry(Constants.UPDATE_EXECUTOR));
+            log.info(getConfigurationEntry(Constants.UPDATE_EXECUTOR));
+            log.debug(newExecutor);
 
             return true;
 
@@ -952,7 +1028,7 @@ public class DataProviderXml implements DataProvider {
                 log.info(createReportAboutEstimate(projectPriceForWorks, projectPriceForMaterials, projectPrice ));
             }
 
-            log.debug(getConfigurationEntry(Constants.CALCULATING_ESTIMATE));
+            log.info(getConfigurationEntry(Constants.CALCULATING_ESTIMATE));
 
             return projectPrice;
 
@@ -971,7 +1047,7 @@ public class DataProviderXml implements DataProvider {
     public Long calculatingDeadline(List<Works> worksList, long idProject, boolean createReport) throws Exception {
         try {
 
-            log.debug(getConfigurationEntry(Constants.CALCULATING_DEADLINE));
+            log.info(getConfigurationEntry(Constants.CALCULATING_DEADLINE));
 
 
             Long projectNeedDays;
@@ -1012,14 +1088,14 @@ public class DataProviderXml implements DataProvider {
                                  String deadline, Integer numberOfWorkers, List<Works> worksList, String address,
                                  People executor, People customer, boolean isCreateEstimateReport, boolean isCreateDeadlineReport ) throws Exception {
 
-        log.debug(getConfigurationEntry(CREATE_PROJECT));
+        log.info(getConfigurationEntry(CREATE_PROJECT));
 
         try
         {
             if ( checkNull(name) || checkNull(createdDate) || checkNull(deadline) || checkNull(numberOfWorkers ) ||
                     checkNull(worksList ) || checkNull(address ) || checkNull(executor ) || checkNull(customer ) )
             {
-                log.debug(Constants.NULL_VALUE);
+                log.error(Constants.NULL_VALUE);
 
                 return false;
             }
@@ -1049,6 +1125,8 @@ public class DataProviderXml implements DataProvider {
                 deadlineReport
                         .append("\n"+ getConfigurationEntry(Constants.ESTIMATE) + SPACE + estimate  +"\n")
                         .append(getConfigurationEntry(DEADLINING) + SPACE + deadlining +"\n");
+
+                log.debug(project);
 
 
                 return true;
@@ -1083,7 +1161,8 @@ public class DataProviderXml implements DataProvider {
             project.setCustomer(getCustomerInProject(project));
             project.setExecutor(getExecutorInProject(project));
 
-            log.debug(getConfigurationEntry(GET_PROJECT));
+            log.info(getConfigurationEntry(GET_PROJECT));
+            log.debug(Optional.of(project));
 
             return Optional.of(project);
 
@@ -1123,7 +1202,8 @@ public class DataProviderXml implements DataProvider {
 
             writeToXml(Project.class,listProject,true);
 
-            log.debug(getConfigurationEntry(UPDATE_PROJECT));
+            log.info(getConfigurationEntry(UPDATE_PROJECT));
+            log.debug(newProject);
 
             return true;
 
@@ -1150,6 +1230,7 @@ public class DataProviderXml implements DataProvider {
                 return false;
             }
             else{
+                log.info(getConfigurationEntry(Constants.DELETE_PROJECT));
                 Project project = listProject.stream()
                         .filter(el -> el.getId() == id)
                         .findFirst().get();
@@ -1163,8 +1244,6 @@ public class DataProviderXml implements DataProvider {
                 listProject.remove(project);
 
                 writeToXml(Project.class,listProject,true);
-
-                log.debug(getConfigurationEntry(Constants.DELETE_PROJECT));
 
                 return true;
 
@@ -1185,6 +1264,7 @@ public class DataProviderXml implements DataProvider {
     @Override
     public StringBuffer createReportAboutProject(long idProject) throws Exception {
 
+        log.info(getConfigurationEntry(Constants.PROJECT_REPORT));
         Project projectForReport = getProject(idProject).get();
 
         StringBuffer reportAboutProject = new StringBuffer();
@@ -1208,6 +1288,7 @@ public class DataProviderXml implements DataProvider {
     @Override
     public StringBuffer createReportAboutEstimate(long workPrice, long materialPrice, long totalPrice)throws Exception{
 
+        log.info(getConfigurationEntry(Constants.ESTIMATE_REPORT));
         StringBuffer reportAboutProject = new StringBuffer();
 
         reportAboutProject
@@ -1221,6 +1302,7 @@ public class DataProviderXml implements DataProvider {
 
     @Override
     public StringBuffer createDeadlineReport(Long idProject, Long needDays) throws Exception {
+        log.info(getConfigurationEntry(Constants.DEADLINE_REPORT));
         Project project;
 
         project = getProject(idProject).get();
@@ -1240,24 +1322,29 @@ public class DataProviderXml implements DataProvider {
     }
 
     @Override
-    public Long GetTheCostOfWorksInProject(long idProject) throws Exception {
+    public Long getTheCostOfWorksInProject(long idProject) throws Exception {
 
         try {
-            Project project;
+            if (getProject(idProject).equals(Optional.empty())){
+                log.info(getConfigurationEntry(NULL_VALUE));
+                return null;
+            } else {
+                Project project;
 
 
-            project = getProject(idProject).get();
+                project = getProject(idProject).get();
 
-            Long projectPriceForWorks;
+                Long projectPriceForWorks;
 
-            List<Works> worksList;
-            worksList = getWorksList(project);
+                List<Works> worksList;
+                worksList = getWorksList(project);
 
-            projectPriceForWorks = priceForWorks(worksList);
+                projectPriceForWorks = priceForWorks(worksList);
 
-            log.debug(getConfigurationEntry(Constants.GET_THE_COST_OF_WORKS));
+                log.debug(getConfigurationEntry(Constants.GET_THE_COST_OF_WORKS));
 
-            return projectPriceForWorks;
+                return projectPriceForWorks;
+            }
         }
         catch (IOException e)
         {
@@ -1268,23 +1355,28 @@ public class DataProviderXml implements DataProvider {
     }
 
     @Override
-    public Long GetTheCostOfMaterialsInProject(long idProject) throws Exception {
+    public Long getTheCostOfMaterialsInProject(long idProject) throws Exception {
         try {
-            Project project;
+            if (getProject(idProject).equals(Optional.empty())){
+                log.info(getConfigurationEntry(NULL_VALUE));
+                return null;
+            } else {
+                Project project;
 
-            project = getProject(idProject).get();
+                project = getProject(idProject).get();
 
-            Long projectPriceForMaterials;
-
-
-            List<Works> worksList;
-            worksList = getWorksList(project);
-            projectPriceForMaterials = priceForMaterials(worksList);
+                Long projectPriceForMaterials;
 
 
-            log.debug(getConfigurationEntry(Constants.GET_THE_COST_OF_MATERIALS));
+                List<Works> worksList;
+                worksList = getWorksList(project);
+                projectPriceForMaterials = priceForMaterials(worksList);
 
-            return projectPriceForMaterials;
+
+                log.debug(getConfigurationEntry(Constants.GET_THE_COST_OF_MATERIALS));
+
+                return projectPriceForMaterials;
+            }
 
         }catch(IOException e){
 
@@ -1292,7 +1384,6 @@ public class DataProviderXml implements DataProvider {
             return null;
         }
     }
-
 
     @Override
     public boolean markTheStatusOfWork (Long idWork, String status) throws Exception {

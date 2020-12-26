@@ -17,35 +17,35 @@ public interface DataProvider {
 
     //Materials
 
-    /** This method gets a list of Materials that it uses to create objects of the Materials class
-     * @param listMaterials the value of a list of the class Materials
-     * @return a boolean value depending on the execution outcome
+    /** Создание списка материалов
+     * @param listMaterials список материалов
+     * @return возвращает булевское значеие в зависсимости от результата выполнения
      * @throws IOException
      * @throws CsvDataTypeMismatchException
      * @throws CsvRequiredFieldEmptyException
      */
     boolean createMaterials(List<Materials> listMaterials) throws Exception;
 
-    /** This method finds the required instance of the class by id and gets all the information about it
-     * @param materialId value of the id of the object of the class to get
-     * @return specific material
+    /** Получение экземпляра материалов по его id
+     * @param materialId id материала
+     * @return объект класса Material
      * @throws IOException
      */
     Optional<Materials> getMaterialById(long materialId) throws Exception;
 
-    /** This method finds a specific material by id and removes it from the list
-     * @param id value of the material id to delete
-     * @return a boolean value depending on the execution outcome
+    /** Удаление материала из списка материалов по его id
+     * @param id id материала
+     * @return результат выполнения
      * @throws IOException
      */
     boolean deleteMaterialById(long id) throws Exception;
 
-    /** This method changes the existing information about the material that is found by the specified id
-     * @param id the value of the id of the material
-     * @param name the value of the name of the material
-     * @param number the value of the number of the material
-     * @param priceForOne the value of the totalPrice of the material
-     * @return a boolean value depending on the execution outcome
+    /** Обновление экземпляра класса Material
+     * @param id id
+     * @param name название
+     * @param number количество этого материала, которое необходимо
+     * @param priceForOne цена за штуку
+     * @return  возвращает булевское значеие в зависсимости от результата выполнения
      * @throws IOException
      */
     boolean updateMaterial(long id, String name, Long number, Long priceForOne) throws Exception;
@@ -53,37 +53,37 @@ public interface DataProvider {
 
     //Works
 
-    /** This method gets a list of Works that it uses to create objects of the Works class
-     * @param listWorks the value of a list of the class Works
-     * @return a boolean value depending on the execution outcome
+    /** Создание списка работ для проекта
+     * @param listWorks список работ
+     * @return возвращает булевское значеие в зависсимости от результата выполнения
      * @throws IOException
      * @throws CsvDataTypeMismatchException
      * @throws CsvRequiredFieldEmptyException
      */
     boolean createWork(List<Works> listWorks) throws Exception;
 
-    /** This method finds the required instance of the class by id and gets all the information about it
-     * @param id value of the id of the object of the class to get
-     * @return specific work
+    /** Нахождение работы по ее id
+     * @param id id работы
+     * @return  экземпляр класса, который нашел
      */
     Optional<Works> getWork(long id) throws Exception;
 
-    /** This method finds a specific works by id and removes it from the list
-     * @param id value of the work id to delete
-     * @return a boolean value depending on the execution outcome
+    /** Удаление работы по id
+     * @param id id
+     * @return  возвращает булевское значеие в зависсимости от результата выполнения
      * @throws IOException
      */
     boolean deleteWorkById(long id) throws Exception;
 
-    /** This method changes the existing information about the works that is found by the specified id
-     * @param id the value of id of the work
-     * @param name the value of name of the work
-     * @param price the value of price of the work
-     * @param priority the value of  priority of the work
-     * @param daysToCompletedWorks the value of days to completed of the work
-     * @param status the value of status of the work
-     * @param listMaterials the value of list materials of the work
-     * @return a boolean value depending on the execution outcome
+    /** Обновление всей информации у экземпляра класса
+     * @param id id
+     * @param name название
+     * @param price цена за выполнение
+     * @param priority приоритет выполнения
+     * @param daysToCompletedWorks  количество дней, необходимых для выполнения
+     * @param status  статус работы
+     * @param listMaterials  список материалов
+     * @return возвращает булевское значеие в зависсимости от результата выполнения
      * @throws IOException
      */
     boolean updateWork(Long id, String name, Long price, String priority,
@@ -92,40 +92,40 @@ public interface DataProvider {
 
     //Customer
 
-    /** This method create objects of the Customer class
+    /** Создание Заказчика
      *
-     * @param name the value of name of the customer
-     * @param surname the value of surname of the customer
-     * @param mailbox the value of mailbox of the customer
-     * @param telephone the value of telephone of the customer
-     * @return a boolean value depending on the execution outcome
+     * @param name Имя
+     * @param surname Фамилия
+     * @param mailbox email
+     * @param telephone телефон
+     * @return возвращает булевское значеие в зависсимости от результата выполнения
      * @throws IOException
      * @throws CsvDataTypeMismatchException
      * @throws CsvRequiredFieldEmptyException
      */
     boolean createCustomer(String name, String surname, String mailbox, String telephone) throws Exception;
 
-        /** This method finds the required instance of the class by id and gets all the information about it
-         * @param id value of the id of the object of the class to get
-         * @return specific customer
+        /** Нахождение по id Заказчика
+         * @param id id
+         * @return возвращает булевское значеие в зависсимости от результата выполнения
          * @throws IOException
          */
     Optional<Customer> getCustomerById(long id) throws Exception;
 
-    /** This method finds a specific customer by id and removes it from the list
-     * @param id value of the customer id to delete
-     * @return a boolean value depending on the execution outcome
+    /** Удаляет Заказчика по id
+     * @param id id
+     * @return возвращает булевское значеие в зависсимости от результата выполнения
      * @throws IOException
      */
     boolean deleteCustomerById(long id) throws Exception;
 
-    /** This method changes the existing information about the customer that is found by the specified id
-     * @param id the value of id of the customer
-     * @param name the value of name of the customer
-     * @param surname the value of surname of the customer
-     * @param mailbox the value of mailbox of the customer
-     * @param telephone the value of telephone of the customer
-     * @return a boolean value depending on the execution outcome
+    /** Обновляет всю информацию по Заказчику
+     * @param id id
+     * @param name имя
+     * @param surname фамилия
+     * @param mailbox email
+     * @param telephone телефон
+     * @return возвращает булевское значеие в зависсимости от результата выполнения
      * @throws IOException
      */
     boolean updateCustomer(long id, String name, String surname, String mailbox, String telephone ) throws Exception;
@@ -133,42 +133,42 @@ public interface DataProvider {
 
     //Executor
 
-    /** This method create objects of the Executor class
+    /** Создание Исполнителя
      *
-     * @param name the value of name of the executor
-     * @param surname the value of surname of the executor
-     * @param mailbox the value of mailbox of the executor
-     * @param numberOfCompletedWork the value of number of completed work of the executor
-     * @param numberOfWorkers the value of number of workers of the executor
-     * @return a boolean value depending on the execution outcome
+     * @param name имя
+     * @param surname фамилия
+     * @param mailbox email
+     * @param numberOfCompletedProjects количество законченных работ
+     * @param numberOfWorkers количество работников
+     * @return возвращает булевское значеие в зависсимости от результата выполнения
      * @throws IOException
      * @throws CsvDataTypeMismatchException
      * @throws CsvRequiredFieldEmptyException
      */
-    boolean createExecutor( String name, String surname, String mailbox, Long numberOfCompletedWork, Long numberOfWorkers) throws Exception;
+    boolean createExecutor( String name, String surname, String mailbox, Long numberOfCompletedProjects, Long numberOfWorkers) throws Exception;
 
-    /** This method finds the required instance of the class by id and gets all the information about it
-     * @param id value of the id of the object of the class to get
-     * @return specific executor
+    /** Находит Исполнителя по id
+     * @param id id Исполнителя
+     * @return экземляр класса Executor
      * @throws IOException
      */
     Optional<Executor> getExecutorById(long id) throws Exception;
 
-    /** This method finds a specific executor by id and removes it from the list
-     * @param id value of the executor id to delete
-     * @return a boolean value depending on the execution outcome
+    /** Удаляет Исполнителя по его id
+     * @param id id Исполнителя
+     * @return возвращает булевское значеие в зависсимости от результата выполнения
      * @throws IOException
      */
     boolean deleteExecutorById(long id) throws Exception;
 
-    /** This method changes the existing information about the executor that is found by the specified id
+    /** Обновление все информации у Исполнителя по его id
      * @param id the value of id of the executor
-     * @param name the value of name of the executor
-     * @param surname the value of surname of the executor
-     * @param mailbox the value of mailbox of the executor
-     * @param numberOfCompletedProjects the value of number of completed work of the executor
-     * @param numberOfWorkers the value of number of workers of the executor
-     * @return a boolean value depending on the execution outcome
+     * @param name имя
+     * @param surname фамилия
+     * @param mailbox email
+     * @param numberOfCompletedProjects количество законченных проектов
+     * @param numberOfWorkers количество работников
+     * @return возвращает булевское значеие в зависсимости от результата выполнения
      * @throws IOException
      */
     boolean updateExecutor(long id, String name, String surname, String mailbox, Long numberOfCompletedProjects, Long numberOfWorkers ) throws Exception;
@@ -177,48 +177,49 @@ public interface DataProvider {
     //Project
 
     /**
-     *
-     * @param name
-     * @param createdDate
-     * @param deadline
-     * @param numberOfWorkers
-     * @param worksList
-     * @param address
-     * @param executor
-     * @param customer
-     * @param isCreateEstimateReport
-     * @param isCreateDeadlineReport
-     * @return
+     *Создание проекта, на основе созланного заранее списка работ и материалов, указывается информация о заказчике и исполнителе, производятся расчеты
+     * сметы и сроков выполнения, при необходимости создаются отчеты
+     * @param name название
+     * @param createdDate дата создания
+     * @param deadline дата окончания
+     * @param numberOfWorkers количество работников
+     * @param worksList список работ
+     * @param address адресс
+     * @param executor Исполнитель
+     * @param customer Заказчик
+     * @param isCreateEstimateReport  флаг необходимости создания отчета по смете
+     * @param isCreateDeadlineReport флаг необходимости создания отчета по времени выполнения
+     * @return возвращает булевское значеие в зависсимости от результата выполнения
      * @throws Exception
      */
     boolean createProject(String name, String createdDate,
                           String deadline, Integer numberOfWorkers, List<Works> worksList, String address,
                           People executor, People customer, boolean isCreateEstimateReport, boolean isCreateDeadlineReport ) throws Exception;
 
-    /** This method finds the required instance of the class by id and gets all the information about it
-     * @param id value of the id of the object of the class to get
-     * @return specific project
+    /** Находит проект по его id
+     * @param id  id проекта
+     * @return
      */
     Optional<Project> getProject(long id) throws Exception;
 
-    /** This method finds a specific project by id and removes it from the list and depending on the flag create or not report
-     * @param id value of the project id to delete
-     *  @param createReport flag to create report about project
-     * @return a boolean value depending on the execution outcome
+    /** Удаление проекта с созданием или без создания отчета
+     * @param id проекта
+     *  @param createReport флаг создания отчета
+     * @return возвращает булевское значеие в зависсимости от результата выполнения
      * @throws IOException
      */
     boolean deleteProject(long id, boolean createReport) throws Exception;
 
-    /** This method changes the existing information about the project that is found by the specified id
-     * @param id the value of id of the project
-     * @param name the value of name of the project
-     * @param createdDate the value created date  of of the project
-     * @param deadline the value of deadline of the project
-     * @param numberOfWorkers the value of  number of workers of the project
-     * @param worksList the value of work list of the project
-     * @param address the value of address of the project
-     * @param executor the value of executor of the project
-     * @param customer the value of customer of the project
+    /** Обновление всей информации о проекте
+     * @param id
+     * @param name название
+     * @param createdDate дата создания
+     * @param deadline дата окончания
+     * @param numberOfWorkers количество работников
+     * @param worksList список работ
+     * @param address адресс
+     * @param executor Исполнитель
+     * @param customer Заказчик
      * @return a boolean value depending on the execution outcome
      * @throws IOException
      */
@@ -260,22 +261,14 @@ public interface DataProvider {
      * @return Long workPrice
      * @throws IOException
      */
-    Long GetTheCostOfWorksInProject(long idProject) throws Exception;
+    Long getTheCostOfWorksInProject(long idProject) throws Exception;
 
     /**Получение стоимости материалов, которые будут необходимы для выполнения работ в  проекте
      * @param idProject - id проекта
      * @return Long materialPrice
      * @throws IOException
      */
-    Long GetTheCostOfMaterialsInProject(long idProject) throws Exception;
-/*
-    /**Происходит расчет итоговой стоимости
-     * @param idProject  - id проекта
-     * @param createReport - флаг для вызова дополнительного метода создания отчета
-     * @return  Long projectPrice - итоговая стоимость
-     * @throws Exception
-     */
-   // Long calculatingEstimate(Long idProject, boolean createReport) throws Exception;
+    Long getTheCostOfMaterialsInProject(long idProject) throws Exception;
 
     //CRUD PROJECT
     Long calculatingEstimate(List<Works> worksList, boolean createReport) throws Exception;

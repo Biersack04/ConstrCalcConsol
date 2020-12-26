@@ -13,4 +13,11 @@
       <mailbox>newMailbox</mailbox>
       <telephone>newTelephone</telephone>
    </object>
+   <object class="ru.sfedu.constrcaclconsol.bean.Customer">
+      <id>3</id>
+      <name>proverka</name>
+      <surname>familiya</surname>
+      <mailbox>goooogl@.com</mailbox>
+      <telephone>telephone1</telephone>
+   </object>
 </main>

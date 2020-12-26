@@ -1,10 +1,2 @@
 ID,LISTMATERIALS,NAME,NEEDDAYSTOCOMPLETED,PRICE,PRIORITY,STATUS
-1,[1],To paint walls,10,200,LOW,DONE
-3,"[5,6]",To lay pipeline,20,400,MEDIUM,CREATE
-4,"[7,8]",To lay cable,20,500,MEDIUM,CREATE
-5,"[9,10]",Assemble the electrical panel,10,400,MEDIUM,DONE
-6,"[11,12]",Hang up lights,10,300,LOW,CREATE
-7,"[13,14]",Laying tiles on the floor,10,500,LOW,DONE
-8,"[15,16]",Install windows,10,600,HIGH,DONE
-9,"[17,18]",Floor insulation,10,700,HIGH,CREATE
-10,"[19,20]",Soundproofing,10,650,HIGH,DONE
+48,"[1,3]",shtukaturka,28,200,HIGH,CREATE
